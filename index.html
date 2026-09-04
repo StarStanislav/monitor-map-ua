@@ -2,277 +2,577 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
 <title>Monitor Map UA</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
+
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #080d12;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-                 "Segoe UI", sans-serif;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #070b10;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Segoe UI",
+    sans-serif;
 }
 
 #map {
-    width: 100%;
-    height: 100%;
-    background: #080d12;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #070b10;
 }
 
-/* Верхня панель */
-.header {
-    position: absolute;
-    z-index: 1000;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    height: 72px;
+/* =========================
+   КАРТА
+========================= */
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 16px;
-
-    background: rgba(10, 16, 22, 0.90);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 18px;
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.trident {
-    font-size: 30px;
-    color: #aeb9c5;
-}
-
-.title {
-    color: #f3f5f7;
-    font-size: 21px;
-    font-weight: 700;
-}
-
-.subtitle {
-    margin-top: 2px;
-    color: #8d99a5;
-    font-size: 12px;
-}
-
-.status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    padding: 9px 12px;
-
-    background: rgba(255,255,255,0.045);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 13px;
-
-    color: #aeb7c0;
-    font-size: 11px;
-}
-
-.status-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #58c878;
-    box-shadow: 0 0 10px rgba(88,200,120,0.65);
-}
-
-/* Пошук */
-.search {
-    position: absolute;
-    z-index: 1000;
-    top: 94px;
-    left: 12px;
-    right: 75px;
-}
-
-.search input {
-    width: 100%;
-    height: 52px;
-
-    padding: 0 18px 0 48px;
-
-    color: white;
-    font-size: 15px;
-
-    background: rgba(10,16,22,0.90);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-
-    outline: none;
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-}
-
-.search input::placeholder {
-    color: #77828d;
-}
-
-.search-icon {
-    position: absolute;
-    left: 17px;
-    top: 14px;
-
-    color: #aeb7c0;
-    font-size: 21px;
-}
-
-/* Кнопки */
-.controls {
-    position: absolute;
-    z-index: 1000;
-    top: 94px;
-    right: 12px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.control {
-    width: 52px;
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #e6ebef;
-    font-size: 23px;
-
-    background: rgba(10,16,22,0.90);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-}
-
-.control:active {
-    transform: scale(0.94);
-}
-
-/* Нижня панель */
-.bottom {
-    position: absolute;
-    z-index: 1000;
-
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-
-    height: 68px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-
-    background: rgba(10,16,22,0.94);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-
-    box-shadow: 0 -8px 30px rgba(0,0,0,0.30);
-}
-
-.bottom-item {
-    min-width: 70px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-
-    color: #89949e;
-    font-size: 11px;
-}
-
-.bottom-item.active {
-    color: #6fa7ff;
-}
-
-.bottom-icon {
-    font-size: 23px;
-}
-
-/* Leaflet */
-.leaflet-control-zoom {
-    display: none !important;
+.leaflet-tile {
+  filter:
+    brightness(0.55)
+    contrast(1.18)
+    saturate(0.45);
 }
 
 .leaflet-control-attribution {
-    background: rgba(8,13,18,0.75) !important;
-    color: #77828d !important;
-    font-size: 8px !important;
+  background: rgba(5, 9, 13, 0.75) !important;
+  color: #697580 !important;
+  font-size: 8px !important;
+  border-radius: 6px 0 0 0;
 }
 
 .leaflet-control-attribution a {
-    color: #8999a8 !important;
+  color: #7d8994 !important;
 }
 
-/* затемнення карти */
-.leaflet-tile {
-    filter: brightness(0.72) contrast(1.08) saturate(0.65);
+.leaflet-control-zoom {
+  display: none !important;
 }
 
-/* Popup */
-.leaflet-popup-content-wrapper,
+/* =========================
+   ЗАГАЛЬНІ ПАНЕЛІ
+========================= */
+
+.glass {
+  background: rgba(9, 15, 21, 0.88);
+
+  border: 1px solid rgba(255,255,255,0.11);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.035);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  position: absolute;
+
+  z-index: 1000;
+
+  top: 12px;
+  left: 12px;
+  right: 12px;
+
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 11px 13px;
+
+  border-radius: 20px;
+
+  background: rgba(7, 13, 19, 0.91);
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  color: #d5dde5;
+
+  font-size: 27px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.025)
+    );
+
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.title {
+  color: #f4f6f8;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  letter-spacing: -0.3px;
+}
+
+.subtitle {
+  margin-top: 3px;
+
+  color: #7f8b96;
+
+  font-size: 11px;
+
+  letter-spacing: 0.2px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 9px 11px;
+
+  border-radius: 13px;
+
+  background: rgba(255,255,255,0.045);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  color: #aab4bd;
+
+  font-size: 11px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #55d477;
+
+  box-shadow:
+    0 0 12px rgba(85,212,119,0.8);
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search {
+  position: absolute;
+
+  z-index: 1000;
+
+  top: 94px;
+  left: 12px;
+  right: 76px;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search input {
+  width: 100%;
+  height: 51px;
+
+  padding: 0 16px 0 45px;
+
+  border-radius: 16px;
+
+  outline: none;
+
+  color: #eef2f5;
+
+  font-size: 14px;
+
+  background: rgba(8,14,20,0.91);
+
+  border: 1px solid rgba(255,255,255,0.11);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.28);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.search input::placeholder {
+  color: #697681;
+}
+
+.search-icon {
+  position: absolute;
+
+  left: 16px;
+  top: 13px;
+
+  color: #9ca8b2;
+
+  font-size: 22px;
+
+  pointer-events: none;
+}
+
+/* =========================
+   КНОПКИ
+========================= */
+
+.controls {
+  position: absolute;
+
+  z-index: 1000;
+
+  top: 94px;
+  right: 12px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.control {
+  width: 51px;
+  height: 51px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  color: #dce3e8;
+
+  font-size: 23px;
+
+  background: rgba(8,14,20,0.91);
+
+  border: 1px solid rgba(255,255,255,0.11);
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.3);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  user-select: none;
+}
+
+.control:active {
+  transform: scale(0.94);
+
+  background: rgba(30,42,53,0.95);
+}
+
+.location-icon {
+  font-size: 25px;
+}
+
+/* =========================
+   ЛЕГЕНДА
+========================= */
+
+.legend {
+  position: absolute;
+
+  z-index: 1000;
+
+  left: 12px;
+  bottom: 93px;
+
+  padding: 13px 15px;
+
+  border-radius: 16px;
+
+  color: #aeb8c1;
+
+  font-size: 11px;
+
+  background: rgba(7,13,19,0.90);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.legend-title {
+  color: #e1e6ea;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  margin-bottom: 8px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 5px 0;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #6f7c86;
+}
+
+/* =========================
+   МОЄ МІСЦЕ
+========================= */
+
+.my-location {
+  position: absolute;
+
+  z-index: 1000;
+
+  right: 12px;
+  bottom: 93px;
+
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 14px;
+
+  border-radius: 14px;
+
+  color: #b8c2ca;
+
+  font-size: 11px;
+
+  background: rgba(7,13,19,0.90);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.my-location:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   НИЖНЄ МЕНЮ
+========================= */
+
+.bottom {
+  position: absolute;
+
+  z-index: 1000;
+
+  left: 12px;
+  right: 12px;
+  bottom: 11px;
+
+  height: 69px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  border-radius: 20px;
+
+  background: rgba(7,13,19,0.94);
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  box-shadow:
+    0 -8px 30px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.bottom-item {
+  min-width: 65px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 4px;
+
+  color: #77838d;
+
+  font-size: 10px;
+
+  user-select: none;
+}
+
+.bottom-item.active {
+  color: #76a8ff;
+}
+
+.bottom-icon {
+  font-size: 22px;
+
+  line-height: 22px;
+}
+
+/* =========================
+   POPUP
+========================= */
+
+.leaflet-popup-content-wrapper {
+  background: #0c141c !important;
+
+  color: #e8edf1 !important;
+
+  border:
+    1px solid rgba(255,255,255,0.10);
+
+  border-radius: 13px !important;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.45);
+}
+
 .leaflet-popup-tip {
-    background: #101820;
-    color: white;
+  background: #0c141c !important;
 }
 
 .leaflet-popup-content {
-    font-size: 13px;
+  margin: 12px 14px !important;
+
+  font-size: 12px;
 }
 
-/* адаптація */
+/* =========================
+   SEARCH RESULT
+========================= */
+
+.search-result {
+  position: absolute;
+
+  z-index: 1100;
+
+  top: 150px;
+  left: 12px;
+  right: 76px;
+
+  display: none;
+
+  padding: 12px 14px;
+
+  color: #dce3e8;
+
+  background: rgba(7,13,19,0.96);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  border-radius: 14px;
+
+  font-size: 12px;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 500px) {
-    .header {
-        height: 68px;
-    }
 
-    .title {
-        font-size: 19px;
-    }
+  .header {
+    top: 9px;
+    left: 9px;
+    right: 9px;
+  }
 
-    .subtitle {
-        font-size: 11px;
-    }
+  .search {
+    top: 88px;
+    left: 9px;
+    right: 70px;
+  }
 
-    .status {
-        padding: 7px 9px;
-    }
+  .controls {
+    top: 88px;
+    right: 9px;
+  }
+
+  .legend {
+    left: 9px;
+    bottom: 91px;
+  }
+
+  .my-location {
+    right: 9px;
+    bottom: 91px;
+  }
+
+  .bottom {
+    left: 9px;
+    right: 9px;
+    bottom: 9px;
+  }
+
 }
+
 </style>
 </head>
 
@@ -280,180 +580,467 @@ html, body {
 
 <div id="map"></div>
 
-<!-- Верх -->
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <div class="header">
-    <div class="brand">
-        <div class="trident">♜</div>
 
-        <div>
-            <div class="title">Monitor Map UA</div>
-            <div class="subtitle">Оперативна ситуація</div>
-        </div>
+  <div class="brand">
+
+    <div class="logo">⌖</div>
+
+    <div>
+      <div class="title">
+        Monitor Map UA
+      </div>
+
+      <div class="subtitle">
+        Оперативна ситуація
+      </div>
     </div>
 
-    <div class="status">
-        <span class="status-dot"></span>
-        <span>Онлайн</span>
-    </div>
+  </div>
+
+  <div class="status">
+
+    <span class="status-dot"></span>
+
+    <span>
+      Онлайн
+    </span>
+
+  </div>
+
 </div>
 
-<!-- Пошук -->
+
+<!-- =========================
+     ПОШУК
+========================= -->
+
 <div class="search">
-    <div class="search-icon">⌕</div>
+
+  <div class="search-box">
+
+    <div class="search-icon">
+      ⌕
+    </div>
+
     <input
-        id="search"
-        type="text"
-        placeholder="Пошук населеного пункту..."
+      id="search"
+      type="text"
+      autocomplete="off"
+      placeholder="Пошук населеного пункту..."
     >
+
+  </div>
+
 </div>
 
-<!-- Кнопки -->
+<div
+  id="searchResult"
+  class="search-result">
+</div>
+
+
+<!-- =========================
+     КОНТРОЛИ
+========================= -->
+
 <div class="controls">
-    <div class="control" onclick="map.zoomIn()">＋</div>
-    <div class="control" onclick="map.zoomOut()">−</div>
-    <div class="control" onclick="findLocation()">⌾</div>
+
+  <div
+    class="control"
+    onclick="map.zoomIn()">
+    +
+  </div>
+
+  <div
+    class="control"
+    onclick="map.zoomOut()">
+    −
+  </div>
+
+  <div
+    class="control location-icon"
+    onclick="findLocation()">
+    ◎
+  </div>
+
 </div>
 
-<!-- Низ -->
+
+<!-- =========================
+     ЛЕГЕНДА
+========================= -->
+
+<div class="legend">
+
+  <div class="legend-title">
+    Легенда
+  </div>
+
+  <div class="legend-row">
+    <span class="legend-dot"></span>
+    <span>Події</span>
+  </div>
+
+  <div class="legend-row">
+    <span class="legend-dot"></span>
+    <span>Інформація</span>
+  </div>
+
+</div>
+
+
+<!-- =========================
+     МОЄ МІСЦЕ
+========================= -->
+
+<div
+  class="my-location"
+  onclick="findLocation()">
+
+  <span>◎</span>
+
+  <span>
+    Моє місцезнаходження
+  </span>
+
+</div>
+
+
+<!-- =========================
+     НИЖНЄ МЕНЮ
+========================= -->
+
 <div class="bottom">
 
-    <div class="bottom-item active">
-        <div class="bottom-icon">⌖</div>
-        <div>Карта</div>
+  <div class="bottom-item active">
+
+    <div class="bottom-icon">
+      ⌖
     </div>
 
-    <div class="bottom-item">
-        <div class="bottom-icon">☷</div>
-        <div>Події</div>
+    <div>
+      Карта
     </div>
 
-    <div class="bottom-item">
-        <div class="bottom-icon">ⓘ</div>
-        <div>Легенда</div>
+  </div>
+
+
+  <div class="bottom-item">
+
+    <div class="bottom-icon">
+      ☷
     </div>
 
-    <div class="bottom-item">
-        <div class="bottom-icon">⚙</div>
-        <div>Про проєкт</div>
+    <div>
+      Події
     </div>
+
+  </div>
+
+
+  <div class="bottom-item">
+
+    <div class="bottom-icon">
+      ⓘ
+    </div>
+
+    <div>
+      Легенда
+    </div>
+
+  </div>
+
+
+  <div class="bottom-item">
+
+    <div class="bottom-icon">
+      ⚙
+    </div>
+
+    <div>
+      Про проєкт
+    </div>
+
+  </div>
 
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
 
 <script>
 
-const map = L.map('map', {
+/* =========================
+   КАРТА
+========================= */
+
+const map = L.map(
+  'map',
+  {
     zoomControl: false,
     attributionControl: true,
     minZoom: 5,
     maxZoom: 18
-}).setView([49.0, 31.0], 6);
+  }
+).setView(
+  [49.0, 31.0],
+  6
+);
 
-/* Темна актуальна карта */
+
+/* =========================
+   КАРТОГРАФІЧНИЙ ШАР
+========================= */
+
 L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    {
-        maxZoom: 20,
-        attribution:
-        '&copy; OpenStreetMap contributors &copy; CARTO'
-    }
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+  {
+    maxZoom: 19,
+
+    attribution:
+      '&copy; Esri &copy; OpenStreetMap contributors'
+  }
 ).addTo(map);
 
 
-/* Пошук населеного пункту */
-const searchInput = document.getElementById('search');
+/* =========================
+   ПОШУК
+========================= */
 
-let searchTimer;
+const searchInput =
+  document.getElementById('search');
 
-searchInput.addEventListener('input', function() {
+const searchResult =
+  document.getElementById('searchResult');
+
+let searchTimer = null;
+
+
+searchInput.addEventListener(
+  'input',
+  function() {
 
     clearTimeout(searchTimer);
 
-    const query = this.value.trim();
+    const query =
+      this.value.trim();
 
-    if (query.length < 3) return;
+    searchResult.style.display =
+      'none';
 
-    searchTimer = setTimeout(async () => {
+    if (query.length < 3) {
+      return;
+    }
 
-        try {
+    searchTimer =
+      setTimeout(
+        async function() {
+
+          try {
 
             const url =
-                'https://nominatim.openstreetmap.org/search?' +
-                'format=json&limit=1&countrycodes=ua&q=' +
-                encodeURIComponent(query);
+              'https://nominatim.openstreetmap.org/search?' +
+              'format=json' +
+              '&limit=1' +
+              '&countrycodes=ua' +
+              '&q=' +
+              encodeURIComponent(query);
 
-            const response = await fetch(url, {
-                headers: {
+            const response =
+              await fetch(
+                url,
+                {
+                  headers: {
                     'Accept-Language': 'uk'
+                  }
                 }
-            });
+              );
 
-            const data = await response.json();
+            const data =
+              await response.json();
+
 
             if (data.length > 0) {
 
-                const lat = parseFloat(data[0].lat);
-                const lon = parseFloat(data[0].lon);
+              const place =
+                data[0];
 
-                map.flyTo([lat, lon], 12, {
-                    duration: 1.2
-                });
+              const lat =
+                parseFloat(place.lat);
 
-                L.popup()
-                    .setLatLng([lat, lon])
-                    .setContent(
-                        '<b>' +
-                        data[0].display_name.split(',')[0] +
-                        '</b>'
-                    )
-                    .openOn(map);
+              const lon =
+                parseFloat(place.lon);
+
+
+              map.flyTo(
+                [lat, lon],
+                12,
+                {
+                  duration: 1.2
+                }
+              );
+
+
+              const name =
+                place.display_name
+                  .split(',')[0];
+
+
+              searchResult.innerHTML =
+                '📍 ' + name;
+
+              searchResult.style.display =
+                'block';
+
+
+              L.popup()
+                .setLatLng(
+                  [lat, lon]
+                )
+                .setContent(
+                  '<b>' +
+                  name +
+                  '</b>'
+                )
+                .openOn(map);
+
             }
 
-        } catch (error) {
-            console.log(error);
-        }
+          }
 
-    }, 700);
-});
+          catch (error) {
 
+            console.log(
+              'Search error:',
+              error
+            );
 
-/* Моє місцезнаходження */
-function findLocation() {
-
-    if (!navigator.geolocation) {
-        alert('Геолокація недоступна');
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position) {
-
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-
-            map.flyTo([lat, lon], 12, {
-                duration: 1.2
-            });
-
-            L.circleMarker([lat, lon], {
-                radius: 8,
-                color: '#ffffff',
-                weight: 3,
-                fillOpacity: 1
-            })
-            .addTo(map)
-            .bindPopup('Ваше місцезнаходження')
-            .openPopup();
+          }
 
         },
+        700
+      );
 
-        function() {
-            alert('Не вдалося отримати місцезнаходження');
-        }
+  }
+);
+
+
+/* =========================
+   ГЕОЛОКАЦІЯ
+========================= */
+
+let userMarker = null;
+
+
+function findLocation() {
+
+  if (!navigator.geolocation) {
+
+    alert(
+      'Геолокація недоступна'
     );
+
+    return;
+  }
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      const lat =
+        position.coords.latitude;
+
+      const lon =
+        position.coords.longitude;
+
+
+      map.flyTo(
+        [lat, lon],
+        12,
+        {
+          duration: 1.2
+        }
+      );
+
+
+      if (userMarker) {
+
+        map.removeLayer(
+          userMarker
+        );
+
+      }
+
+
+      userMarker =
+        L.circleMarker(
+          [lat, lon],
+          {
+            radius: 7,
+
+            color: '#ffffff',
+
+            weight: 2,
+
+            fillColor: '#6fa7ff',
+
+            fillOpacity: 1
+          }
+        )
+        .addTo(map);
+
+
+      userMarker.bindPopup(
+        'Ваше місцезнаходження'
+      );
+
+    },
+
+
+    function() {
+
+      alert(
+        'Не вдалося отримати місцезнаходження'
+      );
+
+    },
+
+    {
+      enableHighAccuracy: true,
+
+      timeout: 10000,
+
+      maximumAge: 60000
+    }
+
+  );
+
 }
+
+
+/* =========================
+   ЗАКРИТТЯ ПОШУКУ
+========================= */
+
+map.on(
+  'click',
+  function() {
+
+    searchResult.style.display =
+      'none';
+
+  }
+);
 
 </script>
 
