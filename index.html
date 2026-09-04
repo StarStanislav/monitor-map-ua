@@ -2,718 +2,875 @@
 <html lang="uk">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0,
-  maximum-scale=1.0, user-scalable=no,
-  viewport-fit=cover"
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1,
+             maximum-scale=1,
+             user-scalable=no,
+             viewport-fit=cover"
 >
 
 <title>Monitor Map UA</title>
 
 <link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
+
 
 <style>
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+/* =====================================================
+   BASE
+===================================================== */
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
 html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #080d13;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "SF Pro Text",
-    Arial,
-    sans-serif;
+body{
+
+    margin:0;
+    padding:0;
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    background:#02070b;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Segoe UI",
+        sans-serif;
 }
 
-body {
-  position: fixed;
-  inset: 0;
-  color: #f5f8fb;
+body{
+
+    position:fixed;
+
+    inset:0;
 }
 
-/* =========================================================
+#map{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    background:#02070b;
+}
+
+
+/* =====================================================
    MAP
-========================================================= */
+===================================================== */
 
-#map {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: #0b1118;
+.leaflet-container{
+
+    background:#02070b;
 }
 
-/*
-  OpenStreetMap працює без API-ключа.
-  CSS робить звичайну карту темною.
-*/
+.leaflet-tile{
 
-.leaflet-tile-pane {
-  filter:
-    brightness(0.52)
-    contrast(1.18)
-    saturate(0.72);
+    filter:none;
 }
 
-.leaflet-container {
-  background: #0b1118;
-  font-family: inherit;
+.leaflet-control-zoom{
+
+    display:none;
 }
 
-.leaflet-control-attribution {
-  background: rgba(4, 10, 16, 0.82) !important;
-  color: #8b969f !important;
-  border-radius: 10px 0 0 0;
-  padding: 3px 7px !important;
-  font-size: 9px !important;
+.leaflet-control-attribution{
+
+    background:
+        rgba(0,0,0,.62)!important;
+
+    color:#65737b!important;
+
+    font-size:8px!important;
+
+    padding:2px 5px!important;
+
+    border-radius:7px 0 0 0;
 }
 
-.leaflet-control-attribution a {
-  color: #8b969f !important;
+.leaflet-control-attribution a{
+
+    color:#71828b!important;
 }
 
-/* =========================================================
-   MAP OVERLAY
-========================================================= */
 
-.map-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 400;
-  pointer-events: none;
-
-  background:
-    radial-gradient(
-      circle at center,
-      transparent 35%,
-      rgba(0,0,0,0.08) 65%,
-      rgba(0,0,0,0.42) 100%
-    );
-}
-
-/* =========================================================
+/* =====================================================
    TOP PANEL
-========================================================= */
+===================================================== */
 
-.top-panel {
-  position: absolute;
-  z-index: 1000;
+.top-card{
 
-  top: calc(env(safe-area-inset-top) + 64px);
-  left: 18px;
-  right: 18px;
+    position:fixed;
 
-  max-width: 760px;
-  margin: 0 auto;
+    z-index:1000;
 
-  padding: 18px 18px 16px;
-
-  border-radius: 30px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(5, 20, 30, 0.96),
-      rgba(3, 11, 18, 0.94)
+    top:max(
+        12px,
+        env(safe-area-inset-top)
     );
 
-  border: 1px solid rgba(0, 157, 224, 0.55);
+    left:16px;
+    right:16px;
 
-  box-shadow:
-    0 18px 45px rgba(0,0,0,0.48),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+    padding:14px 15px;
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(4,16,24,.97),
+            rgba(2,10,16,.96)
+        );
+
+    border:
+        1px solid rgba(45,145,205,.22);
+
+    box-shadow:
+        0 16px 42px rgba(0,0,0,.55),
+        inset 0 1px rgba(255,255,255,.035);
+
+    backdrop-filter:blur(20px);
+
+    -webkit-backdrop-filter:blur(20px);
 }
 
-/* Верхній ряд */
 
-.top-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+/* =====================================================
+   BRAND
+===================================================== */
+
+.brand-row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
 }
 
-/* Іконка */
+.brand-left{
 
-.logo-box {
-  flex: 0 0 64px;
+    display:flex;
 
-  width: 64px;
-  height: 64px;
+    align-items:center;
 
-  border-radius: 22px;
+    min-width:0;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(9, 43, 62, 0.95),
-      rgba(3, 19, 28, 0.95)
-    );
-
-  border: 2px solid rgba(0, 158, 224, 0.72);
-
-  font-size: 31px;
-
-  box-shadow:
-    0 0 20px rgba(0,150,220,0.12);
+    gap:11px;
 }
 
-/* Назва */
+.logo{
 
-.title-block {
-  min-width: 0;
-  flex: 1;
+    width:48px;
+    height:48px;
+
+    flex:none;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:16px;
+
+    background:#061a27;
+
+    border:
+        1px solid #08628f;
+
+    font-size:24px;
+
+    box-shadow:
+        0 0 22px rgba(0,150,255,.12);
 }
 
-.main-title {
-  font-size: clamp(22px, 6vw, 31px);
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.7px;
+.brand-text{
 
-  white-space: nowrap;
+    min-width:0;
 }
 
-.subtitle {
-  margin-top: 5px;
+.title{
 
-  color: #8d9aa4;
+    color:#fff;
 
-  font-size: 16px;
-  line-height: 1.2;
+    font-size:21px;
 
-  white-space: nowrap;
+    line-height:1.05;
+
+    font-weight:780;
+
+    letter-spacing:-.4px;
 }
 
-/* Online */
+.subtitle{
 
-.online {
-  flex: 0 0 auto;
+    margin-top:4px;
 
-  display: flex;
-  align-items: center;
-  gap: 9px;
+    color:#87949b;
 
-  padding: 12px 17px;
+    font-size:13px;
 
-  border-radius: 999px;
-
-  color: #43e5a1;
-
-  font-size: 16px;
-  font-weight: 700;
-
-  background:
-    rgba(0, 88, 59, 0.23);
-
-  border: 1px solid rgba(0, 202, 128, 0.48);
-
-  box-shadow:
-    inset 0 0 18px rgba(0,255,160,0.04);
+    line-height:1.1;
 }
 
-.online-dot {
-  width: 11px;
-  height: 11px;
 
-  border-radius: 50%;
+/* =====================================================
+   ONLINE
+===================================================== */
 
-  background: #38e7a0;
+.online{
 
-  box-shadow:
-    0 0 12px rgba(56,231,160,0.75);
+    flex:none;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    padding:9px 12px;
+
+    border-radius:24px;
+
+    color:#45e49b;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    background:
+        rgba(0,100,65,.17);
+
+    border:
+        1px solid rgba(0,220,135,.28);
 }
 
-/* Search */
+.online-dot{
 
-.search-box {
-  margin-top: 14px;
+    width:8px;
+    height:8px;
 
-  height: 58px;
+    border-radius:50%;
 
-  display: flex;
-  align-items: center;
+    background:#38e59b;
 
-  padding: 0 17px;
-
-  border-radius: 22px;
-
-  background: rgba(17, 30, 39, 0.94);
-
-  border: 1px solid rgba(104, 143, 165, 0.23);
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.025);
+    box-shadow:
+        0 0 12px #38e59b;
 }
 
-.search-icon {
-  flex: 0 0 auto;
 
-  width: 28px;
+/* =====================================================
+   SEARCH
+===================================================== */
 
-  font-size: 25px;
+.search{
 
-  color: #82919b;
+    margin-top:11px;
+
+    height:49px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 14px;
+
+    border-radius:18px;
+
+    background:
+        rgba(19,30,38,.88);
+
+    border:
+        1px solid rgba(130,170,190,.13);
 }
 
-#search {
-  width: 100%;
-  min-width: 0;
+.search-icon{
 
-  border: none;
-  outline: none;
+    flex:none;
 
-  background: transparent;
+    margin-right:11px;
 
-  color: #f3f7fa;
+    color:#6f7b82;
 
-  font-size: 18px;
-
-  font-family: inherit;
+    font-size:21px;
 }
 
-#search::placeholder {
-  color: #77838d;
+.search input{
+
+    width:100%;
+
+    border:0;
+    outline:0;
+
+    background:transparent;
+
+    color:#fff;
+
+    font-size:16px;
 }
 
-/* =========================================================
-   MAP BUTTONS
-========================================================= */
+.search input::placeholder{
 
-.map-buttons {
-  position: absolute;
-
-  z-index: 1000;
-
-  right: 18px;
-
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 12px;
+    color:#6e777d;
 }
 
-.map-btn {
-  width: 66px;
-  height: 66px;
 
-  border-radius: 22px;
+/* =====================================================
+   RIGHT CONTROLS
+===================================================== */
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.controls{
 
-  background:
-    rgba(4, 17, 25, 0.94);
+    position:fixed;
 
-  border: 1px solid rgba(0, 142, 201, 0.45);
+    z-index:900;
 
-  color: #ffffff;
+    right:14px;
 
-  font-size: 38px;
+    top:50%;
 
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.38);
+    transform:translateY(-10%);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    display:flex;
+
+    flex-direction:column;
+
+    gap:9px;
 }
 
-.map-btn:active {
-  transform: scale(0.94);
+.control{
+
+    width:58px;
+    height:58px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:20px;
+
+    background:
+        rgba(3,14,21,.95);
+
+    border:
+        1px solid rgba(75,135,165,.18);
+
+    color:#fff;
+
+    font-size:31px;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.5);
+
+    user-select:none;
 }
 
-.location-btn {
-  color: #31baff;
-  font-size: 34px;
+.control:active{
+
+    transform:scale(.94);
+
+    background:#082033;
 }
 
-/* =========================================================
-   UKRAINE / CRIMEA / KYIV LABELS
-========================================================= */
+.control.location{
 
-.region-label {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+    color:#42baff;
 
-  color: rgba(220,235,244,0.52);
-
-  font-size: 12px;
-  font-weight: 700;
-
-  text-transform: uppercase;
-
-  letter-spacing: 2px;
+    font-size:27px;
 }
 
-.region-label::before {
-  display: none;
-}
 
-/* Крим */
+/* =====================================================
+   LEGEND
+===================================================== */
 
-.crimea-label {
-  color: #aeb8bf;
+.legend{
 
-  background:
-    rgba(7,15,21,0.82) !important;
+    position:fixed;
 
-  border:
-    1px solid rgba(130,145,155,0.28) !important;
+    z-index:980;
 
-  padding: 8px 13px !important;
+    left:18px;
+    right:18px;
 
-  border-radius: 13px !important;
-
-  font-size: 13px;
-  font-weight: 700;
-
-  letter-spacing: 0.4px;
-
-  box-shadow:
-    0 8px 20px rgba(0,0,0,0.28) !important;
-}
-
-.crimea-label strong {
-  display: block;
-
-  color: #dce4e9;
-
-  font-size: 14px;
-  margin-bottom: 3px;
-}
-
-.crimea-label span {
-  color: #7e8a93;
-
-  font-size: 10px;
-  font-weight: 500;
-}
-
-/* Київ */
-
-.kyiv-marker {
-  width: 18px;
-  height: 18px;
-
-  border-radius: 50%;
-
-  background: #27b8ff;
-
-  border: 3px solid rgba(5,20,29,0.95);
-
-  box-shadow:
-    0 0 0 4px rgba(39,184,255,0.24),
-    0 0 22px rgba(39,184,255,0.72);
-}
-
-.kyiv-label {
-  color: #ffffff;
-
-  background:
-    rgba(3,17,27,0.94) !important;
-
-  border:
-    1px solid rgba(39,184,255,0.62) !important;
-
-  padding: 6px 10px !important;
-
-  border-radius: 10px !important;
-
-  font-size: 12px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.5px;
-
-  box-shadow:
-    0 8px 18px rgba(0,0,0,0.3) !important;
-}
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
-.bottom-panel {
-  position: absolute;
-
-  z-index: 1000;
-
-  left: 18px;
-  right: 18px;
-
-  bottom: calc(env(safe-area-inset-bottom) + 14px);
-
-  max-width: 760px;
-  margin: 0 auto;
-
-  height: 92px;
-
-  padding: 8px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
-  gap: 4px;
-
-  border-radius: 30px;
-
-  background:
-    rgba(3, 14, 21, 0.96);
-
-  border:
-    1px solid rgba(0, 139, 200, 0.48);
-
-  box-shadow:
-    0 16px 40px rgba(0,0,0,0.5);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.nav-item {
-  border: none;
-
-  border-radius: 23px;
-
-  background: transparent;
-
-  color: #77838c;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 5px;
-
-  font-family: inherit;
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.nav-icon {
-  font-size: 25px;
-  line-height: 1;
-}
-
-.nav-item.active {
-  color: #35baff;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(7,52,78,0.95),
-      rgba(4,35,54,0.95)
-    );
-}
-
-/* =========================================================
-   DATA LABEL
-========================================================= */
-
-.data-label {
-  position: absolute;
-
-  z-index: 1000;
-
-  left: 18px;
-
-  bottom:
-    calc(
-      env(safe-area-inset-bottom) + 112px
-    );
-
-  padding: 9px 14px;
-
-  border-radius: 18px;
-
-  background:
-    rgba(4,15,22,0.9);
-
-  border:
-    1px solid rgba(0,120,170,0.3);
-
-  color: #84929c;
-
-  font-size: 12px;
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 600px) {
-
-  .top-panel {
-    top: calc(env(safe-area-inset-top) + 54px);
-
-    left: 14px;
-    right: 14px;
-
-    padding: 15px 14px 14px;
-
-    border-radius: 25px;
-  }
-
-  .top-row {
-    gap: 11px;
-  }
-
-  .logo-box {
-    flex-basis: 55px;
-
-    width: 55px;
-    height: 55px;
-
-    border-radius: 18px;
-
-    font-size: 27px;
-  }
-
-  .main-title {
-    font-size: 22px;
-  }
-
-  .subtitle {
-    font-size: 14px;
-    margin-top: 3px;
-  }
-
-  .online {
-    padding: 10px 12px;
-
-    font-size: 14px;
-
-    gap: 7px;
-  }
-
-  .online-dot {
-    width: 9px;
-    height: 9px;
-  }
-
-  .search-box {
-    height: 53px;
-
-    margin-top: 12px;
-
-    border-radius: 19px;
-  }
-
-  #search {
-    font-size: 16px;
-  }
-
-  .map-buttons {
-    right: 12px;
-    gap: 10px;
-  }
-
-  .map-btn {
-    width: 62px;
-    height: 62px;
-
-    border-radius: 20px;
-  }
-
-  .bottom-panel {
-    left: 12px;
-    right: 12px;
-
-    height: 88px;
-
-    border-radius: 27px;
-  }
-
-  .nav-item {
-    font-size: 12px;
-  }
-
-  .nav-icon {
-    font-size: 23px;
-  }
-
-  .data-label {
-    left: 14px;
     bottom:
-      calc(
-        env(safe-area-inset-bottom) + 105px
-      );
-  }
+        calc(
+            108px +
+            env(safe-area-inset-bottom)
+        );
+
+    max-height:48vh;
+
+    overflow:auto;
+
+    padding:18px;
+
+    border-radius:24px;
+
+    background:
+        rgba(3,13,20,.98);
+
+    border:
+        1px solid rgba(60,150,200,.25);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.7);
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
+
+    color:#b9c4ca;
+
+    display:none;
+
+    animation:
+        legendIn .18s ease-out;
 }
 
-/* Дуже вузькі екрани */
+.legend.open{
 
-@media (max-width: 380px) {
+    display:block;
+}
 
-  .logo-box {
-    flex-basis: 50px;
-    width: 50px;
-    height: 50px;
-  }
+@keyframes legendIn{
 
-  .main-title {
-    font-size: 19px;
-  }
+    from{
 
-  .subtitle {
-    font-size: 12px;
-  }
+        opacity:0;
 
-  .online {
-    padding: 9px 10px;
-    font-size: 12px;
-  }
+        transform:
+            translateY(12px);
+    }
 
-  .bottom-panel {
-    height: 82px;
-  }
+    to{
 
-  .nav-item {
-    font-size: 11px;
-  }
+        opacity:1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+.legend-title{
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:800;
+
+    letter-spacing:.6px;
+
+    margin-bottom:13px;
+}
+
+.legend-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin:11px 0;
+
+    font-size:14px;
+}
+
+.legend-icon{
+
+    width:31px;
+    height:23px;
+
+    flex:none;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:7px;
+}
+
+.icon-event{
+
+    color:#ff5750;
+
+    font-size:20px;
+}
+
+.icon-activity{
+
+    color:#ff514a;
+
+    font-size:21px;
+}
+
+.icon-air{
+
+    color:#ffc83d;
+
+    font-size:18px;
+}
+
+.icon-occupied{
+
+    border:
+        2px solid #ff5050;
+
+    background:
+        repeating-linear-gradient(
+            135deg,
+            rgba(255,60,60,.27) 0px,
+            rgba(255,60,60,.27) 4px,
+            transparent 4px,
+            transparent 8px
+        );
+}
+
+.icon-oblast{
+
+    border:
+        2px dashed #38baff;
+}
+
+.icon-border{
+
+    border:
+        2px dashed #c8d2d8;
+}
+
+
+/* =====================================================
+   EVENTS PANEL
+===================================================== */
+
+.events-panel{
+
+    position:fixed;
+
+    z-index:980;
+
+    top:50%;
+
+    left:18px;
+    right:18px;
+
+    transform:
+        translateY(-50%);
+
+    max-height:65vh;
+
+    overflow:auto;
+
+    padding:19px;
+
+    border-radius:25px;
+
+    background:
+        rgba(3,13,20,.98);
+
+    border:
+        1px solid rgba(60,150,200,.25);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.72);
+
+    display:none;
+}
+
+.events-panel.open{
+
+    display:block;
+}
+
+.panel-title{
+
+    color:#fff;
+
+    font-size:18px;
+
+    font-weight:800;
+
+    margin-bottom:15px;
+}
+
+.empty-events{
+
+    padding:25px 10px;
+
+    text-align:center;
+
+    color:#75838b;
+
+    font-size:13px;
+
+    line-height:1.5;
+}
+
+
+/* =====================================================
+   ABOUT
+===================================================== */
+
+.about-panel{
+
+    position:fixed;
+
+    z-index:980;
+
+    top:50%;
+    left:18px;
+    right:18px;
+
+    transform:
+        translateY(-50%);
+
+    padding:21px;
+
+    border-radius:25px;
+
+    background:
+        rgba(3,13,20,.98);
+
+    border:
+        1px solid rgba(60,150,200,.25);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.72);
+
+    display:none;
+
+    color:#9ba8ae;
+}
+
+.about-panel.open{
+
+    display:block;
+}
+
+.about-panel h2{
+
+    margin:0 0 10px;
+
+    color:#fff;
+
+    font-size:21px;
+}
+
+.about-panel p{
+
+    margin:9px 0;
+
+    font-size:13px;
+
+    line-height:1.55;
+}
+
+
+/* =====================================================
+   BOTTOM NAV
+===================================================== */
+
+.bottom-nav{
+
+    position:fixed;
+
+    z-index:1000;
+
+    left:14px;
+    right:14px;
+
+    bottom:
+        max(
+            9px,
+            env(safe-area-inset-bottom)
+        );
+
+    height:91px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-around;
+
+    padding:5px;
+
+    border-radius:27px;
+
+    background:
+        rgba(2,12,18,.97);
+
+    border:
+        1px solid rgba(70,130,165,.20);
+
+    box-shadow:
+        0 -10px 40px rgba(0,0,0,.52),
+        inset 0 1px rgba(255,255,255,.025);
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
+}
+
+.nav-item{
+
+    width:24%;
+
+    height:75px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:22px;
+
+    color:#727d84;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    user-select:none;
+}
+
+.nav-item.active{
+
+    color:#45baff;
+
+    background:
+        #062237;
+}
+
+.nav-icon{
+
+    margin-bottom:5px;
+
+    font-size:23px;
+
+    line-height:1;
+}
+
+
+/* =====================================================
+   MAP LABELS
+===================================================== */
+
+.big-label{
+
+    color:#7e98a5;
+
+    font-size:21px;
+
+    font-weight:750;
+
+    letter-spacing:7px;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 2px 8px #000;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:390px){
+
+    .top-card{
+
+        left:13px;
+        right:13px;
+
+        padding:12px 13px;
+    }
+
+    .logo{
+
+        width:46px;
+        height:46px;
+
+        font-size:23px;
+    }
+
+    .title{
+
+        font-size:19px;
+    }
+
+    .subtitle{
+
+        font-size:12px;
+    }
+
+    .online{
+
+        padding:8px 10px;
+
+        font-size:12px;
+    }
+
+    .search{
+
+        height:47px;
+    }
+
+    .control{
+
+        width:53px;
+        height:53px;
+    }
+
+    .bottom-nav{
+
+        left:10px;
+        right:10px;
+    }
+
+    .nav-item{
+
+        font-size:11px;
+    }
 }
 
 </style>
+
 </head>
 
 
 <body>
+
 
 <!-- =====================================================
      MAP
@@ -721,102 +878,270 @@ body {
 
 <div id="map"></div>
 
-<div class="map-vignette"></div>
+
+<!-- =====================================================
+     TOP PANEL
+===================================================== -->
+
+<div class="top-card">
+
+    <div class="brand-row">
+
+        <div class="brand-left">
+
+            <div class="logo">
+                🗺️
+            </div>
+
+            <div class="brand-text">
+
+                <div class="title">
+                    Monitor Map UA
+                </div>
+
+                <div class="subtitle">
+                    Оперативна ситуація
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="online">
+
+            <span class="online-dot"></span>
+
+            Онлайн
+
+        </div>
+
+    </div>
+
+
+    <div class="search">
+
+        <div class="search-icon">
+            ⌕
+        </div>
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Пошук населеного пункту..."
+            autocomplete="off"
+        >
+
+    </div>
+
+</div>
 
 
 <!-- =====================================================
-     TOP
+     CONTROLS
 ===================================================== -->
 
-<div class="top-panel">
+<div class="controls">
 
-  <div class="top-row">
-
-    <div class="logo-box">
-      🗺️
-    </div>
-
-    <div class="title-block">
-
-      <div class="main-title">
-        Monitor Map UA
-      </div>
-
-      <div class="subtitle">
-        Оперативна ситуація
-      </div>
-
-    </div>
-
-    <div class="online">
-
-      <span class="online-dot"></span>
-
-      Онлайн
-
-    </div>
-
-  </div>
-
-
-  <div class="search-box">
-
-    <div class="search-icon">
-      ⌕
-    </div>
-
-    <input
-      id="search"
-      type="search"
-      placeholder="Пошук населеного пункту..."
-      autocomplete="off"
-      spellcheck="false"
+    <div
+        class="control"
+        id="zoomIn"
     >
-
-  </div>
-
-</div>
+        +
+    </div>
 
 
-<!-- =====================================================
-     MAP CONTROLS
-===================================================== -->
+    <div
+        class="control"
+        id="zoomOut"
+    >
+        −
+    </div>
 
-<div class="map-buttons">
 
-  <button
-    class="map-btn"
-    id="zoomIn"
-    aria-label="Збільшити"
-  >
-    +
-  </button>
-
-  <button
-    class="map-btn"
-    id="zoomOut"
-    aria-label="Зменшити"
-  >
-    −
-  </button>
-
-  <button
-    class="map-btn location-btn"
-    id="locationBtn"
-    aria-label="Моє місцезнаходження"
-  >
-    ◎
-  </button>
+    <div
+        class="control location"
+        id="locate"
+    >
+        ◎
+    </div>
 
 </div>
 
 
 <!-- =====================================================
-     DATA
+     LEGEND
 ===================================================== -->
 
-<div class="data-label">
-  Карта · OpenStreetMap
+<div
+    class="legend"
+    id="legendPanel"
+>
+
+    <div class="legend-title">
+        ПОЗНАЧЕННЯ
+    </div>
+
+
+    <div class="legend-row">
+
+        <div class="legend-icon icon-event">
+            ✦
+        </div>
+
+        <span>
+            Події
+        </span>
+
+    </div>
+
+
+    <div class="legend-row">
+
+        <div class="legend-icon icon-activity">
+            ➜
+        </div>
+
+        <span>
+            Активність
+        </span>
+
+    </div>
+
+
+    <div class="legend-row">
+
+        <div class="legend-icon icon-air">
+            ✈
+        </div>
+
+        <span>
+            Повітряна активність
+        </span>
+
+    </div>
+
+
+    <div class="legend-row">
+
+        <div class="legend-icon icon-occupied">
+        </div>
+
+        <span>
+            Окуповані території
+        </span>
+
+    </div>
+
+
+    <div class="legend-row">
+
+        <div class="legend-icon icon-oblast">
+        </div>
+
+        <span>
+            Межі областей
+        </span>
+
+    </div>
+
+
+    <div class="legend-row">
+
+        <div class="legend-icon icon-border">
+        </div>
+
+        <span>
+            Державний кордон
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     EVENTS PANEL
+===================================================== -->
+
+<div
+    class="events-panel"
+    id="eventsPanel"
+>
+
+    <div class="panel-title">
+        ОСТАННІ ПОДІЇ
+    </div>
+
+
+    <div class="empty-events">
+
+        Дані про події з'являться після
+        підключення джерела інформації.
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<div
+    class="about-panel"
+    id="aboutPanel"
+>
+
+    <h2>
+        Monitor Map UA
+    </h2>
+
+
+    <p>
+        Інтерактивна карта для зручної
+        візуалізації географічної інформації.
+    </p>
+
+
+    <p>
+        Джерело даних буде підключено
+        окремо.
+    </p>
+
+
+    <p>
+        Карта:
+        OpenStreetMap / Esri.
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     STATUS
+===================================================== -->
+
+<div class="status"
+     style="
+        position:fixed;
+        z-index:900;
+        left:18px;
+        bottom:calc(
+            108px +
+            env(safe-area-inset-bottom)
+        );
+        padding:9px 13px;
+        border-radius:16px;
+        background:rgba(3,13,20,.92);
+        border:1px solid rgba(80,145,175,.18);
+        color:#7f8b92;
+        font-size:11px;
+     "
+>
+
+    Дані: OpenStreetMap
+
 </div>
 
 
@@ -824,529 +1149,872 @@ body {
      BOTTOM NAV
 ===================================================== -->
 
-<div class="bottom-panel">
+<div class="bottom-nav">
 
-  <button class="nav-item active">
 
-    <div class="nav-icon">
-      ◎
+    <div
+        class="nav-item active"
+        data-tab="map"
+    >
+
+        <div class="nav-icon">
+            ⌖
+        </div>
+
+        Карта
+
     </div>
 
-    <div>
-      Карта
+
+    <div
+        class="nav-item"
+        data-tab="events"
+    >
+
+        <div class="nav-icon">
+            ◉
+        </div>
+
+        Події
+
     </div>
 
-  </button>
 
+    <div
+        class="nav-item"
+        data-tab="legend"
+    >
 
-  <button class="nav-item">
+        <div class="nav-icon">
+            ☷
+        </div>
 
-    <div class="nav-icon">
-      ●
+        Легенда
+
     </div>
 
-    <div>
-      Події
+
+    <div
+        class="nav-item"
+        data-tab="about"
+    >
+
+        <div class="nav-icon">
+            ⓘ
+        </div>
+
+        Про проєкт
+
     </div>
-
-  </button>
-
-
-  <button class="nav-item">
-
-    <div class="nav-icon">
-      ▤
-    </div>
-
-    <div>
-      Легенда
-    </div>
-
-  </button>
-
-
-  <button class="nav-item">
-
-    <div class="nav-icon">
-      ⓘ
-    </div>
-
-    <div>
-      Про проєкт
-    </div>
-
-  </button>
 
 </div>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 
 <script>
 
-/* =========================================================
-   MAP INITIALIZATION
-========================================================= */
+/* =====================================================
+   TELEGRAM MINI APP
+===================================================== */
+
+if(
+    window.Telegram &&
+    Telegram.WebApp
+){
+
+    Telegram.WebApp.ready();
+
+    Telegram.WebApp.expand();
+
+}
+
+
+/* =====================================================
+   MAP
+===================================================== */
+
+const map = L.map(
+
+    "map",
+
+    {
+
+        zoomControl:false,
+
+        attributionControl:true,
+
+        /*
+         * 4.5 = можна побачити всю Україну
+         * 18  = можна наблизитись до рівня вулиць
+         */
+
+        minZoom:4.5,
+
+        maxZoom:18,
+
+        zoomSnap:.25,
+
+        zoomDelta:.5
+
+    }
+
+);
+
 
 /*
-   Центр України.
-   Zoom 6 = видно всю Україну.
-*/
+ * Початковий вигляд:
+ * вся Україна + запас навколо
+ */
 
-const map = L.map("map", {
+map.setView(
 
-  center: [48.5, 31.2],
+    [48.9,31.2],
 
-  zoom: 6,
+    5.5
 
-  minZoom: 5,
-
-  maxZoom: 19,
-
-  zoomControl: false,
-
-  attributionControl: true,
-
-  worldCopyJump: false,
-
-  maxBoundsViscosity: 0.85
-
-});
+);
 
 
-/* =========================================================
-   OPENSTREETMAP
-========================================================= */
+/* =====================================================
+   DARK BASEMAP
+===================================================== */
 
 L.tileLayer(
-  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
 
-    maxZoom: 19,
+    "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
 
-    minZoom: 0,
+    {
 
-    attribution:
-      '&copy; OpenStreetMap contributors',
+        maxZoom:19,
 
-    keepBuffer: 4,
+        attribution:
+            "Tiles © Esri"
 
-    updateWhenZooming: false,
-
-    updateWhenIdle: true
-
-  }
-).addTo(map);
-
-
-/* =========================================================
-   UKRAINE VIEW
-========================================================= */
-
-const ukraineBounds = L.latLngBounds(
-
-  [44.0, 21.0],
-
-  [53.0, 41.0]
-
-);
-
-map.setMaxBounds(ukraineBounds);
-
-
-/* =========================================================
-   CUSTOM ZOOM BUTTONS
-========================================================= */
-
-document
-  .getElementById("zoomIn")
-  .addEventListener("click", () => {
-
-    map.zoomIn();
-
-  });
-
-
-document
-  .getElementById("zoomOut")
-  .addEventListener("click", () => {
-
-    map.zoomOut();
-
-  });
-
-
-/* =========================================================
-   LOCATION
-========================================================= */
-
-document
-  .getElementById("locationBtn")
-  .addEventListener("click", () => {
-
-    map.locate({
-
-      setView: true,
-
-      maxZoom: 15,
-
-      enableHighAccuracy: true
-
-    });
-
-  });
-
-
-map.on("locationfound", function(e) {
-
-  L.circleMarker(e.latlng, {
-
-    radius: 8,
-
-    color: "#35baff",
-
-    fillColor: "#35baff",
-
-    fillOpacity: 0.9,
-
-    weight: 3
-
-  })
-
-  .addTo(map)
-
-  .bindPopup("Ваше місцезнаходження");
-
-});
-
-
-map.on("locationerror", function() {
-
-  alert(
-    "Не вдалося визначити місцезнаходження."
-  );
-
-});
-
-
-/* =========================================================
-   KYIV
-   Тільки місто
-========================================================= */
-
-const kyivIcon = L.divIcon({
-
-  className: "",
-
-  html:
-    '<div class="kyiv-marker"></div>',
-
-  iconSize: [18,18],
-
-  iconAnchor: [9,9]
-
-});
-
-
-const kyiv = L.marker(
-
-  [50.4501, 30.5234],
-
-  {
-    icon: kyivIcon,
-    interactive: true
-  }
+    }
 
 ).addTo(map);
 
 
-kyiv.bindTooltip(
+/* =====================================================
+   OBLAST BORDERS
+===================================================== */
 
-  "КИЇВ",
+const oblastsURL =
+"https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/Ukraine.geojson";
 
-  {
-    permanent: false,
 
-    direction: "top",
+let oblastLayer = null;
 
-    offset: [0,-10],
 
-    className: "kyiv-label"
+fetch(oblastsURL)
 
-  }
+.then(
+
+    response => response.json()
+
+)
+
+.then(
+
+    data => {
+
+        oblastLayer =
+
+            L.geoJSON(
+
+                data,
+
+                {
+
+                    style:function(){
+
+                        return {
+
+                            color:"#39b9ff",
+
+                            weight:1.35,
+
+                            opacity:.88,
+
+                            dashArray:"5 6",
+
+                            fillColor:"#06304a",
+
+                            fillOpacity:.06
+
+                        };
+
+                    },
+
+
+                    onEachFeature:function(
+
+                        feature,
+                        layer
+
+                    ){
+
+                        const name =
+
+                            feature.properties?.name ||
+
+                            feature.properties?.NAME ||
+
+                            feature.properties?.NAME_UA ||
+
+                            "";
+
+
+                        if(name){
+
+                            layer.bindTooltip(
+
+                                name,
+
+                                {
+
+                                    sticky:true,
+
+                                    direction:"top",
+
+                                    opacity:.95
+
+                                }
+
+                            );
+
+                        }
+
+
+                        layer.on(
+
+                            "mouseover",
+
+                            function(){
+
+                                this.setStyle({
+
+                                    weight:2.2,
+
+                                    color:"#5bc8ff",
+
+                                    fillOpacity:.12
+
+                                });
+
+                            }
+
+                        );
+
+
+                        layer.on(
+
+                            "mouseout",
+
+                            function(){
+
+                                if(oblastLayer){
+
+                                    oblastLayer.resetStyle(
+                                        this
+                                    );
+
+                                }
+
+                            }
+
+                        );
+
+                    }
+
+                }
+
+            )
+            .addTo(map);
+
+    }
+
+)
+
+.catch(
+
+    error => {
+
+        console.log(
+            "GeoJSON error:",
+            error
+        );
+
+    }
 
 );
 
 
-/* =========================================================
+/* =====================================================
    CRIMEA
-========================================================= */
+   VISUAL ZONE ONLY
+   NO TEXT / NO POPUP
+===================================================== */
 
-/*
-   Без великого червоного напису.
-   Акуратна нейтральна позначка.
-*/
+const occupiedStyle = {
 
-const crimeaLabel = L.marker(
+    color:"#ff4d4d",
 
-  [45.15, 34.35],
+    weight:1.8,
 
-  {
-    interactive: false,
+    opacity:.8,
 
-    icon: L.divIcon({
+    fillColor:"#ff3030",
 
-      className: "region-label",
+    fillOpacity:.10,
 
-      html: `
-        <div class="crimea-label">
-          <strong>Крим</strong>
-          <span>тимчасово окупована територія</span>
-        </div>
-      `,
+    dashArray:"7 5"
 
-      iconSize: [190, 55],
-
-      iconAnchor: [95, 27]
-
-    })
-
-  }
-
-).addTo(map);
+};
 
 
-/* =========================================================
+L.polygon(
+
+    [
+
+        [46.18,32.50],
+        [46.25,33.00],
+        [46.05,34.00],
+        [45.55,35.40],
+        [45.05,36.40],
+        [44.35,36.55],
+        [44.35,35.00],
+        [45.00,33.50],
+        [45.55,32.70]
+
+    ],
+
+    occupiedStyle
+
+)
+
+.addTo(map);
+
+
+/* =====================================================
+   UKRAINE LABEL
+===================================================== */
+
+L.marker(
+
+    [49.1,31.2],
+
+    {
+
+        interactive:false,
+
+        icon:
+
+        L.divIcon(
+
+            {
+
+                className:"",
+
+                html:`
+
+                    <div class="big-label">
+                        УКРАЇНА
+                    </div>
+
+                `,
+
+                iconSize:[220,40],
+
+                iconAnchor:[110,20]
+
+            }
+
+        )
+
+    }
+
+)
+
+.addTo(map);
+
+
+/* =====================================================
+   NO DEMO EVENTS
+=====================================================
+
+   Тут спеціально НІЧОГО не додаємо.
+
+   Коли ти дасте одне конкретне джерело,
+   підключимо його сюди.
+
+===================================================== */
+
+
+/* =====================================================
+   ZOOM IN
+===================================================== */
+
+document
+
+.getElementById("zoomIn")
+
+.addEventListener(
+
+    "click",
+
+    function(){
+
+        map.zoomIn();
+
+    }
+
+);
+
+
+/* =====================================================
+   ZOOM OUT
+===================================================== */
+
+document
+
+.getElementById("zoomOut")
+
+.addEventListener(
+
+    "click",
+
+    function(){
+
+        map.zoomOut();
+
+    }
+
+);
+
+
+/* =====================================================
+   LOCATION
+===================================================== */
+
+document
+
+.getElementById("locate")
+
+.addEventListener(
+
+    "click",
+
+    function(){
+
+        map.locate({
+
+            setView:true,
+
+            maxZoom:12
+
+        });
+
+    }
+
+);
+
+
+/* =====================================================
    SEARCH
-========================================================= */
+===================================================== */
 
 const searchInput =
-  document.getElementById("search");
 
-
-let searchTimer = null;
+    document.getElementById(
+        "searchInput"
+    );
 
 
 searchInput.addEventListener(
-  "input",
-  function() {
 
-    const query =
-      this.value.trim();
+    "keydown",
 
-    clearTimeout(searchTimer);
+    async function(event){
 
-    if (query.length < 2) {
-      return;
-    }
+        if(
+            event.key !== "Enter"
+        ){
 
-    searchTimer = setTimeout(
-      () => searchPlace(query),
-      650
-    );
-
-  }
-);
-
-
-async function searchPlace(query) {
-
-  try {
-
-    const url =
-      "https://nominatim.openstreetmap.org/search?" +
-
-      new URLSearchParams({
-
-        q: query,
-
-        format: "json",
-
-        limit: "1",
-
-        countrycodes: "ua",
-
-        "accept-language": "uk"
-
-      });
-
-
-    const response =
-      await fetch(url, {
-
-        headers: {
-
-          "Accept":
-            "application/json"
+            return;
 
         }
 
-      });
+
+        const query =
+
+            searchInput
+            .value
+            .trim();
 
 
-    const data =
-      await response.json();
+        if(!query){
+
+            return;
+
+        }
 
 
-    if (!data.length) {
+        try{
 
-      return;
+            const url =
+
+                "https://nominatim.openstreetmap.org/search" +
+
+                "?format=json" +
+
+                "&limit=1" +
+
+                "&countrycodes=ua" +
+
+                "&accept-language=uk" +
+
+                "&q=" +
+
+                encodeURIComponent(query);
+
+
+            const response =
+
+                await fetch(url);
+
+
+            const results =
+
+                await response.json();
+
+
+            if(results.length){
+
+                const place =
+                    results[0];
+
+
+                map.flyTo(
+
+                    [
+
+                        parseFloat(
+                            place.lat
+                        ),
+
+                        parseFloat(
+                            place.lon
+                        )
+
+                    ],
+
+                    13,
+
+                    {
+
+                        duration:1.2
+
+                    }
+
+                );
+
+            }
+
+        }
+
+        catch(error){
+
+            console.log(
+                "Search error:",
+                error
+            );
+
+        }
 
     }
 
-
-    const place = data[0];
-
-
-    const lat =
-      parseFloat(place.lat);
-
-    const lon =
-      parseFloat(place.lon);
-
-
-    map.flyTo(
-
-      [lat, lon],
-
-      13,
-
-      {
-        duration: 1.2
-      }
-
-    );
-
-
-    L.popup({
-
-      closeButton: false,
-
-      className: "place-popup"
-
-    })
-
-    .setLatLng([lat, lon])
-
-    .setContent(
-
-      `<strong>${escapeHtml(
-        place.display_name
-          .split(",")[0]
-      )}</strong>`
-
-    )
-
-    .openOn(map);
-
-
-  } catch (error) {
-
-    console.log(
-      "Search error:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(text) {
-
-  const div =
-    document.createElement("div");
-
-  div.textContent = text;
-
-  return div.innerHTML;
-
-}
-
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
-const navItems =
-  document.querySelectorAll(
-    ".nav-item"
-  );
-
-
-navItems.forEach(
-  item => {
-
-    item.addEventListener(
-      "click",
-      function() {
-
-        navItems.forEach(
-          el =>
-            el.classList.remove(
-              "active"
-            )
-        );
-
-        this.classList.add(
-          "active"
-        );
-
-      }
-    );
-
-  }
 );
 
 
-/* =========================================================
-   TELEGRAM MINI APP
-========================================================= */
+/* =====================================================
+   PANELS
+===================================================== */
 
-if (
-  window.Telegram &&
-  window.Telegram.WebApp
-) {
+const legendPanel =
 
-  const tg =
-    window.Telegram.WebApp;
+    document.getElementById(
+        "legendPanel"
+    );
 
-  tg.ready();
 
-  tg.expand();
+const eventsPanel =
+
+    document.getElementById(
+        "eventsPanel"
+    );
+
+
+const aboutPanel =
+
+    document.getElementById(
+        "aboutPanel"
+    );
+
+
+function closePanels(){
+
+    legendPanel.classList.remove(
+        "open"
+    );
+
+    eventsPanel.classList.remove(
+        "open"
+    );
+
+    aboutPanel.classList.remove(
+        "open"
+    );
 
 }
 
 
-/* =========================================================
-   FIX MAP SIZE
-========================================================= */
+/* =====================================================
+   BOTTOM NAV
+===================================================== */
 
-setTimeout(
-  () => {
+document
 
-    map.invalidateSize();
+.querySelectorAll(".nav-item")
 
-  },
-  300
+.forEach(
+
+    item => {
+
+        item.addEventListener(
+
+            "click",
+
+            function(){
+
+                const tab =
+                    this.dataset.tab;
+
+
+                document
+
+                .querySelectorAll(
+                    ".nav-item"
+                )
+
+                .forEach(
+
+                    nav => {
+
+                        nav.classList.remove(
+                            "active"
+                        );
+
+                    }
+
+                );
+
+
+                this.classList.add(
+                    "active"
+                );
+
+
+                if(tab === "map"){
+
+                    closePanels();
+
+                }
+
+
+                if(tab === "legend"){
+
+                    eventsPanel
+                    .classList.remove(
+                        "open"
+                    );
+
+                    aboutPanel
+                    .classList.remove(
+                        "open"
+                    );
+
+                    legendPanel
+                    .classList.toggle(
+                        "open"
+                    );
+
+                }
+
+
+                if(tab === "events"){
+
+                    legendPanel
+                    .classList.remove(
+                        "open"
+                    );
+
+                    aboutPanel
+                    .classList.remove(
+                        "open"
+                    );
+
+                    eventsPanel
+                    .classList.toggle(
+                        "open"
+                    );
+
+                }
+
+
+                if(tab === "about"){
+
+                    legendPanel
+                    .classList.remove(
+                        "open"
+                    );
+
+                    eventsPanel
+                    .classList.remove(
+                        "open"
+                    );
+
+                    aboutPanel
+                    .classList.toggle(
+                        "open"
+                    );
+
+                }
+
+            }
+
+        );
+
+    }
+
+);
+
+
+/* =====================================================
+   MAP CLICK
+===================================================== */
+
+map.on(
+
+    "click",
+
+    function(){
+
+        const panelIsOpen =
+
+            legendPanel.classList.contains(
+                "open"
+            ) ||
+
+            eventsPanel.classList.contains(
+                "open"
+            ) ||
+
+            aboutPanel.classList.contains(
+                "open"
+            );
+
+
+        if(panelIsOpen){
+
+            closePanels();
+
+
+            document
+
+            .querySelectorAll(
+                ".nav-item"
+            )
+
+            .forEach(
+
+                nav => {
+
+                    nav.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            );
+
+
+            document
+
+            .querySelector(
+                '[data-tab="map"]'
+            )
+
+            .classList.add(
+                "active"
+            );
+
+        }
+
+    }
+
+);
+
+
+/* =====================================================
+   RESIZE
+===================================================== */
+
+function resizeMap(){
+
+    setTimeout(
+
+        function(){
+
+            map.invalidateSize(
+                true
+            );
+
+        },
+
+        250
+
+    );
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeMap
 );
 
 
 window.addEventListener(
-  "resize",
-  () => {
+    "orientationchange",
+    resizeMap
+);
 
-    map.invalidateSize();
 
-  }
+setTimeout(
+
+    resizeMap,
+
+    700
+
 );
 
 </script>
 
 </body>
+
 </html>
