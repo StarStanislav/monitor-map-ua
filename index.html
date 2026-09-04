@@ -17,53 +17,59 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #080b10;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: #070b10;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "SF Pro Text", Arial, sans-serif;
+  color: #f4f6f8;
 }
 
 #map {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 1;
 }
 
 /* DARK MAP */
-
 .leaflet-tile {
   filter: brightness(0.72) contrast(1.12) saturate(0.72);
 }
 
-.leaflet-container {
-  background: #080b10;
+.leaflet-control-attribution {
+  background: rgba(7, 11, 16, 0.75) !important;
+  color: #8b949e !important;
+  font-size: 9px !important;
 }
 
-/* TOP HEADER */
+.leaflet-control-attribution a {
+  color: #8b949e !important;
+}
 
-.top-panel {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
+/* TOP CARD */
+
+.top {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  right: 18px;
   z-index: 1000;
 
-  padding: 15px 16px;
+  padding: 18px 20px;
 
-  background: rgba(10, 14, 20, 0.88);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(10, 15, 21, 0.92);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 22px;
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 12px 35px rgba(0,0,0,0.45);
+}
 
-  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-
+.logo-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -72,69 +78,70 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
 }
 
-.brand-icon {
-  width: 46px;
-  height: 46px;
+.logo {
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 14px;
+  border-radius: 15px;
 
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: #111821;
+  border: 1px solid rgba(255,255,255,0.12);
 
-  font-size: 24px;
+  font-size: 25px;
 }
 
-.brand-title {
-  color: #f5f7fa;
-  font-size: 20px;
+.title {
+  font-size: 23px;
   font-weight: 700;
-  line-height: 1.1;
+  letter-spacing: -0.5px;
 }
 
-.brand-subtitle {
-  margin-top: 4px;
-  color: #8e98a6;
-  font-size: 13px;
+.subtitle {
+  margin-top: 3px;
+  font-size: 14px;
+  color: #8f99a5;
 }
 
 .status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 
-  padding: 9px 13px;
+  padding: 10px 14px;
 
   border-radius: 15px;
 
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: #11171e;
+  border: 1px solid rgba(255,255,255,0.09);
 
-  color: #b8c0ca;
-  font-size: 13px;
+  color: #b7bec7;
+  font-size: 14px;
 }
 
 .status-dot {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #42d878;
-  box-shadow: 0 0 12px rgba(66,216,120,0.7);
+  background: #42e36f;
+
+  box-shadow: 0 0 12px rgba(66,227,111,0.8);
 }
 
 /* SEARCH */
 
-.search-box {
-  position: absolute;
-  top: 92px;
-  left: 16px;
+.search {
+  position: fixed;
+  top: 128px;
+  left: 18px;
   right: 82px;
+
   z-index: 1000;
 
   height: 58px;
@@ -144,229 +151,181 @@ body {
 
   padding: 0 18px;
 
-  background: rgba(10,14,20,0.9);
-  border: 1px solid rgba(255,255,255,0.11);
+  background: rgba(10,15,21,0.93);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 19px;
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  box-shadow: 0 8px 25px rgba(0,0,0,0.28);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 .search-icon {
-  color: #8f99a7;
-  font-size: 24px;
-  margin-right: 12px;
+  font-size: 21px;
+  color: #8d98a5;
+  margin-right: 14px;
 }
 
-#search {
+.search input {
   width: 100%;
+  height: 100%;
+
   border: 0;
   outline: none;
+
   background: transparent;
 
-  color: #f4f6f8;
+  color: white;
   font-size: 16px;
 }
 
-#search::placeholder {
-  color: #737d8b;
+.search input::placeholder {
+  color: #737e8b;
 }
 
-/* RIGHT CONTROLS */
+/* RIGHT BUTTONS */
 
-.controls {
-  position: absolute;
-  top: 92px;
-  right: 16px;
+.map-buttons {
+  position: fixed;
+  top: 128px;
+  right: 18px;
+
   z-index: 1000;
 
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.control-btn {
+.map-btn {
   width: 58px;
   height: 58px;
-
-  border-radius: 18px;
-
-  border: 1px solid rgba(255,255,255,0.1);
-
-  background: rgba(10,14,20,0.92);
-
-  color: #eef2f6;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
+  border-radius: 19px;
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(10,15,21,0.94);
+  border: 1px solid rgba(255,255,255,0.10);
 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  color: white;
+
+  font-size: 27px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
-.control-btn:active {
+.map-btn:active {
   transform: scale(0.94);
-}
-
-/* LEAFLET CONTROLS */
-
-.leaflet-control-zoom {
-  display: none !important;
-}
-
-.leaflet-control-attribution {
-  background: rgba(5,8,12,0.65) !important;
-  color: #78818d !important;
-  font-size: 9px !important;
-}
-
-.leaflet-control-attribution a {
-  color: #8c96a3 !important;
 }
 
 /* BOTTOM NAV */
 
-.bottom-nav {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
+.bottom {
+  position: fixed;
 
-  height: 78px;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+
+  height: 82px;
 
   z-index: 1000;
 
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 
-  padding: 7px;
+  padding: 8px;
 
-  background: rgba(8,12,17,0.94);
+  background: rgba(8,13,19,0.96);
+  border: 1px solid rgba(255,255,255,0.11);
 
-  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 24px;
 
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-
-  box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+  box-shadow:
+    0 15px 45px rgba(0,0,0,0.55);
 }
 
 .nav-item {
-  border: 0;
-  background: transparent;
-
-  color: #858e9b;
-
-  border-radius: 18px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  gap: 4px;
+  gap: 5px;
 
-  font-size: 11px;
+  border-radius: 17px;
+
+  color: #8d97a3;
+
+  font-size: 12px;
 }
 
 .nav-icon {
   font-size: 23px;
-  line-height: 1;
 }
 
 .nav-item.active {
-  color: #6ea8ff;
-  background: rgba(55,105,190,0.13);
+  background: rgba(42,104,255,0.13);
+  color: #6da0ff;
 }
 
 .nav-item:active {
   transform: scale(0.96);
 }
 
-/* SEARCH RESULT */
-
-.search-result {
-  position: absolute;
-  top: 158px;
-  left: 16px;
-  right: 82px;
-
-  z-index: 1100;
-
-  display: none;
-
-  padding: 12px 15px;
-
-  background: rgba(10,14,20,0.96);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-
-  color: #e8edf3;
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.search-result.show {
-  display: block;
-}
-
-.result-title {
-  font-weight: 600;
-}
-
-.result-subtitle {
-  margin-top: 3px;
-  color: #7f8997;
-  font-size: 12px;
-}
-
 /* MOBILE */
 
-@media (max-width: 430px) {
+@media (max-width: 500px) {
 
-  .top-panel {
+  .top {
     top: 12px;
     left: 12px;
     right: 12px;
+    padding: 15px;
+    border-radius: 20px;
   }
 
-  .search-box {
-    top: 88px;
-    left: 12px;
-    right: 78px;
+  .logo {
+    width: 43px;
+    height: 43px;
+    font-size: 22px;
   }
 
-  .controls {
-    top: 88px;
-    right: 12px;
+  .title {
+    font-size: 20px;
   }
 
-  .control-btn {
-    width: 54px;
-    height: 54px;
-  }
-
-  .bottom-nav {
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-  }
-
-  .brand-title {
-    font-size: 18px;
+  .subtitle {
+    font-size: 13px;
   }
 
   .status {
     padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .search {
+    top: 116px;
+    left: 12px;
+    right: 78px;
+    height: 55px;
+  }
+
+  .map-buttons {
+    top: 116px;
+    right: 12px;
+  }
+
+  .map-btn {
+    width: 55px;
+    height: 55px;
+  }
+
+  .bottom {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
   }
 }
 </style>
@@ -376,103 +335,71 @@ body {
 
 <div id="map"></div>
 
-<!-- HEADER -->
+<!-- TOP -->
+<div class="top">
+  <div class="logo-row">
 
-<div class="top-panel">
+    <div class="brand">
+      <div class="logo">◎</div>
 
-  <div class="brand">
-
-    <div class="brand-icon">⌖</div>
-
-    <div>
-      <div class="brand-title">
-        Monitor Map UA
-      </div>
-
-      <div class="brand-subtitle">
-        Оперативна ситуація
+      <div>
+        <div class="title">Monitor Map UA</div>
+        <div class="subtitle">Оперативна ситуація</div>
       </div>
     </div>
 
-  </div>
+    <div class="status">
+      <span class="status-dot"></span>
+      Онлайн
+    </div>
 
-  <div class="status">
-    <span class="status-dot"></span>
-    Онлайн
   </div>
-
 </div>
 
 <!-- SEARCH -->
-
-<div class="search-box">
-
+<div class="search">
   <div class="search-icon">⌕</div>
 
   <input
-    id="search"
+    id="searchInput"
     type="text"
     placeholder="Пошук населеного пункту..."
-    autocomplete="off"
-  >
+  />
+</div>
+
+<!-- MAP BUTTONS -->
+<div class="map-buttons">
+
+  <button class="map-btn" onclick="zoomIn()">+</button>
+
+  <button class="map-btn" onclick="zoomOut()">−</button>
+
+  <button class="map-btn" onclick="locateUser()">◎</button>
 
 </div>
 
-<div id="searchResult" class="search-result"></div>
+<!-- BOTTOM -->
+<div class="bottom">
 
-<!-- CONTROLS -->
-
-<div class="controls">
-
-  <button
-    class="control-btn"
-    onclick="zoomIn()"
-    aria-label="Збільшити"
-  >
-    +
-  </button>
-
-  <button
-    class="control-btn"
-    onclick="zoomOut()"
-    aria-label="Зменшити"
-  >
-    −
-  </button>
-
-  <button
-    class="control-btn"
-    onclick="centerUkraine()"
-    aria-label="Україна"
-  >
-    ◎
-  </button>
-
-</div>
-
-<!-- BOTTOM NAV -->
-
-<div class="bottom-nav">
-
-  <button class="nav-item active">
+  <div class="nav-item active">
     <div class="nav-icon">⌖</div>
     <div>Карта</div>
-  </button>
+  </div>
 
-  <button class="nav-item">
+  <div class="nav-item" onclick="showEvents()">
     <div class="nav-icon">☷</div>
     <div>Події</div>
-  </button>
+  </div>
 
-  <button class="nav-item">
+  <div class="nav-item" onclick="showLegend()">
     <div class="nav-icon">ⓘ</div>
     <div>Легенда</div>
-  </button>
+  </div>
 
-  <button class="nav-item">
+  <div class="nav-item" onclick="showAbout()">
     <div class="nav-icon">⚙</div>
     <div>Про проєкт</div>
-  </button>
+  </div>
 
 </div>
 
@@ -485,16 +412,18 @@ body {
 const map = L.map("map", {
   zoomControl: false,
   attributionControl: true,
-  minZoom: 4,
+  minZoom: 5,
   maxZoom: 12
 }).setView([49.0, 31.0], 6);
 
-/* DARK CARTO MAP */
+/*
+  Без API KEY.
+  Темна карта.
+*/
 
 L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
   {
-    subdomains: "abcd",
     maxZoom: 20,
     attribution:
       '&copy; OpenStreetMap contributors &copy; CARTO'
@@ -513,15 +442,37 @@ function zoomOut() {
 }
 
 
-/* CENTER UKRAINE */
+/* LOCATION */
 
-function centerUkraine() {
-  map.flyTo(
-    [49.0, 31.0],
-    6,
-    {
-      animate: true,
-      duration: 0.7
+function locateUser() {
+
+  if (!navigator.geolocation) {
+    alert("Геолокація недоступна");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      map.setView([lat, lon], 10);
+
+      L.circleMarker([lat, lon], {
+        radius: 8,
+        color: "#ffffff",
+        weight: 3,
+        fillColor: "#4d8dff",
+        fillOpacity: 1
+      })
+      .addTo(map)
+      .bindPopup("Ваше місцезнаходження")
+      .openPopup();
+
+    },
+    function() {
+      alert("Не вдалося визначити місцезнаходження");
     }
   );
 }
@@ -529,121 +480,41 @@ function centerUkraine() {
 
 /* SEARCH */
 
-const searchInput = document.getElementById("search");
-const searchResult = document.getElementById("searchResult");
+const searchInput = document.getElementById("searchInput");
 
-let searchTimer = null;
+searchInput.addEventListener("keydown", function(event) {
 
-searchInput.addEventListener("input", function() {
+  if (event.key === "Enter") {
 
-  const query = this.value.trim();
+    const query = searchInput.value.trim();
 
-  clearTimeout(searchTimer);
+    if (!query) return;
 
-  if (query.length < 3) {
-    searchResult.classList.remove("show");
-    return;
+    alert(
+      "Пошук: " + query +
+      "\n\nПошук населених пунктів підключимо наступним етапом."
+    );
   }
 
-  searchTimer = setTimeout(() => {
-
-    fetch(
-      "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=uk&q=" +
-      encodeURIComponent(query)
-    )
-    .then(response => response.json())
-    .then(data => {
-
-      if (!data.length) {
-
-        searchResult.innerHTML =
-          "<div class='result-title'>Нічого не знайдено</div>";
-
-        searchResult.classList.add("show");
-
-        return;
-      }
-
-      const place = data[0];
-
-      searchResult.innerHTML = `
-        <div class="result-title">
-          ${place.display_name.split(",")[0]}
-        </div>
-
-        <div class="result-subtitle">
-          Натисніть, щоб перейти
-        </div>
-      `;
-
-      searchResult.classList.add("show");
-
-      searchResult.onclick = function() {
-
-        map.flyTo(
-          [
-            parseFloat(place.lat),
-            parseFloat(place.lon)
-          ],
-          10,
-          {
-            animate: true,
-            duration: 0.8
-          }
-        );
-
-        searchResult.classList.remove("show");
-
-      };
-
-    })
-    .catch(() => {
-
-      searchResult.innerHTML =
-        "<div class='result-title'>Помилка пошуку</div>";
-
-      searchResult.classList.add("show");
-
-    });
-
-  }, 450);
-
 });
 
 
-/* CLOSE SEARCH */
+/* BOTTOM BUTTONS */
 
-map.on("click", function() {
-  searchResult.classList.remove("show");
-});
-
-
-/* TELEGRAM MINI APP */
-
-if (window.Telegram && Telegram.WebApp) {
-
-  Telegram.WebApp.ready();
-
-  Telegram.WebApp.expand();
-
+function showEvents() {
+  alert("Розділ «Події» підключимо наступним етапом.");
 }
 
+function showLegend() {
+  alert("Легенда карти буде тут.");
+}
 
-/* PREVENT ACCIDENTAL PAGE SCROLL */
-
-document.addEventListener(
-  "touchmove",
-  function(e) {
-
-    if (e.target.closest("#map")) {
-      return;
-    }
-
-  },
-  {
-    passive: true
-  }
-);
+function showAbout() {
+  alert(
+    "Monitor Map UA\n\n" +
+    "Інформаційна карта на основі відкритих даних."
+  );
+}
 
 </script>
 
