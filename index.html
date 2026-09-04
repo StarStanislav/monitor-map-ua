@@ -2,12 +2,7 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width,
-      initial-scale=1.0,
-      maximum-scale=1.0,
-      user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Monitor Map UA</title>
 
@@ -17,7 +12,6 @@
 />
 
 <style>
-
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -30,549 +24,351 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #070b10;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "Segoe UI",
-    sans-serif;
+  background: #080b10;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
 #map {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  background: #070b10;
+  z-index: 1;
 }
 
-/* =========================
-   КАРТА
-========================= */
+/* DARK MAP */
 
 .leaflet-tile {
-  filter:
-    brightness(0.55)
-    contrast(1.18)
-    saturate(0.45);
+  filter: brightness(0.72) contrast(1.12) saturate(0.72);
 }
 
-.leaflet-control-attribution {
-  background: rgba(5, 9, 13, 0.75) !important;
-  color: #697580 !important;
-  font-size: 8px !important;
-  border-radius: 6px 0 0 0;
+.leaflet-container {
+  background: #080b10;
 }
 
-.leaflet-control-attribution a {
-  color: #7d8994 !important;
-}
+/* TOP HEADER */
 
-.leaflet-control-zoom {
-  display: none !important;
-}
+.top-panel {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 1000;
 
-/* =========================
-   ЗАГАЛЬНІ ПАНЕЛІ
-========================= */
+  padding: 15px 16px;
 
-.glass {
-  background: rgba(9, 15, 21, 0.88);
-
-  border: 1px solid rgba(255,255,255,0.11);
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.035);
+  background: rgba(10, 14, 20, 0.88);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px;
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-}
 
-/* =========================
-   HEADER
-========================= */
-
-.header {
-  position: absolute;
-
-  z-index: 1000;
-
-  top: 12px;
-  left: 12px;
-  right: 12px;
-
-  min-height: 72px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 11px 13px;
-
-  border-radius: 20px;
-
-  background: rgba(7, 13, 19, 0.91);
-
-  border: 1px solid rgba(255,255,255,0.12);
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.04);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
 }
 
-.logo {
-  width: 42px;
-  height: 42px;
+.brand-icon {
+  width: 46px;
+  height: 46px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 12px;
+  border-radius: 14px;
 
-  color: #d5dde5;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
 
-  font-size: 27px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,0.08),
-      rgba(255,255,255,0.025)
-    );
-
-  border: 1px solid rgba(255,255,255,0.10);
+  font-size: 24px;
 }
 
-.title {
-  color: #f4f6f8;
-
+.brand-title {
+  color: #f5f7fa;
   font-size: 20px;
   font-weight: 700;
-
-  letter-spacing: -0.3px;
+  line-height: 1.1;
 }
 
-.subtitle {
-  margin-top: 3px;
-
-  color: #7f8b96;
-
-  font-size: 11px;
-
-  letter-spacing: 0.2px;
+.brand-subtitle {
+  margin-top: 4px;
+  color: #8e98a6;
+  font-size: 13px;
 }
 
 .status {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
 
-  padding: 9px 11px;
+  padding: 9px 13px;
 
-  border-radius: 13px;
+  border-radius: 15px;
 
-  background: rgba(255,255,255,0.045);
-
+  background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
 
-  color: #aab4bd;
-
-  font-size: 11px;
+  color: #b8c0ca;
+  font-size: 13px;
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
-
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-
-  background: #55d477;
-
-  box-shadow:
-    0 0 12px rgba(85,212,119,0.8);
+  background: #42d878;
+  box-shadow: 0 0 12px rgba(66,216,120,0.7);
 }
 
-/* =========================
-   SEARCH
-========================= */
-
-.search {
-  position: absolute;
-
-  z-index: 1000;
-
-  top: 94px;
-  left: 12px;
-  right: 76px;
-}
+/* SEARCH */
 
 .search-box {
-  position: relative;
-}
+  position: absolute;
+  top: 92px;
+  left: 16px;
+  right: 82px;
+  z-index: 1000;
 
-.search input {
-  width: 100%;
-  height: 51px;
+  height: 58px;
 
-  padding: 0 16px 0 45px;
+  display: flex;
+  align-items: center;
 
-  border-radius: 16px;
+  padding: 0 18px;
 
-  outline: none;
-
-  color: #eef2f5;
-
-  font-size: 14px;
-
-  background: rgba(8,14,20,0.91);
-
+  background: rgba(10,14,20,0.9);
   border: 1px solid rgba(255,255,255,0.11);
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,0.28);
+  border-radius: 19px;
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-}
 
-.search input::placeholder {
-  color: #697681;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.28);
 }
 
 .search-icon {
-  position: absolute;
-
-  left: 16px;
-  top: 13px;
-
-  color: #9ca8b2;
-
-  font-size: 22px;
-
-  pointer-events: none;
+  color: #8f99a7;
+  font-size: 24px;
+  margin-right: 12px;
 }
 
-/* =========================
-   КНОПКИ
-========================= */
+#search {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+
+  color: #f4f6f8;
+  font-size: 16px;
+}
+
+#search::placeholder {
+  color: #737d8b;
+}
+
+/* RIGHT CONTROLS */
 
 .controls {
   position: absolute;
-
+  top: 92px;
+  right: 16px;
   z-index: 1000;
-
-  top: 94px;
-  right: 12px;
 
   display: flex;
   flex-direction: column;
-
-  gap: 9px;
+  gap: 10px;
 }
 
-.control {
-  width: 51px;
-  height: 51px;
+.control-btn {
+  width: 58px;
+  height: 58px;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(10,14,20,0.92);
+
+  color: #eef2f6;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 16px;
-
-  color: #dce3e8;
-
-  font-size: 23px;
-
-  background: rgba(8,14,20,0.91);
-
-  border: 1px solid rgba(255,255,255,0.11);
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,0.3);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  user-select: none;
-}
-
-.control:active {
-  transform: scale(0.94);
-
-  background: rgba(30,42,53,0.95);
-}
-
-.location-icon {
   font-size: 25px;
-}
-
-/* =========================
-   ЛЕГЕНДА
-========================= */
-
-.legend {
-  position: absolute;
-
-  z-index: 1000;
-
-  left: 12px;
-  bottom: 93px;
-
-  padding: 13px 15px;
-
-  border-radius: 16px;
-
-  color: #aeb8c1;
-
-  font-size: 11px;
-
-  background: rgba(7,13,19,0.90);
-
-  border: 1px solid rgba(255,255,255,0.10);
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
-.legend-title {
-  color: #e1e6ea;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  margin-bottom: 8px;
+.control-btn:active {
+  transform: scale(0.94);
 }
 
-.legend-row {
-  display: flex;
-  align-items: center;
+/* LEAFLET CONTROLS */
 
-  gap: 8px;
-
-  margin: 5px 0;
+.leaflet-control-zoom {
+  display: none !important;
 }
 
-.legend-dot {
-  width: 8px;
-  height: 8px;
-
-  border-radius: 50%;
-
-  background: #6f7c86;
+.leaflet-control-attribution {
+  background: rgba(5,8,12,0.65) !important;
+  color: #78818d !important;
+  font-size: 9px !important;
 }
 
-/* =========================
-   МОЄ МІСЦЕ
-========================= */
+.leaflet-control-attribution a {
+  color: #8c96a3 !important;
+}
 
-.my-location {
+/* BOTTOM NAV */
+
+.bottom-nav {
   position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+
+  height: 78px;
 
   z-index: 1000;
 
-  right: 12px;
-  bottom: 93px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 
-  height: 43px;
+  padding: 7px;
 
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  padding: 0 14px;
-
-  border-radius: 14px;
-
-  color: #b8c2ca;
-
-  font-size: 11px;
-
-  background: rgba(7,13,19,0.90);
-
-  border: 1px solid rgba(255,255,255,0.10);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-
-.my-location:active {
-  transform: scale(0.96);
-}
-
-/* =========================
-   НИЖНЄ МЕНЮ
-========================= */
-
-.bottom {
-  position: absolute;
-
-  z-index: 1000;
-
-  left: 12px;
-  right: 12px;
-  bottom: 11px;
-
-  height: 69px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-
-  border-radius: 20px;
-
-  background: rgba(7,13,19,0.94);
+  background: rgba(8,12,17,0.94);
 
   border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
 
-  box-shadow:
-    0 -8px 30px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.4);
 }
 
-.bottom-item {
-  min-width: 65px;
+.nav-item {
+  border: 0;
+  background: transparent;
+
+  color: #858e9b;
+
+  border-radius: 18px;
 
   display: flex;
   flex-direction: column;
-
   align-items: center;
+  justify-content: center;
 
   gap: 4px;
 
-  color: #77838d;
-
-  font-size: 10px;
-
-  user-select: none;
+  font-size: 11px;
 }
 
-.bottom-item.active {
-  color: #76a8ff;
+.nav-icon {
+  font-size: 23px;
+  line-height: 1;
 }
 
-.bottom-icon {
-  font-size: 22px;
-
-  line-height: 22px;
+.nav-item.active {
+  color: #6ea8ff;
+  background: rgba(55,105,190,0.13);
 }
 
-/* =========================
-   POPUP
-========================= */
-
-.leaflet-popup-content-wrapper {
-  background: #0c141c !important;
-
-  color: #e8edf1 !important;
-
-  border:
-    1px solid rgba(255,255,255,0.10);
-
-  border-radius: 13px !important;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.45);
+.nav-item:active {
+  transform: scale(0.96);
 }
 
-.leaflet-popup-tip {
-  background: #0c141c !important;
-}
-
-.leaflet-popup-content {
-  margin: 12px 14px !important;
-
-  font-size: 12px;
-}
-
-/* =========================
-   SEARCH RESULT
-========================= */
+/* SEARCH RESULT */
 
 .search-result {
   position: absolute;
+  top: 158px;
+  left: 16px;
+  right: 82px;
 
   z-index: 1100;
 
-  top: 150px;
-  left: 12px;
-  right: 76px;
-
   display: none;
 
-  padding: 12px 14px;
+  padding: 12px 15px;
 
-  color: #dce3e8;
+  background: rgba(10,14,20,0.96);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
 
-  background: rgba(7,13,19,0.96);
-
-  border: 1px solid rgba(255,255,255,0.10);
-
-  border-radius: 14px;
-
-  font-size: 12px;
+  color: #e8edf3;
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
-/* =========================
-   MOBILE
-========================= */
+.search-result.show {
+  display: block;
+}
 
-@media (max-width: 500px) {
+.result-title {
+  font-weight: 600;
+}
 
-  .header {
-    top: 9px;
-    left: 9px;
-    right: 9px;
+.result-subtitle {
+  margin-top: 3px;
+  color: #7f8997;
+  font-size: 12px;
+}
+
+/* MOBILE */
+
+@media (max-width: 430px) {
+
+  .top-panel {
+    top: 12px;
+    left: 12px;
+    right: 12px;
   }
 
-  .search {
+  .search-box {
     top: 88px;
-    left: 9px;
-    right: 70px;
+    left: 12px;
+    right: 78px;
   }
 
   .controls {
     top: 88px;
-    right: 9px;
+    right: 12px;
   }
 
-  .legend {
-    left: 9px;
-    bottom: 91px;
+  .control-btn {
+    width: 54px;
+    height: 54px;
   }
 
-  .my-location {
-    right: 9px;
-    bottom: 91px;
+  .bottom-nav {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
   }
 
-  .bottom {
-    left: 9px;
-    right: 9px;
-    bottom: 9px;
+  .brand-title {
+    font-size: 18px;
   }
 
+  .status {
+    padding: 8px 10px;
+  }
 }
-
 </style>
 </head>
 
@@ -580,23 +376,20 @@ body {
 
 <div id="map"></div>
 
+<!-- HEADER -->
 
-<!-- =========================
-     HEADER
-========================= -->
-
-<div class="header">
+<div class="top-panel">
 
   <div class="brand">
 
-    <div class="logo">⌖</div>
+    <div class="brand-icon">⌖</div>
 
     <div>
-      <div class="title">
+      <div class="brand-title">
         Monitor Map UA
       </div>
 
-      <div class="subtitle">
+      <div class="brand-subtitle">
         Оперативна ситуація
       </div>
     </div>
@@ -604,441 +397,251 @@ body {
   </div>
 
   <div class="status">
-
     <span class="status-dot"></span>
-
-    <span>
-      Онлайн
-    </span>
-
+    Онлайн
   </div>
 
 </div>
 
+<!-- SEARCH -->
 
-<!-- =========================
-     ПОШУК
-========================= -->
+<div class="search-box">
 
-<div class="search">
+  <div class="search-icon">⌕</div>
 
-  <div class="search-box">
-
-    <div class="search-icon">
-      ⌕
-    </div>
-
-    <input
-      id="search"
-      type="text"
-      autocomplete="off"
-      placeholder="Пошук населеного пункту..."
-    >
-
-  </div>
+  <input
+    id="search"
+    type="text"
+    placeholder="Пошук населеного пункту..."
+    autocomplete="off"
+  >
 
 </div>
 
-<div
-  id="searchResult"
-  class="search-result">
-</div>
+<div id="searchResult" class="search-result"></div>
 
-
-<!-- =========================
-     КОНТРОЛИ
-========================= -->
+<!-- CONTROLS -->
 
 <div class="controls">
 
-  <div
-    class="control"
-    onclick="map.zoomIn()">
+  <button
+    class="control-btn"
+    onclick="zoomIn()"
+    aria-label="Збільшити"
+  >
     +
-  </div>
+  </button>
 
-  <div
-    class="control"
-    onclick="map.zoomOut()">
+  <button
+    class="control-btn"
+    onclick="zoomOut()"
+    aria-label="Зменшити"
+  >
     −
-  </div>
+  </button>
 
-  <div
-    class="control location-icon"
-    onclick="findLocation()">
+  <button
+    class="control-btn"
+    onclick="centerUkraine()"
+    aria-label="Україна"
+  >
     ◎
-  </div>
+  </button>
 
 </div>
 
+<!-- BOTTOM NAV -->
 
-<!-- =========================
-     ЛЕГЕНДА
-========================= -->
+<div class="bottom-nav">
 
-<div class="legend">
+  <button class="nav-item active">
+    <div class="nav-icon">⌖</div>
+    <div>Карта</div>
+  </button>
 
-  <div class="legend-title">
-    Легенда
-  </div>
+  <button class="nav-item">
+    <div class="nav-icon">☷</div>
+    <div>Події</div>
+  </button>
 
-  <div class="legend-row">
-    <span class="legend-dot"></span>
-    <span>Події</span>
-  </div>
+  <button class="nav-item">
+    <div class="nav-icon">ⓘ</div>
+    <div>Легенда</div>
+  </button>
 
-  <div class="legend-row">
-    <span class="legend-dot"></span>
-    <span>Інформація</span>
-  </div>
-
-</div>
-
-
-<!-- =========================
-     МОЄ МІСЦЕ
-========================= -->
-
-<div
-  class="my-location"
-  onclick="findLocation()">
-
-  <span>◎</span>
-
-  <span>
-    Моє місцезнаходження
-  </span>
+  <button class="nav-item">
+    <div class="nav-icon">⚙</div>
+    <div>Про проєкт</div>
+  </button>
 
 </div>
 
-
-<!-- =========================
-     НИЖНЄ МЕНЮ
-========================= -->
-
-<div class="bottom">
-
-  <div class="bottom-item active">
-
-    <div class="bottom-icon">
-      ⌖
-    </div>
-
-    <div>
-      Карта
-    </div>
-
-  </div>
-
-
-  <div class="bottom-item">
-
-    <div class="bottom-icon">
-      ☷
-    </div>
-
-    <div>
-      Події
-    </div>
-
-  </div>
-
-
-  <div class="bottom-item">
-
-    <div class="bottom-icon">
-      ⓘ
-    </div>
-
-    <div>
-      Легенда
-    </div>
-
-  </div>
-
-
-  <div class="bottom-item">
-
-    <div class="bottom-icon">
-      ⚙
-    </div>
-
-    <div>
-      Про проєкт
-    </div>
-
-  </div>
-
-</div>
-
-
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
-/* =========================
-   КАРТА
-========================= */
+/* MAP */
 
-const map = L.map(
-  'map',
-  {
-    zoomControl: false,
-    attributionControl: true,
-    minZoom: 5,
-    maxZoom: 18
-  }
-).setView(
-  [49.0, 31.0],
-  6
-);
+const map = L.map("map", {
+  zoomControl: false,
+  attributionControl: true,
+  minZoom: 4,
+  maxZoom: 12
+}).setView([49.0, 31.0], 6);
 
-
-/* =========================
-   КАРТОГРАФІЧНИЙ ШАР
-========================= */
+/* DARK CARTO MAP */
 
 L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
   {
-    maxZoom: 19,
-
+    subdomains: "abcd",
+    maxZoom: 20,
     attribution:
-      '&copy; Esri &copy; OpenStreetMap contributors'
+      '&copy; OpenStreetMap contributors &copy; CARTO'
   }
 ).addTo(map);
 
 
-/* =========================
-   ПОШУК
-========================= */
+/* ZOOM */
 
-const searchInput =
-  document.getElementById('search');
+function zoomIn() {
+  map.zoomIn();
+}
 
-const searchResult =
-  document.getElementById('searchResult');
+function zoomOut() {
+  map.zoomOut();
+}
+
+
+/* CENTER UKRAINE */
+
+function centerUkraine() {
+  map.flyTo(
+    [49.0, 31.0],
+    6,
+    {
+      animate: true,
+      duration: 0.7
+    }
+  );
+}
+
+
+/* SEARCH */
+
+const searchInput = document.getElementById("search");
+const searchResult = document.getElementById("searchResult");
 
 let searchTimer = null;
 
+searchInput.addEventListener("input", function() {
 
-searchInput.addEventListener(
-  'input',
-  function() {
+  const query = this.value.trim();
 
-    clearTimeout(searchTimer);
+  clearTimeout(searchTimer);
 
-    const query =
-      this.value.trim();
-
-    searchResult.style.display =
-      'none';
-
-    if (query.length < 3) {
-      return;
-    }
-
-    searchTimer =
-      setTimeout(
-        async function() {
-
-          try {
-
-            const url =
-              'https://nominatim.openstreetmap.org/search?' +
-              'format=json' +
-              '&limit=1' +
-              '&countrycodes=ua' +
-              '&q=' +
-              encodeURIComponent(query);
-
-            const response =
-              await fetch(
-                url,
-                {
-                  headers: {
-                    'Accept-Language': 'uk'
-                  }
-                }
-              );
-
-            const data =
-              await response.json();
-
-
-            if (data.length > 0) {
-
-              const place =
-                data[0];
-
-              const lat =
-                parseFloat(place.lat);
-
-              const lon =
-                parseFloat(place.lon);
-
-
-              map.flyTo(
-                [lat, lon],
-                12,
-                {
-                  duration: 1.2
-                }
-              );
-
-
-              const name =
-                place.display_name
-                  .split(',')[0];
-
-
-              searchResult.innerHTML =
-                '📍 ' + name;
-
-              searchResult.style.display =
-                'block';
-
-
-              L.popup()
-                .setLatLng(
-                  [lat, lon]
-                )
-                .setContent(
-                  '<b>' +
-                  name +
-                  '</b>'
-                )
-                .openOn(map);
-
-            }
-
-          }
-
-          catch (error) {
-
-            console.log(
-              'Search error:',
-              error
-            );
-
-          }
-
-        },
-        700
-      );
-
-  }
-);
-
-
-/* =========================
-   ГЕОЛОКАЦІЯ
-========================= */
-
-let userMarker = null;
-
-
-function findLocation() {
-
-  if (!navigator.geolocation) {
-
-    alert(
-      'Геолокація недоступна'
-    );
-
+  if (query.length < 3) {
+    searchResult.classList.remove("show");
     return;
   }
 
+  searchTimer = setTimeout(() => {
 
-  navigator.geolocation.getCurrentPosition(
+    fetch(
+      "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=uk&q=" +
+      encodeURIComponent(query)
+    )
+    .then(response => response.json())
+    .then(data => {
 
-    function(position) {
+      if (!data.length) {
 
-      const lat =
-        position.coords.latitude;
+        searchResult.innerHTML =
+          "<div class='result-title'>Нічого не знайдено</div>";
 
-      const lon =
-        position.coords.longitude;
+        searchResult.classList.add("show");
 
-
-      map.flyTo(
-        [lat, lon],
-        12,
-        {
-          duration: 1.2
-        }
-      );
-
-
-      if (userMarker) {
-
-        map.removeLayer(
-          userMarker
-        );
-
+        return;
       }
 
+      const place = data[0];
 
-      userMarker =
-        L.circleMarker(
-          [lat, lon],
+      searchResult.innerHTML = `
+        <div class="result-title">
+          ${place.display_name.split(",")[0]}
+        </div>
+
+        <div class="result-subtitle">
+          Натисніть, щоб перейти
+        </div>
+      `;
+
+      searchResult.classList.add("show");
+
+      searchResult.onclick = function() {
+
+        map.flyTo(
+          [
+            parseFloat(place.lat),
+            parseFloat(place.lon)
+          ],
+          10,
           {
-            radius: 7,
-
-            color: '#ffffff',
-
-            weight: 2,
-
-            fillColor: '#6fa7ff',
-
-            fillOpacity: 1
+            animate: true,
+            duration: 0.8
           }
-        )
-        .addTo(map);
+        );
+
+        searchResult.classList.remove("show");
+
+      };
+
+    })
+    .catch(() => {
+
+      searchResult.innerHTML =
+        "<div class='result-title'>Помилка пошуку</div>";
+
+      searchResult.classList.add("show");
+
+    });
+
+  }, 450);
+
+});
 
 
-      userMarker.bindPopup(
-        'Ваше місцезнаходження'
-      );
+/* CLOSE SEARCH */
 
-    },
+map.on("click", function() {
+  searchResult.classList.remove("show");
+});
 
 
-    function() {
+/* TELEGRAM MINI APP */
 
-      alert(
-        'Не вдалося отримати місцезнаходження'
-      );
+if (window.Telegram && Telegram.WebApp) {
 
-    },
+  Telegram.WebApp.ready();
 
-    {
-      enableHighAccuracy: true,
-
-      timeout: 10000,
-
-      maximumAge: 60000
-    }
-
-  );
+  Telegram.WebApp.expand();
 
 }
 
 
-/* =========================
-   ЗАКРИТТЯ ПОШУКУ
-========================= */
+/* PREVENT ACCIDENTAL PAGE SCROLL */
 
-map.on(
-  'click',
-  function() {
+document.addEventListener(
+  "touchmove",
+  function(e) {
 
-    searchResult.style.display =
-      'none';
+    if (e.target.closest("#map")) {
+      return;
+    }
 
+  },
+  {
+    passive: true
   }
 );
 
