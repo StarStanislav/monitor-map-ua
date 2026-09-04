@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
 
 <meta charset="UTF-8">
@@ -20,6 +21,7 @@
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
+
 <style>
 
 /* =====================================================
@@ -33,6 +35,7 @@
 
 html,
 body{
+
     margin:0;
     padding:0;
 
@@ -52,12 +55,16 @@ body{
 }
 
 body{
+
     position:fixed;
+
     inset:0;
 }
 
 #map{
+
     position:fixed;
+
     inset:0;
 
     width:100%;
@@ -66,24 +73,30 @@ body{
     background:#02070b;
 }
 
+
 /* =====================================================
    MAP
 ===================================================== */
 
 .leaflet-container{
+
     background:#02070b;
 }
 
 .leaflet-tile{
+
     filter:none;
 }
 
 .leaflet-control-zoom{
+
     display:none;
 }
 
 .leaflet-control-attribution{
-    background:rgba(0,0,0,.62)!important;
+
+    background:
+        rgba(0,0,0,.62)!important;
 
     color:#65737b!important;
 
@@ -95,8 +108,10 @@ body{
 }
 
 .leaflet-control-attribution a{
+
     color:#71828b!important;
 }
+
 
 /* =====================================================
    TOP PANEL
@@ -108,13 +123,17 @@ body{
 
     z-index:1000;
 
-    top:max(18px, env(safe-area-inset-top));
-    left:18px;
-    right:18px;
+    top:max(
+        12px,
+        env(safe-area-inset-top)
+    );
 
-    padding:17px;
+    left:16px;
+    right:16px;
 
-    border-radius:27px;
+    padding:14px 15px;
+
+    border-radius:25px;
 
     background:
         linear-gradient(
@@ -123,15 +142,22 @@ body{
             rgba(2,10,16,.96)
         );
 
-    border:1px solid rgba(45,145,205,.22);
+    border:
+        1px solid rgba(45,145,205,.22);
 
     box-shadow:
-        0 18px 50px rgba(0,0,0,.58),
+        0 16px 42px rgba(0,0,0,.55),
         inset 0 1px rgba(255,255,255,.035);
 
     backdrop-filter:blur(20px);
+
     -webkit-backdrop-filter:blur(20px);
 }
+
+
+/* =====================================================
+   BRAND
+===================================================== */
 
 .brand-row{
 
@@ -141,7 +167,7 @@ body{
 
     justify-content:space-between;
 
-    gap:12px;
+    gap:10px;
 }
 
 .brand-left{
@@ -152,13 +178,13 @@ body{
 
     min-width:0;
 
-    gap:13px;
+    gap:11px;
 }
 
 .logo{
 
-    width:56px;
-    height:56px;
+    width:48px;
+    height:48px;
 
     flex:none;
 
@@ -167,19 +193,21 @@ body{
     align-items:center;
     justify-content:center;
 
-    border-radius:18px;
+    border-radius:16px;
 
     background:#061a27;
 
-    border:1px solid #08628f;
+    border:
+        1px solid #08628f;
 
-    font-size:28px;
+    font-size:24px;
 
     box-shadow:
-        0 0 25px rgba(0,150,255,.12);
+        0 0 22px rgba(0,150,255,.12);
 }
 
 .brand-text{
+
     min-width:0;
 }
 
@@ -187,25 +215,26 @@ body{
 
     color:#fff;
 
-    font-size:24px;
+    font-size:21px;
 
     line-height:1.05;
 
     font-weight:780;
 
-    letter-spacing:-.5px;
+    letter-spacing:-.4px;
 }
 
 .subtitle{
 
-    margin-top:5px;
+    margin-top:4px;
 
     color:#87949b;
 
-    font-size:15px;
+    font-size:13px;
 
     line-height:1.1;
 }
+
 
 /* =====================================================
    ONLINE
@@ -219,15 +248,15 @@ body{
 
     align-items:center;
 
-    gap:8px;
+    gap:7px;
 
-    padding:10px 14px;
+    padding:9px 12px;
 
-    border-radius:25px;
+    border-radius:24px;
 
     color:#45e49b;
 
-    font-size:15px;
+    font-size:13px;
 
     font-weight:700;
 
@@ -236,15 +265,12 @@ body{
 
     border:
         1px solid rgba(0,220,135,.28);
-
-    box-shadow:
-        inset 0 0 18px rgba(0,220,135,.04);
 }
 
 .online-dot{
 
-    width:9px;
-    height:9px;
+    width:8px;
+    height:8px;
 
     border-radius:50%;
 
@@ -254,51 +280,41 @@ body{
         0 0 12px #38e59b;
 }
 
+
 /* =====================================================
    SEARCH
 ===================================================== */
 
 .search{
 
-    margin-top:15px;
+    margin-top:11px;
 
-    height:56px;
+    height:49px;
 
     display:flex;
 
     align-items:center;
 
-    padding:0 16px;
+    padding:0 14px;
 
-    border-radius:20px;
+    border-radius:18px;
 
     background:
         rgba(19,30,38,.88);
 
     border:
         1px solid rgba(130,170,190,.13);
-
-    transition:.2s;
-}
-
-.search:focus-within{
-
-    border-color:
-        rgba(45,180,255,.38);
-
-    box-shadow:
-        0 0 20px rgba(0,150,255,.07);
 }
 
 .search-icon{
 
     flex:none;
 
-    margin-right:13px;
+    margin-right:11px;
 
     color:#6f7b82;
 
-    font-size:23px;
+    font-size:21px;
 }
 
 .search input{
@@ -312,13 +328,14 @@ body{
 
     color:#fff;
 
-    font-size:17px;
+    font-size:16px;
 }
 
 .search input::placeholder{
 
     color:#6e777d;
 }
+
 
 /* =====================================================
    RIGHT CONTROLS
@@ -330,7 +347,7 @@ body{
 
     z-index:900;
 
-    right:16px;
+    right:14px;
 
     top:50%;
 
@@ -340,7 +357,7 @@ body{
 
     flex-direction:column;
 
-    gap:10px;
+    gap:9px;
 }
 
 .control{
@@ -385,6 +402,7 @@ body{
     font-size:27px;
 }
 
+
 /* =====================================================
    LEGEND
 ===================================================== */
@@ -400,7 +418,7 @@ body{
 
     bottom:
         calc(
-            112px +
+            108px +
             env(safe-area-inset-bottom)
         );
 
@@ -422,6 +440,7 @@ body{
         0 20px 60px rgba(0,0,0,.7);
 
     backdrop-filter:blur(22px);
+
     -webkit-backdrop-filter:blur(22px);
 
     color:#b9c4ca;
@@ -440,13 +459,19 @@ body{
 @keyframes legendIn{
 
     from{
+
         opacity:0;
-        transform:translateY(12px);
+
+        transform:
+            translateY(12px);
     }
 
     to{
+
         opacity:1;
-        transform:translateY(0);
+
+        transform:
+            translateY(0);
     }
 }
 
@@ -539,40 +564,6 @@ body{
         2px dashed #c8d2d8;
 }
 
-/* =====================================================
-   STATUS
-===================================================== */
-
-.status{
-
-    position:fixed;
-
-    z-index:900;
-
-    left:18px;
-
-    bottom:
-        calc(
-            116px +
-            env(safe-area-inset-bottom)
-        );
-
-    padding:9px 13px;
-
-    border-radius:16px;
-
-    background:
-        rgba(3,13,20,.92);
-
-    border:
-        1px solid rgba(80,145,175,.18);
-
-    color:#7f8b92;
-
-    font-size:11px;
-
-    transition:.2s;
-}
 
 /* =====================================================
    EVENTS PANEL
@@ -589,7 +580,8 @@ body{
     left:18px;
     right:18px;
 
-    transform:translateY(-50%);
+    transform:
+        translateY(-50%);
 
     max-height:65vh;
 
@@ -627,62 +619,22 @@ body{
     margin-bottom:15px;
 }
 
-.event-card{
+.empty-events{
 
-    padding:14px;
+    padding:25px 10px;
 
-    margin-bottom:9px;
+    text-align:center;
 
-    border-radius:17px;
+    color:#75838b;
 
-    background:
-        rgba(17,29,37,.82);
+    font-size:13px;
 
-    border:
-        1px solid rgba(90,140,165,.12);
+    line-height:1.5;
 }
 
-.event-card-top{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    color:#fff;
-
-    font-weight:700;
-
-    font-size:14px;
-}
-
-.event-dot{
-
-    width:10px;
-    height:10px;
-
-    border-radius:50%;
-
-    background:#ff514a;
-
-    box-shadow:
-        0 0 10px rgba(255,70,60,.55);
-}
-
-.event-description{
-
-    margin-top:6px;
-
-    color:#89959c;
-
-    font-size:12px;
-
-    line-height:1.4;
-}
 
 /* =====================================================
-   ABOUT PANEL
+   ABOUT
 ===================================================== */
 
 .about-panel{
@@ -695,7 +647,8 @@ body{
     left:18px;
     right:18px;
 
-    transform:translateY(-50%);
+    transform:
+        translateY(-50%);
 
     padding:21px;
 
@@ -738,6 +691,7 @@ body{
     line-height:1.55;
 }
 
+
 /* =====================================================
    BOTTOM NAV
 ===================================================== */
@@ -752,7 +706,10 @@ body{
     right:14px;
 
     bottom:
-        max(10px, env(safe-area-inset-bottom));
+        max(
+            9px,
+            env(safe-area-inset-bottom)
+        );
 
     height:91px;
 
@@ -777,6 +734,7 @@ body{
         inset 0 1px rgba(255,255,255,.025);
 
     backdrop-filter:blur(22px);
+
     -webkit-backdrop-filter:blur(22px);
 }
 
@@ -791,6 +749,7 @@ body{
     flex-direction:column;
 
     align-items:center;
+
     justify-content:center;
 
     border-radius:22px;
@@ -821,24 +780,10 @@ body{
     line-height:1;
 }
 
+
 /* =====================================================
-   CUSTOM MAP LABELS
+   MAP LABELS
 ===================================================== */
-
-.map-label{
-
-    color:#d8e5eb;
-
-    font-size:13px;
-
-    font-weight:650;
-
-    white-space:nowrap;
-
-    text-shadow:
-        0 2px 6px #000,
-        0 0 10px #000;
-}
 
 .big-label{
 
@@ -856,125 +801,65 @@ body{
         0 2px 8px #000;
 }
 
-.aggressor-label{
-
-    color:#ff5c5c;
-
-    font-size:14px;
-
-    font-weight:800;
-
-    text-align:center;
-
-    white-space:nowrap;
-
-    text-shadow:
-        0 2px 8px #000;
-}
 
 /* =====================================================
-   EVENT MARKERS
-===================================================== */
-
-.event-marker{
-
-    width:31px;
-    height:31px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    border-radius:50%;
-
-    color:#fff;
-
-    font-size:16px;
-
-    background:
-        rgba(255,55,48,.22);
-
-    border:
-        2px solid #ff514a;
-
-    box-shadow:
-        0 0 0 5px rgba(255,55,48,.07),
-        0 0 20px rgba(255,60,50,.35);
-}
-
-.air-marker{
-
-    width:30px;
-    height:30px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    border-radius:50%;
-
-    color:#ffca3b;
-
-    font-size:17px;
-
-    background:
-        rgba(255,190,40,.14);
-
-    border:
-        2px solid #ffca3b;
-
-    box-shadow:
-        0 0 18px rgba(255,190,40,.3);
-}
-
-/* =====================================================
-   MOBILE ADJUSTMENTS
+   MOBILE
 ===================================================== */
 
 @media(max-width:390px){
 
     .top-card{
-        left:14px;
-        right:14px;
-        padding:14px;
+
+        left:13px;
+        right:13px;
+
+        padding:12px 13px;
     }
 
     .logo{
-        width:50px;
-        height:50px;
-        font-size:25px;
+
+        width:46px;
+        height:46px;
+
+        font-size:23px;
     }
 
     .title{
-        font-size:21px;
+
+        font-size:19px;
     }
 
     .subtitle{
-        font-size:13px;
+
+        font-size:12px;
     }
 
     .online{
-        padding:8px 11px;
-        font-size:13px;
+
+        padding:8px 10px;
+
+        font-size:12px;
     }
 
     .search{
-        height:52px;
+
+        height:47px;
     }
 
     .control{
+
         width:53px;
         height:53px;
     }
 
     .bottom-nav{
+
         left:10px;
         right:10px;
     }
 
     .nav-item{
+
         font-size:11px;
     }
 }
@@ -983,7 +868,9 @@ body{
 
 </head>
 
+
 <body>
+
 
 <!-- =====================================================
      MAP
@@ -993,7 +880,7 @@ body{
 
 
 <!-- =====================================================
-     TOP
+     TOP PANEL
 ===================================================== -->
 
 <div class="top-card">
@@ -1051,7 +938,7 @@ body{
 
 
 <!-- =====================================================
-     MAP CONTROLS
+     CONTROLS
 ===================================================== -->
 
 <div class="controls">
@@ -1063,12 +950,14 @@ body{
         +
     </div>
 
+
     <div
         class="control"
         id="zoomOut"
     >
         −
     </div>
+
 
     <div
         class="control location"
@@ -1172,7 +1061,7 @@ body{
 
 
 <!-- =====================================================
-     EVENTS
+     EVENTS PANEL
 ===================================================== -->
 
 <div
@@ -1185,77 +1074,10 @@ body{
     </div>
 
 
-    <div class="event-card">
+    <div class="empty-events">
 
-        <div class="event-card-top">
-
-            <span class="event-dot"></span>
-
-            Харківська область
-
-        </div>
-
-        <div class="event-description">
-            Публічна інформація про подію
-        </div>
-
-    </div>
-
-
-    <div class="event-card">
-
-        <div class="event-card-top">
-
-            <span class="event-dot"></span>
-
-            Донецька область
-
-        </div>
-
-        <div class="event-description">
-            Публічна інформація про подію
-        </div>
-
-    </div>
-
-
-    <div class="event-card">
-
-        <div class="event-card-top">
-
-            <span class="event-dot"></span>
-
-            Запорізька область
-
-        </div>
-
-        <div class="event-description">
-            Публічна інформація про подію
-        </div>
-
-    </div>
-
-
-    <div class="event-card">
-
-        <div class="event-card-top">
-
-            <span
-                class="event-dot"
-                style="
-                    background:#ffc83d;
-                    box-shadow:
-                    0 0 10px rgba(255,200,60,.5);
-                "
-            ></span>
-
-            Дніпропетровська область
-
-        </div>
-
-        <div class="event-description">
-            Публічна повітряна активність
-        </div>
+        Дані про події з'являться після
+        підключення джерела інформації.
 
     </div>
 
@@ -1275,19 +1097,21 @@ body{
         Monitor Map UA
     </h2>
 
-    <p>
-        Інтерактивна карта з візуалізацією
-        відкритої та публічної інформації.
-    </p>
 
     <p>
-        Карта створена для зручного перегляду
-        географічно прив'язаних подій та
-        адміністративних меж.
+        Інтерактивна карта для зручної
+        візуалізації географічної інформації.
     </p>
 
+
     <p>
-        Дані карти:
+        Джерело даних буде підключено
+        окремо.
+    </p>
+
+
+    <p>
+        Карта:
         OpenStreetMap / Esri.
     </p>
 
@@ -1298,7 +1122,23 @@ body{
      STATUS
 ===================================================== -->
 
-<div class="status">
+<div class="status"
+     style="
+        position:fixed;
+        z-index:900;
+        left:18px;
+        bottom:calc(
+            108px +
+            env(safe-area-inset-bottom)
+        );
+        padding:9px 13px;
+        border-radius:16px;
+        background:rgba(3,13,20,.92);
+        border:1px solid rgba(80,145,175,.18);
+        color:#7f8b92;
+        font-size:11px;
+     "
+>
 
     Дані: OpenStreetMap
 
@@ -1310,6 +1150,7 @@ body{
 ===================================================== -->
 
 <div class="bottom-nav">
+
 
     <div
         class="nav-item active"
@@ -1369,13 +1210,15 @@ body{
 </div>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 
 <script>
 
 /* =====================================================
-   TELEGRAM
+   TELEGRAM MINI APP
 ===================================================== */
 
 if(
@@ -1395,24 +1238,44 @@ if(
 ===================================================== */
 
 const map = L.map(
+
     "map",
+
     {
 
         zoomControl:false,
 
         attributionControl:true,
 
-        minZoom:5,
+        /*
+         * 4.5 = можна побачити всю Україну
+         * 18  = можна наблизитись до рівня вулиць
+         */
 
-        maxZoom:12,
+        minZoom:4.5,
 
-        zoomSnap:.25
+        maxZoom:18,
+
+        zoomSnap:.25,
+
+        zoomDelta:.5
 
     }
-)
-.setView(
-    [49.0,31.0],
-    5.75
+
+);
+
+
+/*
+ * Початковий вигляд:
+ * вся Україна + запас навколо
+ */
+
+map.setView(
+
+    [48.9,31.2],
+
+    5.5
+
 );
 
 
@@ -1437,7 +1300,7 @@ L.tileLayer(
 
 
 /* =====================================================
-   UKRAINE OBLASTS
+   OBLAST BORDERS
 ===================================================== */
 
 const oblastsURL =
@@ -1450,15 +1313,21 @@ let oblastLayer = null;
 fetch(oblastsURL)
 
 .then(
+
     response => response.json()
+
 )
 
 .then(
+
     data => {
 
         oblastLayer =
+
             L.geoJSON(
+
                 data,
+
                 {
 
                     style:function(){
@@ -1467,7 +1336,7 @@ fetch(oblastsURL)
 
                             color:"#39b9ff",
 
-                            weight:1.4,
+                            weight:1.35,
 
                             opacity:.88,
 
@@ -1475,7 +1344,7 @@ fetch(oblastsURL)
 
                             fillColor:"#06304a",
 
-                            fillOpacity:.07
+                            fillOpacity:.06
 
                         };
 
@@ -1483,15 +1352,22 @@ fetch(oblastsURL)
 
 
                     onEachFeature:function(
+
                         feature,
                         layer
+
                     ){
 
                         const name =
+
                             feature.properties?.name ||
+
                             feature.properties?.NAME ||
+
                             feature.properties?.NAME_UA ||
+
                             "";
+
 
                         if(name){
 
@@ -1522,11 +1398,11 @@ fetch(oblastsURL)
 
                                 this.setStyle({
 
-                                    weight:2.3,
+                                    weight:2.2,
 
                                     color:"#5bc8ff",
 
-                                    fillOpacity:.13
+                                    fillOpacity:.12
 
                                 });
 
@@ -1541,7 +1417,13 @@ fetch(oblastsURL)
 
                             function(){
 
-                                oblastLayer.resetStyle(this);
+                                if(oblastLayer){
+
+                                    oblastLayer.resetStyle(
+                                        this
+                                    );
+
+                                }
 
                             }
 
@@ -1550,6 +1432,7 @@ fetch(oblastsURL)
                     }
 
                 }
+
             )
             .addTo(map);
 
@@ -1572,32 +1455,27 @@ fetch(oblastsURL)
 
 
 /* =====================================================
-   OCCUPIED / HATCHED VISUAL ZONES
-   GENERALIZED VISUALIZATION
+   CRIMEA
+   VISUAL ZONE ONLY
+   NO TEXT / NO POPUP
 ===================================================== */
 
 const occupiedStyle = {
 
     color:"#ff4d4d",
 
-    weight:2,
+    weight:1.8,
 
-    opacity:.88,
+    opacity:.8,
 
     fillColor:"#ff3030",
 
-    fillOpacity:.12,
+    fillOpacity:.10,
 
     dashArray:"7 5"
 
 };
 
-
-/* =====================================================
-   CRIMEA
-===================================================== */
-
-const crimea =
 
 L.polygon(
 
@@ -1618,77 +1496,7 @@ L.polygon(
     occupiedStyle
 
 )
-.addTo(map);
 
-
-crimea.bindTooltip(
-
-    "Крим<br><small>тимчасово окупована територія</small>",
-
-    {
-
-        permanent:true,
-
-        direction:"center",
-
-        className:"aggressor-label"
-
-    }
-
-);
-
-
-/* =====================================================
-   AGGRESSOR LABEL
-===================================================== */
-
-L.marker(
-
-    [51.65,34.6],
-
-    {
-
-        icon:
-
-        L.divIcon(
-
-            {
-
-                className:"",
-
-                html:`
-
-                    <div class="aggressor-label">
-
-                        КРАЇНА-АГРЕСОР
-
-                        <br>
-
-                        <span
-                            style="
-                                font-size:10px;
-                                font-weight:500;
-                                color:#b86666;
-                            "
-                        >
-                            російська федерація
-                        </span>
-
-                    </div>
-
-                `,
-
-                iconSize:[210,50],
-
-                iconAnchor:[105,25]
-
-            }
-
-        )
-
-    }
-
-)
 .addTo(map);
 
 
@@ -1698,9 +1506,11 @@ L.marker(
 
 L.marker(
 
-    [49.15,31.1],
+    [49.1,31.2],
 
     {
+
+        interactive:false,
 
         icon:
 
@@ -1729,217 +1539,35 @@ L.marker(
     }
 
 )
+
 .addTo(map);
 
 
 /* =====================================================
-   MARKER ICONS
+   NO DEMO EVENTS
+=====================================================
+
+   Тут спеціально НІЧОГО не додаємо.
+
+   Коли ти дасте одне конкретне джерело,
+   підключимо його сюди.
+
 ===================================================== */
-
-function eventIcon(){
-
-    return L.divIcon({
-
-        className:"",
-
-        html:`
-
-            <div class="event-marker">
-                ✦
-            </div>
-
-        `,
-
-        iconSize:[31,31],
-
-        iconAnchor:[15,15]
-
-    });
-
-}
-
-
-function airIcon(){
-
-    return L.divIcon({
-
-        className:"",
-
-        html:`
-
-            <div class="air-marker">
-                ✈
-            </div>
-
-        `,
-
-        iconSize:[30,30],
-
-        iconAnchor:[15,15]
-
-    });
-
-}
 
 
 /* =====================================================
-   PUBLIC / DEMO EVENTS
-   GENERALIZED BY OBLAST
-===================================================== */
-
-const events = [
-
-    {
-
-        lat:49.99,
-
-        lng:36.23,
-
-        type:"event",
-
-        oblast:"Харківська область",
-
-        text:
-        "Публічна інформація про подію"
-
-    },
-
-    {
-
-        lat:48.01,
-
-        lng:37.80,
-
-        type:"event",
-
-        oblast:"Донецька область",
-
-        text:
-        "Публічна інформація про подію"
-
-    },
-
-    {
-
-        lat:47.84,
-
-        lng:35.14,
-
-        type:"event",
-
-        oblast:"Запорізька область",
-
-        text:
-        "Публічна інформація про подію"
-
-    },
-
-    {
-
-        lat:48.46,
-
-        lng:35.05,
-
-        type:"air",
-
-        oblast:"Дніпропетровська область",
-
-        text:
-        "Публічна повітряна активність"
-
-    },
-
-    {
-
-        lat:46.97,
-
-        lng:32.00,
-
-        type:"event",
-
-        oblast:"Миколаївська область",
-
-        text:
-        "Публічна інформація про подію"
-
-    }
-
-];
-
-
-events.forEach(
-
-    event => {
-
-        const marker =
-
-            L.marker(
-
-                [
-                    event.lat,
-                    event.lng
-                ],
-
-                {
-
-                    icon:
-                        event.type === "air"
-                        ? airIcon()
-                        : eventIcon()
-
-                }
-
-            )
-            .addTo(map);
-
-
-        marker.bindPopup(`
-
-            <div
-                style="
-                    font-family:
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    sans-serif;
-                    min-width:170px;
-                "
-            >
-
-                <b>
-                    ${event.oblast}
-                </b>
-
-                <br>
-
-                <span
-                    style="
-                        color:#777;
-                        font-size:12px;
-                    "
-                >
-                    ${event.text}
-                </span>
-
-            </div>
-
-        `);
-
-    }
-
-);
-
-
-/* =====================================================
-   ZOOM
+   ZOOM IN
 ===================================================== */
 
 document
+
 .getElementById("zoomIn")
+
 .addEventListener(
 
     "click",
 
-    () => {
+    function(){
 
         map.zoomIn();
 
@@ -1948,13 +1576,19 @@ document
 );
 
 
+/* =====================================================
+   ZOOM OUT
+===================================================== */
+
 document
+
 .getElementById("zoomOut")
+
 .addEventListener(
 
     "click",
 
-    () => {
+    function(){
 
         map.zoomOut();
 
@@ -1968,18 +1602,20 @@ document
 ===================================================== */
 
 document
+
 .getElementById("locate")
+
 .addEventListener(
 
     "click",
 
-    () => {
+    function(){
 
         map.locate({
 
             setView:true,
 
-            maxZoom:10
+            maxZoom:12
 
         });
 
@@ -1993,6 +1629,7 @@ document
 ===================================================== */
 
 const searchInput =
+
     document.getElementById(
         "searchInput"
     );
@@ -2014,7 +1651,10 @@ searchInput.addEventListener(
 
 
         const query =
-            searchInput.value.trim();
+
+            searchInput
+            .value
+            .trim();
 
 
         if(!query){
@@ -2044,10 +1684,12 @@ searchInput.addEventListener(
 
 
             const response =
+
                 await fetch(url);
 
 
             const results =
+
                 await response.json();
 
 
@@ -2071,7 +1713,7 @@ searchInput.addEventListener(
 
                     ],
 
-                    10,
+                    13,
 
                     {
 
@@ -2104,16 +1746,21 @@ searchInput.addEventListener(
 ===================================================== */
 
 const legendPanel =
+
     document.getElementById(
         "legendPanel"
     );
 
+
 const eventsPanel =
+
     document.getElementById(
         "eventsPanel"
     );
 
+
 const aboutPanel =
+
     document.getElementById(
         "aboutPanel"
     );
@@ -2141,7 +1788,9 @@ function closePanels(){
 ===================================================== */
 
 document
+
 .querySelectorAll(".nav-item")
+
 .forEach(
 
     item => {
@@ -2157,7 +1806,11 @@ document
 
 
                 document
-                .querySelectorAll(".nav-item")
+
+                .querySelectorAll(
+                    ".nav-item"
+                )
+
                 .forEach(
 
                     nav => {
@@ -2252,7 +1905,7 @@ document
 
 
 /* =====================================================
-   MAP CLICK = CLOSE PANELS
+   MAP CLICK
 ===================================================== */
 
 map.on(
@@ -2261,22 +1914,32 @@ map.on(
 
     function(){
 
-        if(
+        const panelIsOpen =
+
             legendPanel.classList.contains(
                 "open"
             ) ||
+
             eventsPanel.classList.contains(
                 "open"
             ) ||
+
             aboutPanel.classList.contains(
                 "open"
-            )
-        ){
+            );
+
+
+        if(panelIsOpen){
 
             closePanels();
 
+
             document
-            .querySelectorAll(".nav-item")
+
+            .querySelectorAll(
+                ".nav-item"
+            )
+
             .forEach(
 
                 nav => {
@@ -2291,9 +1954,11 @@ map.on(
 
 
             document
+
             .querySelector(
                 '[data-tab="map"]'
             )
+
             .classList.add(
                 "active"
             );
@@ -2313,7 +1978,7 @@ function resizeMap(){
 
     setTimeout(
 
-        () => {
+        function(){
 
             map.invalidateSize(
                 true
@@ -2333,6 +1998,7 @@ window.addEventListener(
     resizeMap
 );
 
+
 window.addEventListener(
     "orientationchange",
     resizeMap
@@ -2340,12 +2006,15 @@ window.addEventListener(
 
 
 setTimeout(
-    resizeMap,
-    700
-);
 
+    resizeMap,
+
+    700
+
+);
 
 </script>
 
 </body>
+
 </html>
