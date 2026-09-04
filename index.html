@@ -2,1387 +2,941 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Monitor Map UA</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-
-  width: 100%;
-  height: 100%;
-
-  overflow: hidden;
-
-  background: #05090d;
-  color: #fff;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "SF Pro Text",
-    Arial,
-    sans-serif;
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#02070b;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
+                 "Segoe UI",sans-serif;
 }
 
-body {
-  position: relative;
+#map{
+    position:absolute;
+    inset:0;
+    background:#03080d;
 }
 
+/* DARK MAP */
 
-/* =========================
-   MAP
-========================= */
-
-#map {
-  position: absolute;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  z-index: 1;
-
-  background: #05090d;
+.leaflet-tile{
+    filter:none;
 }
 
-
-/*
-  ВАЖЛИВО:
-  Тут більше НЕМАЄ brightness()
-  та інших фільтрів.
-*/
-
-.leaflet-tile-pane {
-  filter: none;
+.leaflet-container{
+    background:#03080d;
 }
 
+/* HEADER */
 
-/* Attribution */
+.top-card{
+    position:absolute;
+    z-index:1000;
+    top:28px;
+    left:22px;
+    right:22px;
 
-.leaflet-control-attribution {
-  background: rgba(3, 8, 12, 0.82) !important;
+    padding:18px;
 
-  color: rgba(255,255,255,0.42) !important;
+    border-radius:30px;
 
-  border-radius: 8px 0 0 0;
+    background:rgba(3,12,18,.93);
+    border:1px solid rgba(45,145,205,.22);
 
-  padding: 3px 6px !important;
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.55),
+        inset 0 1px rgba(255,255,255,.035);
 
-  font-size: 8px !important;
-
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
 }
 
-.leaflet-control-attribution a {
-  color: rgba(255,255,255,0.58) !important;
+.brand-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-
-/* =========================
-   TOP
-========================= */
-
-.top-area {
-
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 1000;
-
-  padding:
-    calc(env(safe-area-inset-top) + 12px)
-    14px
-    0
-    14px;
-
-  pointer-events: none;
+.brand-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
 
+.logo{
+    width:58px;
+    height:58px;
 
-.header-card {
+    border-radius:18px;
 
-  width: 100%;
-  max-width: 650px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-  margin: 0 auto;
+    font-size:30px;
 
-  padding: 15px 16px;
+    background:#071b28;
+    border:1px solid #075b86;
 
-  border-radius: 20px;
+    box-shadow:0 0 25px rgba(0,145,255,.12);
+}
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(7,18,27,0.96),
-      rgba(4,11,17,0.94)
+.title{
+    font-size:25px;
+    font-weight:750;
+    color:#fff;
+}
+
+.subtitle{
+    margin-top:3px;
+    font-size:16px;
+    color:#8b969d;
+}
+
+/* ONLINE */
+
+.online{
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    padding:11px 17px;
+
+    border-radius:30px;
+
+    color:#48e69b;
+    font-size:16px;
+    font-weight:650;
+
+    background:rgba(0,100,65,.17);
+    border:1px solid rgba(0,220,135,.28);
+}
+
+.online-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#35e69b;
+
+    box-shadow:0 0 13px #35e69b;
+}
+
+/* SEARCH */
+
+.search{
+    margin-top:17px;
+
+    height:64px;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 18px;
+
+    border-radius:23px;
+
+    background:rgba(20,30,37,.88);
+    border:1px solid rgba(150,180,195,.12);
+
+    color:#777f85;
+}
+
+.search-icon{
+    font-size:24px;
+    margin-right:17px;
+}
+
+.search input{
+    width:100%;
+    border:0;
+    outline:0;
+
+    background:transparent;
+
+    color:white;
+    font-size:18px;
+}
+
+.search input::placeholder{
+    color:#747c82;
+}
+
+/* MAP CONTROLS */
+
+.controls{
+    position:absolute;
+    z-index:900;
+
+    right:18px;
+    top:55%;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.control{
+    width:62px;
+    height:62px;
+
+    border-radius:21px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(3,14,21,.94);
+    border:1px solid rgba(90,140,170,.17);
+
+    color:#fff;
+    font-size:32px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.45);
+}
+
+.control.location{
+    color:#45bfff;
+    font-size:28px;
+}
+
+/* LEGEND */
+
+.legend{
+    position:absolute;
+    z-index:900;
+
+    left:22px;
+    bottom:145px;
+
+    width:285px;
+
+    padding:15px;
+
+    border-radius:22px;
+
+    background:rgba(3,13,20,.91);
+    border:1px solid rgba(90,150,180,.18);
+
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);
+
+    color:#b9c2c8;
+}
+
+.legend-title{
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:11px;
+    letter-spacing:.5px;
+}
+
+.legend-row{
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    margin:9px 0;
+
+    font-size:13px;
+}
+
+.legend-icon{
+    width:28px;
+    height:20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:7px;
+}
+
+.icon-event{
+    color:#ff5148;
+    font-size:18px;
+}
+
+.icon-direction{
+    color:#ff493f;
+    font-size:18px;
+}
+
+.icon-drone{
+    color:#ffc83d;
+    font-size:17px;
+}
+
+.icon-border{
+    border:2px dashed #4dbaff;
+}
+
+.icon-occupied{
+    border:2px solid #ff4b4b;
+    background:repeating-linear-gradient(
+        135deg,
+        rgba(255,60,60,.25) 0px,
+        rgba(255,60,60,.25) 4px,
+        transparent 4px,
+        transparent 8px
     );
-
-  border:
-    1px solid rgba(255,255,255,0.075);
-
-  box-shadow:
-    0 16px 42px rgba(0,0,0,0.48),
-    inset 0 1px 0 rgba(255,255,255,0.035);
-
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
-  pointer-events: auto;
 }
 
+/* STATUS */
 
-/* =========================
-   BRAND
-========================= */
+.status{
+    position:absolute;
+    z-index:900;
 
-.brand-row {
+    right:22px;
+    bottom:150px;
 
-  display: flex;
+    padding:11px 15px;
 
-  align-items: center;
-  justify-content: space-between;
+    border-radius:17px;
 
-  gap: 12px;
+    background:rgba(3,13,20,.91);
+    border:1px solid rgba(90,150,180,.18);
+
+    color:#89959c;
+    font-size:12px;
 }
 
+/* BOTTOM NAV */
 
-.brand-left {
+.bottom-nav{
+    position:absolute;
+    z-index:1000;
 
-  display: flex;
+    left:16px;
+    right:16px;
+    bottom:15px;
 
-  align-items: center;
+    height:100px;
 
-  gap: 11px;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
 
-  min-width: 0;
+    border-radius:29px;
+
+    background:rgba(2,12,18,.96);
+    border:1px solid rgba(70,130,165,.19);
+
+    box-shadow:
+        0 -10px 35px rgba(0,0,0,.45),
+        inset 0 1px rgba(255,255,255,.025);
+
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
 }
 
+.nav-item{
+    width:23%;
+    height:76px;
 
-.brand-icon {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
 
-  width: 42px;
-  height: 42px;
+    border-radius:24px;
 
-  flex: 0 0 42px;
+    color:#737d84;
+    font-size:13px;
+    font-weight:650;
 
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 13px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(17,119,202,0.28),
-      rgba(6,46,73,0.22)
-    );
-
-  border:
-    1px solid rgba(48,156,235,0.25);
-
-  font-size: 21px;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.05);
+    transition:.2s;
 }
 
-
-.brand-title {
-
-  font-size: 17px;
-
-  line-height: 20px;
-
-  font-weight: 760;
-
-  letter-spacing: -0.2px;
+.nav-item.active{
+    color:#43b9ff;
+    background:#062033;
 }
 
-
-.brand-subtitle {
-
-  margin-top: 2px;
-
-  color:
-    rgba(255,255,255,0.47);
-
-  font-size: 11px;
-
-  line-height: 14px;
+.nav-icon{
+    font-size:24px;
+    margin-bottom:5px;
 }
 
+/* MAP LABELS */
 
-/* =========================
-   ONLINE
-========================= */
+.map-label{
+    color:#dbe8ee;
 
-.online {
+    font-size:14px;
+    font-weight:600;
 
-  display: flex;
-
-  align-items: center;
-
-  gap: 7px;
-
-  padding: 7px 11px;
-
-  border-radius: 999px;
-
-  background:
-    rgba(37,203,116,0.095);
-
-  border:
-    1px solid rgba(37,203,116,0.16);
-
-  color: #70e3a0;
-
-  font-size: 10px;
-
-  font-weight: 720;
-
-  white-space: nowrap;
+    text-shadow:
+        0 2px 5px #000,
+        0 0 8px #000;
 }
 
+.big-label{
+    color:#78919d;
 
-.online-dot {
+    font-size:23px;
+    letter-spacing:8px;
+    font-weight:700;
 
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: #42df93;
-
-  box-shadow:
-    0 0 10px rgba(66,223,147,0.8);
+    text-shadow:0 2px 7px #000;
 }
 
+.aggressor-label{
+    color:#ff5b5b;
 
-/* =========================
-   SEARCH
-========================= */
+    font-weight:800;
+    font-size:15px;
 
-.search-wrap {
+    text-align:center;
 
-  position: relative;
-
-  margin-top: 13px;
+    text-shadow:0 2px 8px #000;
 }
 
+/* EVENT MARKER */
 
-.search-icon {
+.event-marker{
+    width:30px;
+    height:30px;
 
-  position: absolute;
+    border-radius:50%;
 
-  left: 14px;
-  top: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-  transform: translateY(-50%);
+    color:#fff;
+    font-size:15px;
 
-  color:
-    rgba(255,255,255,0.4);
+    background:rgba(255,50,45,.22);
+    border:2px solid #ff4d46;
 
-  font-size: 16px;
-
-  pointer-events: none;
+    box-shadow:
+        0 0 0 5px rgba(255,50,45,.08),
+        0 0 20px rgba(255,60,50,.35);
 }
 
+.drone-marker{
+    width:28px;
+    height:28px;
 
-#searchInput {
+    border-radius:50%;
 
-  width: 100%;
-  height: 44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-  padding: 0 42px;
+    background:rgba(255,190,40,.16);
+    border:2px solid #ffca3a;
 
-  border-radius: 13px;
+    color:#ffca3a;
 
-  border:
-    1px solid rgba(255,255,255,0.07);
-
-  outline: none;
-
-  background:
-    rgba(255,255,255,0.055);
-
-  color: #fff;
-
-  font-size: 13px;
+    box-shadow:0 0 18px rgba(255,190,40,.25);
 }
 
+/* REMOVE LEAFLET DEFAULT */
 
-#searchInput::placeholder {
-
-  color:
-    rgba(255,255,255,0.36);
+.leaflet-control-zoom{
+    display:none;
 }
 
-
-#searchInput:focus {
-
-  border-color:
-    rgba(55,169,255,0.42);
-
-  background:
-    rgba(255,255,255,0.075);
+.leaflet-control-attribution{
+    background:rgba(0,0,0,.55)!important;
+    color:#68747b!important;
+    font-size:8px!important;
 }
 
-
-.search-clear {
-
-  position: absolute;
-
-  right: 9px;
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  width: 28px;
-  height: 28px;
-
-  display: none;
-
-  align-items: center;
-  justify-content: center;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background:
-    rgba(255,255,255,0.075);
-
-  color:
-    rgba(255,255,255,0.62);
-
-  font-size: 15px;
+.leaflet-control-attribution a{
+    color:#73838b!important;
 }
-
-
-/* =========================
-   SEARCH RESULTS
-========================= */
-
-.search-results {
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-
-  top: 48px;
-
-  display: none;
-
-  max-height: 230px;
-
-  overflow-y: auto;
-
-  border-radius: 13px;
-
-  background:
-    rgba(4,12,19,0.97);
-
-  border:
-    1px solid rgba(255,255,255,0.075);
-
-  box-shadow:
-    0 18px 40px rgba(0,0,0,0.42);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-
-  z-index: 2000;
-}
-
-
-.search-result {
-
-  padding: 12px 14px;
-
-  border-bottom:
-    1px solid rgba(255,255,255,0.045);
-
-  font-size: 12px;
-
-  color:
-    rgba(255,255,255,0.75);
-}
-
-
-.result-main {
-
-  font-weight: 700;
-
-  color: #fff;
-}
-
-
-.result-secondary {
-
-  margin-top: 3px;
-
-  color:
-    rgba(255,255,255,0.35);
-
-  font-size: 10px;
-}
-
-
-/* =========================
-   MAP CONTROLS
-========================= */
-
-.map-controls {
-
-  position: absolute;
-
-  right: 14px;
-
-  top: 205px;
-
-  z-index: 900;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 9px;
-}
-
-
-.map-btn {
-
-  width: 42px;
-  height: 42px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 13px;
-
-  border:
-    1px solid rgba(255,255,255,0.09);
-
-  background:
-    rgba(5,15,23,0.90);
-
-  color: #fff;
-
-  font-size: 21px;
-
-  box-shadow:
-    0 9px 25px rgba(0,0,0,0.38),
-    inset 0 1px 0 rgba(255,255,255,0.04);
-
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-}
-
-
-.map-btn:active {
-
-  transform: scale(0.93);
-
-  background:
-    rgba(15,46,67,0.96);
-}
-
-
-.location-btn {
-
-  margin-top: 4px;
-
-  color: #58b8ff;
-
-  font-size: 18px;
-}
-
-
-/* =========================
-   STATUS
-========================= */
-
-.map-status {
-
-  position: absolute;
-
-  left: 14px;
-
-  bottom:
-    calc(env(safe-area-inset-bottom) + 88px);
-
-  z-index: 800;
-
-  padding: 8px 11px;
-
-  border-radius: 10px;
-
-  background:
-    rgba(4,12,19,0.82);
-
-  border:
-    1px solid rgba(255,255,255,0.065);
-
-  color:
-    rgba(255,255,255,0.48);
-
-  font-size: 9px;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  pointer-events: none;
-}
-
-
-/* =========================
-   BOTTOM NAV
-========================= */
-
-.bottom-nav {
-
-  position: absolute;
-
-  left: 10px;
-  right: 10px;
-
-  bottom:
-    calc(env(safe-area-inset-bottom) + 10px);
-
-  z-index: 1000;
-
-  height: 66px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  padding: 5px;
-
-  border-radius: 20px;
-
-  border:
-    1px solid rgba(255,255,255,0.075);
-
-  background:
-    rgba(4,13,20,0.95);
-
-  box-shadow:
-    0 16px 42px rgba(0,0,0,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.035);
-
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-}
-
-
-.nav-item {
-
-  border: 0;
-
-  background: transparent;
-
-  color:
-    rgba(255,255,255,0.38);
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 4px;
-
-  border-radius: 15px;
-
-  font-size: 9px;
-
-  font-weight: 650;
-}
-
-
-.nav-icon {
-
-  font-size: 18px;
-
-  line-height: 19px;
-}
-
-
-.nav-item.active {
-
-  color: #5cbaff;
-
-  background:
-    rgba(49,161,239,0.10);
-}
-
-
-.nav-item:active {
-
-  transform: scale(0.96);
-}
-
-
-/* =========================
-   PANELS
-========================= */
-
-.panel {
-
-  position: absolute;
-
-  inset: 0;
-
-  z-index: 1500;
-
-  display: none;
-
-  padding:
-    calc(env(safe-area-inset-top) + 18px)
-    14px
-    calc(env(safe-area-inset-bottom) + 88px);
-
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(26,115,176,0.13),
-      transparent 35%
-    ),
-    #050d14;
-
-  overflow-y: auto;
-}
-
-
-.panel.show {
-
-  display: block;
-}
-
-
-.panel-inner {
-
-  width: 100%;
-
-  max-width: 600px;
-
-  margin: 0 auto;
-}
-
-
-.panel-title {
-
-  margin-bottom: 7px;
-
-  font-size: 25px;
-
-  font-weight: 800;
-}
-
-
-.panel-subtitle {
-
-  margin-bottom: 20px;
-
-  color:
-    rgba(255,255,255,0.45);
-
-  font-size: 13px;
-
-  line-height: 19px;
-}
-
-
-.info-card {
-
-  padding: 17px;
-
-  margin-bottom: 10px;
-
-  border-radius: 17px;
-
-  background:
-    rgba(255,255,255,0.043);
-
-  border:
-    1px solid rgba(255,255,255,0.065);
-}
-
-
-.info-card-title {
-
-  margin-bottom: 6px;
-
-  font-size: 14px;
-
-  font-weight: 750;
-}
-
-
-.info-card-text {
-
-  color:
-    rgba(255,255,255,0.52);
-
-  font-size: 12px;
-
-  line-height: 18px;
-}
-
-
-/* =========================
-   MARKER
-========================= */
-
-.custom-marker {
-
-  width: 13px;
-  height: 13px;
-
-  border-radius: 50%;
-
-  background: #4db5ff;
-
-  border:
-    2px solid rgba(255,255,255,0.9);
-
-  box-shadow:
-    0 0 0 5px rgba(77,181,255,0.13),
-    0 0 17px rgba(77,181,255,0.65);
-}
-
-
-/* =========================
-   SMALL SCREEN
-========================= */
-
-@media (max-height: 650px) {
-
-  .map-controls {
-    top: 175px;
-  }
-
-  .header-card {
-    padding: 12px 14px;
-  }
-
-  .bottom-nav {
-    height: 60px;
-  }
-
-}
-
 </style>
 </head>
 
-
 <body>
-
-
-<!-- MAP -->
 
 <div id="map"></div>
 
+<!-- TOP CARD -->
 
-<!-- TOP -->
-
-<div class="top-area">
-
-  <div class="header-card">
+<div class="top-card">
 
     <div class="brand-row">
 
-      <div class="brand-left">
+        <div class="brand-left">
 
-        <div class="brand-icon">
-          🗺️
-        </div>
+            <div class="logo">🗺️</div>
 
-        <div>
-
-          <div class="brand-title">
-            Monitor Map UA
-          </div>
-
-          <div class="brand-subtitle">
-            Оперативна ситуація
-          </div>
+            <div>
+                <div class="title">Monitor Map UA</div>
+                <div class="subtitle">Оперативна ситуація</div>
+            </div>
 
         </div>
 
-      </div>
-
-
-      <div class="online">
-
-        <span class="online-dot"></span>
-
-        Онлайн
-
-      </div>
+        <div class="online">
+            <span class="online-dot"></span>
+            Онлайн
+        </div>
 
     </div>
 
-
-    <div class="search-wrap">
-
-      <span class="search-icon">
-        ⌕
-      </span>
-
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Пошук населеного пункту..."
-        autocomplete="off"
-      >
-
-      <button
-        id="searchClear"
-        class="search-clear"
-        type="button"
-      >
-        ×
-      </button>
-
-      <div
-        id="searchResults"
-        class="search-results"
-      ></div>
-
+    <div class="search">
+        <div class="search-icon">⌕</div>
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Пошук населеного пункту..."
+        >
     </div>
-
-  </div>
 
 </div>
-
 
 <!-- CONTROLS -->
 
-<div class="map-controls">
+<div class="controls">
 
-  <button
-    id="zoomIn"
-    class="map-btn"
-    type="button"
-  >
-    +
-  </button>
+    <div class="control" id="zoomIn">+</div>
 
-  <button
-    id="zoomOut"
-    class="map-btn"
-    type="button"
-  >
-    −
-  </button>
+    <div class="control" id="zoomOut">−</div>
 
-  <button
-    id="locationBtn"
-    class="map-btn location-btn"
-    type="button"
-  >
-    ⦿
-  </button>
+    <div class="control location" id="locate">◎</div>
 
 </div>
-
-
-<!-- STATUS -->
-
-<div class="map-status">
-  Dark Map · OpenStreetMap data
-</div>
-
-
-<!-- EVENTS -->
-
-<section
-  id="eventsPanel"
-  class="panel"
->
-
-  <div class="panel-inner">
-
-    <div class="panel-title">
-      Події
-    </div>
-
-    <div class="panel-subtitle">
-      Публічна та узагальнена інформація.
-    </div>
-
-    <div class="info-card">
-
-      <div class="info-card-title">
-        📡 Моніторинг
-      </div>
-
-      <div class="info-card-text">
-        Тут відображатимуться відкриті дані,
-        прив'язані до населених пунктів або регіонів.
-      </div>
-
-    </div>
-
-    <div class="info-card">
-
-      <div class="info-card-title">
-        🕐 Оновлення
-      </div>
-
-      <div class="info-card-text">
-        Джерела інформації можна буде підключити
-        на наступному етапі.
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
 
 <!-- LEGEND -->
 
-<section
-  id="legendPanel"
-  class="panel"
->
+<div class="legend">
 
-  <div class="panel-inner">
+    <div class="legend-title">ПОЗНАЧЕННЯ</div>
 
-    <div class="panel-title">
-      Легенда
+    <div class="legend-row">
+        <div class="legend-icon icon-event">✦</div>
+        <span>Події</span>
     </div>
 
-    <div class="panel-subtitle">
-      Умовні позначення карти.
+    <div class="legend-row">
+        <div class="legend-icon icon-direction">➜</div>
+        <span>Напрямок / активність</span>
     </div>
 
-    <div class="info-card">
-
-      <div class="info-card-title">
-        🔵 Населений пункт
-      </div>
-
-      <div class="info-card-text">
-        Географічне позначення або результат пошуку.
-      </div>
-
+    <div class="legend-row">
+        <div class="legend-icon icon-drone">✈</div>
+        <span>Повітряна активність</span>
     </div>
 
-    <div class="info-card">
-
-      <div class="info-card-title">
-        📍 Місцезнаходження
-      </div>
-
-      <div class="info-card-text">
-        Відображається після надання дозволу
-        на геолокацію.
-      </div>
-
+    <div class="legend-row">
+        <div class="legend-icon icon-occupied"></div>
+        <span>Окуповані території</span>
     </div>
 
-  </div>
-
-</section>
-
-
-<!-- ABOUT -->
-
-<section
-  id="aboutPanel"
-  class="panel"
->
-
-  <div class="panel-inner">
-
-    <div class="panel-title">
-      Про проєкт
+    <div class="legend-row">
+        <div class="legend-icon icon-border"></div>
+        <span>Межі областей</span>
     </div>
 
-    <div class="panel-subtitle">
-      Monitor Map UA
-    </div>
+</div>
 
-    <div class="info-card">
-
-      <div class="info-card-title">
-        🗺️ Monitor Map UA
-      </div>
-
-      <div class="info-card-text">
-        Інтерактивна карта для зручного перегляду
-        відкритої та загальнодоступної інформації.
-      </div>
-
-    </div>
-
-    <div class="info-card">
-
-      <div class="info-card-title">
-        🌐 Картографічні дані
-      </div>
-
-      <div class="info-card-text">
-        OpenStreetMap.
-      </div>
-
-    </div>
-
-    <div class="info-card">
-
-      <div class="info-card-title">
-        ℹ️ Версія
-      </div>
-
-      <div class="info-card-text">
-        Monitor Map UA · v3.0
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
+<div class="status">
+    Дані: OpenStreetMap
+</div>
 
 <!-- BOTTOM NAV -->
 
-<nav class="bottom-nav">
+<div class="bottom-nav">
 
-  <button
-    class="nav-item active"
-    data-page="map"
-    type="button"
-  >
+    <div class="nav-item active">
+        <div class="nav-icon">⌖</div>
+        Карта
+    </div>
 
-    <span class="nav-icon">
-      ⌖
-    </span>
+    <div class="nav-item">
+        <div class="nav-icon">◉</div>
+        Події
+    </div>
 
-    <span>
-      Карта
-    </span>
+    <div class="nav-item">
+        <div class="nav-icon">☷</div>
+        Легенда
+    </div>
 
-  </button>
+    <div class="nav-item">
+        <div class="nav-icon">ⓘ</div>
+        Про проєкт
+    </div>
 
-
-  <button
-    class="nav-item"
-    data-page="events"
-    type="button"
-  >
-
-    <span class="nav-icon">
-      ◉
-    </span>
-
-    <span>
-      Події
-    </span>
-
-  </button>
+</div>
 
 
-  <button
-    class="nav-item"
-    data-page="legend"
-    type="button"
-  >
-
-    <span class="nav-icon">
-      ☷
-    </span>
-
-    <span>
-      Легенда
-    </span>
-
-  </button>
-
-
-  <button
-    class="nav-item"
-    data-page="about"
-    type="button"
-  >
-
-    <span class="nav-icon">
-      ⓘ
-    </span>
-
-    <span>
-      Про проєкт
-    </span>
-
-  </button>
-
-</nav>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-
-
-/* =========================
-   TELEGRAM
-========================= */
-
-const tg =
-  window.Telegram?.WebApp;
-
-if (tg) {
-
-  tg.ready();
-
-  tg.expand();
-
-  try {
-
-    tg.setHeaderColor(
-      "#05090d"
-    );
-
-    tg.setBackgroundColor(
-      "#05090d"
-    );
-
-  } catch (e) {}
-
-}
-
 
 /* =========================
    MAP
 ========================= */
 
-const map =
-  L.map(
-    "map",
-    {
-      zoomControl: false,
-
-      attributionControl: true,
-
-      minZoom: 5,
-
-      maxZoom: 18,
-
-      zoomSnap: 0.5,
-
-      zoomDelta: 1
-    }
-  ).setView(
-    [49.0, 31.2],
-    6
-  );
+const map = L.map('map', {
+    zoomControl:false,
+    attributionControl:true,
+    minZoom:5,
+    maxZoom:12
+}).setView([49.0, 31.0], 5.6);
 
 
-/* =========================
-   DARK GRAY BASEMAP
-========================= */
-
-/*
-  Справжня темна карта Esri.
-
-  Вона вже темна сама по собі,
-  тому CSS-фільтр більше НЕ потрібен.
-*/
+/* DARK BASEMAP */
 
 L.tileLayer(
-
-  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-
-  {
-
-    maxZoom: 19,
-
-    attribution:
-      'Tiles &copy; Esri'
-
-  }
-
+    "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    {
+        maxZoom:19,
+        attribution:"Tiles © Esri"
+    }
 ).addTo(map);
 
 
 /* =========================
-   MARKER
+   UKRAINE OBLASTS
 ========================= */
 
-const markerIcon =
-  L.divIcon({
-
-    className: "",
-
-    html:
-      '<div class="custom-marker"></div>',
-
-    iconSize:
-      [13,13],
-
-    iconAnchor:
-      [6.5,6.5]
-
-  });
+const oblastsURL =
+"https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/Ukraine.geojson";
 
 
-/* =========================
-   ZOOM
-========================= */
+fetch(oblastsURL)
+.then(response => response.json())
+.then(data => {
 
-document
-  .getElementById("zoomIn")
-  .addEventListener(
-    "click",
-    () => {
-      map.zoomIn();
-    }
-  );
+    L.geoJSON(data, {
 
+        style:function(){
 
-document
-  .getElementById("zoomOut")
-  .addEventListener(
-    "click",
-    () => {
-      map.zoomOut();
-    }
-  );
+            return {
+                color:"#36a9e1",
+                weight:1.4,
+                opacity:.75,
 
+                dashArray:"5 6",
 
-/* =========================
-   LOCATION
-========================= */
-
-document
-  .getElementById("locationBtn")
-  .addEventListener(
-
-    "click",
-
-    () => {
-
-      if (!navigator.geolocation) {
-
-        alert(
-          "Геолокація недоступна."
-        );
-
-        return;
-      }
-
-
-      navigator.geolocation.getCurrentPosition(
-
-        (position) => {
-
-          const lat =
-            position.coords.latitude;
-
-          const lon =
-            position.coords.longitude;
-
-
-          map.setView(
-
-            [lat,lon],
-
-            14,
-
-            {
-              animate: true
-            }
-
-          );
-
-
-          L.marker(
-
-            [lat,lon],
-
-            {
-              icon:
-                markerIcon
-            }
-
-          )
-
-          .addTo(map)
-
-          .bindPopup(
-            "Ваше місцезнаходження"
-          )
-
-          .openPopup();
+                fillColor:"#062238",
+                fillOpacity:.08
+            };
 
         },
 
+        onEachFeature:function(feature, layer){
 
-        () => {
+            let name =
+                feature.properties?.name ||
+                feature.properties?.NAME ||
+                "";
 
-          alert(
-            "Не вдалося отримати місцезнаходження. Перевірте дозвіл на геолокацію."
-          );
-
-        },
-
-
-        {
-
-          enableHighAccuracy:
-            true,
-
-          timeout:
-            10000,
-
-          maximumAge:
-            60000
+            layer.bindTooltip(
+                name,
+                {
+                    sticky:true,
+                    className:"oblast-tooltip"
+                }
+            );
 
         }
 
-      );
+    }).addTo(map);
 
+})
+.catch(error => {
+    console.log("GeoJSON error:", error);
+});
+
+
+/* =========================
+   SVG HATCH
+========================= */
+
+function createHatch(){
+
+    const svg =
+        document.querySelector(".leaflet-overlay-pane svg");
+
+    if(!svg) return;
+
+    const ns =
+        "http://www.w3.org/2000/svg";
+
+    const defs =
+        document.createElementNS(ns,"defs");
+
+    const pattern =
+        document.createElementNS(ns,"pattern");
+
+    pattern.setAttribute("id","dangerHatch");
+    pattern.setAttribute("patternUnits","userSpaceOnUse");
+    pattern.setAttribute("width","10");
+    pattern.setAttribute("height","10");
+    pattern.setAttribute("patternTransform","rotate(35)");
+
+    const line =
+        document.createElementNS(ns,"line");
+
+    line.setAttribute("x1","0");
+    line.setAttribute("y1","0");
+    line.setAttribute("x2","0");
+    line.setAttribute("y2","10");
+
+    line.setAttribute("stroke","#ff4545");
+    line.setAttribute("stroke-width","3");
+    line.setAttribute("opacity",".35");
+
+    pattern.appendChild(line);
+    defs.appendChild(pattern);
+    svg.insertBefore(defs,svg.firstChild);
+}
+
+setTimeout(createHatch,800);
+
+
+/* =========================
+   OCCUPIED ZONES
+   APPROXIMATE VISUAL AREAS
+========================= */
+
+const occupiedStyle = {
+
+    color:"#ff4545",
+    weight:2,
+
+    opacity:.9,
+
+    fillColor:"#ff3030",
+    fillOpacity:.13,
+
+    dashArray:"7 5"
+};
+
+
+/* CRIMEA */
+
+const crimea = L.polygon([
+
+    [46.18,32.50],
+    [46.25,33.00],
+    [46.05,34.00],
+    [45.55,35.40],
+    [45.05,36.40],
+    [44.35,36.55],
+    [44.35,35.00],
+    [45.00,33.50],
+    [45.55,32.70]
+
+], occupiedStyle).addTo(map);
+
+crimea.bindTooltip(
+    "Крим<br><small>тимчасово окупована територія</small>",
+    {
+        permanent:true,
+        direction:"center",
+        className:"aggressor-label"
+    }
+);
+
+
+/* =========================
+   GENERIC EVENT MARKERS
+   OBLAST-LEVEL / ILLUSTRATIVE
+========================= */
+
+function eventIcon(symbol="✦"){
+
+    return L.divIcon({
+
+        className:"",
+
+        html:
+        `<div class="event-marker">${symbol}</div>`,
+
+        iconSize:[30,30],
+        iconAnchor:[15,15]
+    });
+}
+
+function droneIcon(){
+
+    return L.divIcon({
+
+        className:"",
+
+        html:
+        `<div class="drone-marker">✈</div>`,
+
+        iconSize:[28,28],
+        iconAnchor:[14,14]
+    });
+}
+
+
+/*
+  ДЕМО-ПОДІЇ.
+  Надалі тут можна підключити агреговані
+  публічні дані по областях.
+*/
+
+const demoEvents = [
+
+    {
+        lat:50.45,
+        lng:30.52,
+        type:"event",
+        title:"Київська область",
+        text:"Публічна подія"
+    },
+
+    {
+        lat:49.99,
+        lng:36.23,
+        type:"event",
+        title:"Харківська область",
+        text:"Публічна подія"
+    },
+
+    {
+        lat:48.46,
+        lng:35.05,
+        type:"drone",
+        title:"Дніпропетровська область",
+        text:"Повітряна активність"
+    },
+
+    {
+        lat:46.97,
+        lng:32.00,
+        type:"event",
+        title:"Миколаївська область",
+        text:"Публічна подія"
+    },
+
+    {
+        lat:47.84,
+        lng:35.14,
+        type:"event",
+        title:"Запорізька область",
+        text:"Публічна подія"
+    },
+
+    {
+        lat:48.01,
+        lng:37.80,
+        type:"event",
+        title:"Донецька область",
+        text:"Публічна подія"
     }
 
-  );
+];
+
+
+demoEvents.forEach(event => {
+
+    const marker =
+        L.marker(
+            [event.lat,event.lng],
+            {
+                icon:
+                event.type === "drone"
+                ? droneIcon()
+                : eventIcon()
+            }
+        ).addTo(map);
+
+    marker.bindPopup(`
+        <b>${event.title}</b><br>
+        ${event.text}
+    `);
+
+});
+
+
+/* =========================
+   UKRAINE LABEL
+========================= */
+
+L.marker(
+    [49.0,31.2],
+    {
+        icon:L.divIcon({
+            className:"",
+            html:
+            `<div class="big-label">УКРАЇНА</div>`,
+            iconSize:[220,40],
+            iconAnchor:[110,20]
+        })
+    }
+).addTo(map);
+
+
+/* =========================
+   AGGRESSOR LABEL
+========================= */
+
+L.marker(
+    [51.6,34.7],
+    {
+        icon:L.divIcon({
+            className:"",
+            html:`
+                <div class="aggressor-label">
+                    КРАЇНА-АГРЕСОР<br>
+                    <span style="
+                        font-size:11px;
+                        font-weight:500;
+                        color:#bd6666;
+                    ">
+                    (російська федерація)
+                    </span>
+                </div>
+            `,
+            iconSize:[220,55],
+            iconAnchor:[110,27]
+        })
+    }
+).addTo(map);
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+document
+.getElementById("zoomIn")
+.onclick = () => map.zoomIn();
+
+document
+.getElementById("zoomOut")
+.onclick = () => map.zoomOut();
+
+
+document
+.getElementById("locate")
+.onclick = () => {
+
+    map.locate({
+        setView:true,
+        maxZoom:10
+    });
+
+};
 
 
 /* =========================
@@ -1390,518 +944,97 @@ document
 ========================= */
 
 const searchInput =
-  document.getElementById(
-    "searchInput"
-  );
-
-const searchClear =
-  document.getElementById(
-    "searchClear"
-  );
-
-const searchResults =
-  document.getElementById(
-    "searchResults"
-  );
-
-
-let searchTimer = null;
+    document.getElementById("searchInput");
 
 
 searchInput.addEventListener(
+    "keydown",
+    async function(e){
 
-  "input",
+        if(e.key !== "Enter") return;
 
-  () => {
+        const query =
+            searchInput.value.trim();
 
-    const value =
-      searchInput.value.trim();
+        if(!query) return;
 
+        try{
 
-    searchClear.style.display =
-      value.length
-        ? "flex"
-        : "none";
+            const url =
+                "https://nominatim.openstreetmap.org/search" +
+                "?format=json" +
+                "&limit=1" +
+                "&countrycodes=ua" +
+                "&accept-language=uk" +
+                "&q=" +
+                encodeURIComponent(query);
 
+            const response =
+                await fetch(url);
 
-    clearTimeout(
-      searchTimer
-    );
+            const results =
+                await response.json();
 
+            if(results.length){
 
-    if (value.length < 3) {
+                const place = results[0];
 
-      searchResults.innerHTML =
-        "";
+                map.flyTo(
+                    [
+                        parseFloat(place.lat),
+                        parseFloat(place.lon)
+                    ],
+                    10,
+                    {
+                        duration:1.2
+                    }
+                );
 
-      searchResults.style.display =
-        "none";
+            }
 
-      return;
+        }catch(error){
+
+            console.log(error);
+
+        }
+
     }
-
-
-    searchTimer =
-      setTimeout(
-
-        () => {
-
-          searchPlace(
-            value
-          );
-
-        },
-
-        500
-
-      );
-
-  }
-
 );
-
-
-searchClear.addEventListener(
-
-  "click",
-
-  () => {
-
-    searchInput.value =
-      "";
-
-    searchClear.style.display =
-      "none";
-
-    searchResults.innerHTML =
-      "";
-
-    searchResults.style.display =
-      "none";
-
-    searchInput.focus();
-
-  }
-
-);
-
-
-/* =========================
-   NOMINATIM SEARCH
-========================= */
-
-async function searchPlace(
-  query
-) {
-
-  try {
-
-    searchResults.innerHTML =
-      '<div class="search-result">Пошук...</div>';
-
-    searchResults.style.display =
-      "block";
-
-
-    const url =
-
-      "https://nominatim.openstreetmap.org/search" +
-
-      "?format=json" +
-
-      "&limit=5" +
-
-      "&countrycodes=ua" +
-
-      "&accept-language=uk" +
-
-      "&q=" +
-
-      encodeURIComponent(
-        query
-      );
-
-
-    const response =
-      await fetch(url);
-
-
-    const data =
-      await response.json();
-
-
-    if (!data.length) {
-
-      searchResults.innerHTML =
-        '<div class="search-result">Нічого не знайдено</div>';
-
-      return;
-    }
-
-
-    searchResults.innerHTML =
-      "";
-
-
-    data.forEach(
-
-      (place) => {
-
-        const item =
-          document.createElement(
-            "div"
-          );
-
-
-        item.className =
-          "search-result";
-
-
-        const main =
-          document.createElement(
-            "div"
-          );
-
-        main.className =
-          "result-main";
-
-
-        main.textContent =
-          place.display_name
-            .split(",")[0];
-
-
-        const secondary =
-          document.createElement(
-            "div"
-          );
-
-        secondary.className =
-          "result-secondary";
-
-
-        secondary.textContent =
-          place.display_name;
-
-
-        item.appendChild(
-          main
-        );
-
-        item.appendChild(
-          secondary
-        );
-
-
-        item.addEventListener(
-
-          "click",
-
-          () => {
-
-            const lat =
-              parseFloat(
-                place.lat
-              );
-
-            const lon =
-              parseFloat(
-                place.lon
-              );
-
-
-            map.setView(
-
-              [lat,lon],
-
-              13,
-
-              {
-                animate: true
-              }
-
-            );
-
-
-            L.marker(
-
-              [lat,lon],
-
-              {
-                icon:
-                  markerIcon
-              }
-
-            )
-
-            .addTo(map)
-
-            .bindPopup(
-
-              "<b>" +
-
-              escapeHtml(
-                place.display_name
-                  .split(",")[0]
-              ) +
-
-              "</b>"
-
-            )
-
-            .openPopup();
-
-
-            searchResults.style.display =
-              "none";
-
-          }
-
-        );
-
-
-        searchResults.appendChild(
-          item
-        );
-
-      }
-
-    );
-
-  }
-
-
-  catch (error) {
-
-    searchResults.innerHTML =
-      '<div class="search-result">Помилка пошуку</div>';
-
-  }
-
-}
-
-
-function escapeHtml(text) {
-
-  return text
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
 
 
 /* =========================
    NAVIGATION
 ========================= */
 
-const panels = {
-
-  events:
-    document.getElementById(
-      "eventsPanel"
-    ),
-
-  legend:
-    document.getElementById(
-      "legendPanel"
-    ),
-
-  about:
-    document.getElementById(
-      "aboutPanel"
-    )
-
-};
-
-
-const navItems =
-  document.querySelectorAll(
-    ".nav-item"
-  );
-
-
-function showMap() {
-
-  Object.values(
-    panels
-  ).forEach(
-
-    (panel) => {
-
-      panel.classList.remove(
-        "show"
-      );
-
-    }
-
-  );
-
-
-  setTimeout(
-
-    () => {
-
-      map.invalidateSize();
-
-    },
-
-    100
-
-  );
-
-}
-
-
-function showPanel(name) {
-
-  Object.entries(
-    panels
-  ).forEach(
-
-    ([key,panel]) => {
-
-      if (key === name) {
-
-        panel.classList.add(
-          "show"
-        );
-
-      } else {
-
-        panel.classList.remove(
-          "show"
-        );
-
-      }
-
-    }
-
-  );
-
-}
-
-
-navItems.forEach(
-
-  (item) => {
+document
+.querySelectorAll(".nav-item")
+.forEach(item => {
 
     item.addEventListener(
+        "click",
+        function(){
 
-      "click",
-
-      () => {
-
-        navItems.forEach(
-
-          (nav) => {
-
-            nav.classList.remove(
-              "active"
+            document
+            .querySelectorAll(".nav-item")
+            .forEach(x =>
+                x.classList.remove("active")
             );
 
-          }
-
-        );
-
-
-        item.classList.add(
-          "active"
-        );
-
-
-        const page =
-          item.dataset.page;
-
-
-        if (page === "map") {
-
-          showMap();
+            this.classList.add("active");
 
         }
-
-
-        if (page === "events") {
-
-          showPanel(
-            "events"
-          );
-
-        }
-
-
-        if (page === "legend") {
-
-          showPanel(
-            "legend"
-          );
-
-        }
-
-
-        if (page === "about") {
-
-          showPanel(
-            "about"
-          );
-
-        }
-
-      }
-
     );
 
-  }
-
-);
+});
 
 
 /* =========================
-   RESIZE
+   MAP RESIZE
 ========================= */
 
-window.addEventListener(
-
-  "resize",
-
-  () => {
-
-    setTimeout(
-
-      () => {
-
-        map.invalidateSize();
-
-      },
-
-      250
-
-    );
-
-  }
-
+setTimeout(
+    () => map.invalidateSize(),
+    500
 );
 
 </script>
