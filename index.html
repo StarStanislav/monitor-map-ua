@@ -404,10 +404,10 @@ body{
 
 
 /* =====================================================
-   LEGEND
+   INFO PANEL
 ===================================================== */
 
-.legend{
+.info-panel{
 
     position:fixed;
 
@@ -422,7 +422,7 @@ body{
             env(safe-area-inset-bottom)
         );
 
-    max-height:48vh;
+    max-height:52vh;
 
     overflow:auto;
 
@@ -448,15 +448,15 @@ body{
     display:none;
 
     animation:
-        legendIn .18s ease-out;
+        panelIn .18s ease-out;
 }
 
-.legend.open{
+.info-panel.open{
 
     display:block;
 }
 
-@keyframes legendIn{
+@keyframes panelIn{
 
     from{
 
@@ -475,20 +475,23 @@ body{
     }
 }
 
-.legend-title{
+.panel-title{
 
     color:#fff;
 
-    font-size:16px;
+    font-size:18px;
 
     font-weight:800;
 
-    letter-spacing:.6px;
-
-    margin-bottom:13px;
+    margin-bottom:15px;
 }
 
-.legend-row{
+
+/* =====================================================
+   INFO ROWS
+===================================================== */
+
+.info-row{
 
     display:flex;
 
@@ -501,7 +504,7 @@ body{
     font-size:14px;
 }
 
-.legend-icon{
+.info-icon{
 
     width:31px;
     height:23px;
@@ -608,17 +611,6 @@ body{
     display:block;
 }
 
-.panel-title{
-
-    color:#fff;
-
-    font-size:18px;
-
-    font-weight:800;
-
-    margin-bottom:15px;
-}
-
 .empty-events{
 
     padding:25px 10px;
@@ -649,6 +641,10 @@ body{
 
     transform:
         translateY(-50%);
+
+    max-height:75vh;
+
+    overflow:auto;
 
     padding:21px;
 
@@ -689,6 +685,186 @@ body{
     font-size:13px;
 
     line-height:1.55;
+}
+
+
+/* =====================================================
+   SOURCE CARD
+===================================================== */
+
+.source-card{
+
+    margin-top:17px;
+
+    padding:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    border-radius:19px;
+
+    background:
+        rgba(13,29,39,.82);
+
+    border:
+        1px solid rgba(60,150,200,.20);
+}
+
+.source-logo{
+
+    width:52px;
+    height:52px;
+
+    flex:none;
+
+    border-radius:15px;
+
+    object-fit:cover;
+
+    background:#07151e;
+
+    border:
+        1px solid rgba(70,160,210,.25);
+
+    box-shadow:
+        0 0 18px rgba(0,150,255,.10);
+}
+
+.source-info{
+
+    min-width:0;
+
+    flex:1;
+}
+
+.source-label{
+
+    color:#687780;
+
+    font-size:11px;
+
+    margin-bottom:4px;
+}
+
+.source-name{
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:750;
+
+    line-height:1.25;
+}
+
+.source-location{
+
+    margin-top:3px;
+
+    color:#89979e;
+
+    font-size:11px;
+}
+
+.source-button{
+
+    margin-top:13px;
+
+    width:100%;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fc0,
+            #075985
+        );
+
+    border:
+        1px solid rgba(90,190,240,.30);
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:750;
+
+    text-decoration:none;
+
+    box-shadow:
+        0 8px 24px rgba(0,100,170,.22);
+}
+
+.source-button:active{
+
+    transform:scale(.98);
+}
+
+
+/* =====================================================
+   ABOUT FOOTER
+===================================================== */
+
+.about-note{
+
+    margin-top:15px;
+
+    padding-top:14px;
+
+    border-top:
+        1px solid rgba(120,160,180,.10);
+
+    color:#68767d;
+
+    font-size:11px;
+
+    line-height:1.5;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status{
+
+    position:fixed;
+
+    z-index:900;
+
+    left:18px;
+
+    bottom:
+        calc(
+            108px +
+            env(safe-area-inset-bottom)
+        );
+
+    padding:9px 13px;
+
+    border-radius:16px;
+
+    background:
+        rgba(3,13,20,.92);
+
+    border:
+        1px solid rgba(80,145,175,.18);
+
+    color:#7f8b92;
+
+    font-size:11px;
 }
 
 
@@ -782,6 +958,39 @@ body{
 
 
 /* =====================================================
+   USER LOCATION
+===================================================== */
+
+.user-location-marker{
+
+    width:22px;
+    height:22px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+}
+
+.user-location-dot{
+
+    width:14px;
+    height:14px;
+
+    border-radius:50%;
+
+    background:#39b9ff;
+
+    border:
+        3px solid #fff;
+
+    box-shadow:
+        0 0 0 5px rgba(57,185,255,.20),
+        0 0 20px rgba(57,185,255,.75);
+}
+
+
+/* =====================================================
    MOBILE
 ===================================================== */
 
@@ -841,6 +1050,13 @@ body{
 
         font-size:11px;
     }
+
+    .about-panel{
+
+        left:13px;
+        right:13px;
+    }
+
 }
 
 </style>
@@ -949,22 +1165,22 @@ body{
 
 
 <!-- =====================================================
-     LEGEND
+     INFO PANEL
 ===================================================== -->
 
 <div
-    class="legend"
-    id="legendPanel"
+    class="info-panel"
+    id="infoPanel"
 >
 
-    <div class="legend-title">
-        ПОЗНАЧЕННЯ
+    <div class="panel-title">
+        ІНФО
     </div>
 
 
-    <div class="legend-row">
+    <div class="info-row">
 
-        <div class="legend-icon icon-event">
+        <div class="info-icon icon-event">
             ✦
         </div>
 
@@ -975,9 +1191,9 @@ body{
     </div>
 
 
-    <div class="legend-row">
+    <div class="info-row">
 
-        <div class="legend-icon icon-activity">
+        <div class="info-icon icon-activity">
             ➜
         </div>
 
@@ -988,9 +1204,9 @@ body{
     </div>
 
 
-    <div class="legend-row">
+    <div class="info-row">
 
-        <div class="legend-icon icon-air">
+        <div class="info-icon icon-air">
             ✈
         </div>
 
@@ -1001,21 +1217,21 @@ body{
     </div>
 
 
-    <div class="legend-row">
+    <div class="info-row">
 
-        <div class="legend-icon icon-occupied">
+        <div class="info-icon icon-occupied">
         </div>
 
         <span>
-            Окуповані території
+            Окремі територіальні позначення
         </span>
 
     </div>
 
 
-    <div class="legend-row">
+    <div class="info-row">
 
-        <div class="legend-icon icon-oblast">
+        <div class="info-icon icon-oblast">
         </div>
 
         <span>
@@ -1025,9 +1241,9 @@ body{
     </div>
 
 
-    <div class="legend-row">
+    <div class="info-row">
 
-        <div class="legend-icon icon-border">
+        <div class="info-icon icon-border">
         </div>
 
         <span>
@@ -1079,20 +1295,62 @@ body{
 
     <p>
         Інтерактивна карта для зручної
-        візуалізації географічної інформації.
+        візуалізації подій та географічної
+        інформації.
     </p>
 
 
-    <p>
-        Джерело даних буде підключено
-        окремо.
-    </p>
+    <div class="source-card">
+
+        <img
+            class="source-logo"
+            src="chyste-nebo.jpg"
+            alt="Чисте небо"
+        >
 
 
-    <p>
-        Карта:
+        <div class="source-info">
+
+            <div class="source-label">
+                ДЖЕРЕЛО ДАНИХ
+            </div>
+
+            <div class="source-name">
+                Чисте небо
+            </div>
+
+            <div class="source-location">
+                Київська область та Київ
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <a
+        class="source-button"
+        href="https://t.me/chyste_nebo"
+        target="_blank"
+        rel="noopener"
+    >
+        Відкрити канал →
+    </a>
+
+
+    <div class="about-note">
+
+        Дані для карти надходять із відкритого
+        джерела та можуть відображатися
+        із затримкою залежно від доступності
+        й актуальності інформації.
+
+        <br><br>
+
+        Картографічна основа:
         OpenStreetMap / Esri.
-    </p>
+
+    </div>
 
 </div>
 
@@ -1101,25 +1359,12 @@ body{
      STATUS
 ===================================================== -->
 
-<div class="status"
-     style="
-        position:fixed;
-        z-index:900;
-        left:18px;
-        bottom:calc(
-            108px +
-            env(safe-area-inset-bottom)
-        );
-        padding:9px 13px;
-        border-radius:16px;
-        background:rgba(3,13,20,.92);
-        border:1px solid rgba(80,145,175,.18);
-        color:#7f8b92;
-        font-size:11px;
-     "
+<div
+    class="status"
+    id="status"
 >
 
-    Дані: OpenStreetMap
+    Карта: OpenStreetMap / Esri
 
 </div>
 
@@ -1161,14 +1406,14 @@ body{
 
     <div
         class="nav-item"
-        data-tab="legend"
+        data-tab="info"
     >
 
         <div class="nav-icon">
             ☷
         </div>
 
-        Легенда
+        Інфо
 
     </div>
 
@@ -1278,12 +1523,13 @@ L.tileLayer(
 
     {
 
-        maxZoom:19,
+        maxNativeZoom:16,
 
-        opacity:1,
+        maxZoom:18,
 
-        attribution:
-            ""
+        opacity:.95,
+
+        attribution:""
 
     }
 
@@ -1446,30 +1692,247 @@ fetch(oblastsURL)
 
 
 /* =====================================================
-   NO CRIMEA HIGHLIGHT
-=====================================================
-
-   Крим не виділяється окремим кольором.
-   Залишається частиною України та має
-   звичайний синій контур карти.
-
+   USER LOCATION
 ===================================================== */
+
+let userLocationMarker = null;
+
+let userAccuracyCircle = null;
+
+
+const userLocationIcon =
+
+    L.divIcon({
+
+        className:"",
+
+        html:`
+
+            <div class="user-location-marker">
+
+                <div class="user-location-dot"></div>
+
+            </div>
+
+        `,
+
+        iconSize:[22,22],
+
+        iconAnchor:[11,11]
+
+    });
+
+
+function showUserLocation(position){
+
+    const lat =
+        position.latlng.lat;
+
+    const lng =
+        position.latlng.lng;
+
+    const accuracy =
+        position.accuracy || 0;
+
+
+    if(userLocationMarker){
+
+        userLocationMarker.setLatLng(
+            [lat,lng]
+        );
+
+    }
+
+    else{
+
+        userLocationMarker =
+
+            L.marker(
+
+                [lat,lng],
+
+                {
+
+                    icon:
+                        userLocationIcon,
+
+                    interactive:false,
+
+                    zIndexOffset:1000
+
+                }
+
+            )
+
+            .addTo(map);
+
+    }
+
+
+    if(userAccuracyCircle){
+
+        userAccuracyCircle.setLatLng(
+            [lat,lng]
+        );
+
+        userAccuracyCircle.setRadius(
+            Math.min(
+                Math.max(accuracy,30),
+                1500
+            )
+        );
+
+    }
+
+    else{
+
+        userAccuracyCircle =
+
+            L.circle(
+
+                [lat,lng],
+
+                {
+
+                    radius:
+                        Math.min(
+                            Math.max(accuracy,30),
+                            1500
+                        ),
+
+                    color:"#39b9ff",
+
+                    weight:1,
+
+                    opacity:.35,
+
+                    fillColor:"#39b9ff",
+
+                    fillOpacity:.08,
+
+                    interactive:false
+
+                }
+
+            )
+
+            .addTo(map);
+
+    }
+
+
+    map.flyTo(
+
+        [lat,lng],
+
+        Math.max(
+            map.getZoom(),
+            12
+        ),
+
+        {
+
+            duration:1.1
+
+        }
+
+    );
+
+}
+
+
+map.on(
+
+    "locationfound",
+
+    function(event){
+
+        showUserLocation(
+            event
+        );
+
+        setStatus(
+            "Геолокацію визначено"
+        );
+
+    }
+
+);
+
+
+map.on(
+
+    "locationerror",
+
+    function(event){
+
+        console.log(
+            "Location error:",
+            event
+        );
+
+
+        setStatus(
+            "Не вдалося визначити геолокацію"
+        );
+
+    }
+
+);
 
 
 /* =====================================================
-   NO LARGE UKRAINE LABEL
-=====================================================
-
-   Великий напис "УКРАЇНА" прибрано.
-
+   LOCATION BUTTON
 ===================================================== */
+
+document
+
+.getElementById("locate")
+
+.addEventListener(
+
+    "click",
+
+    function(){
+
+        setStatus(
+            "Визначаємо місцезнаходження..."
+        );
+
+
+        map.locate({
+
+            setView:false,
+
+            enableHighAccuracy:true,
+
+            maximumAge:10000,
+
+            timeout:10000
+
+        });
+
+    }
+
+);
 
 
 /* =====================================================
-   NO DEMO EVENTS
+   STATUS
 ===================================================== */
 
+function setStatus(text){
 
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.textContent =
+        text;
+
+}
 
 
 /* =====================================================
@@ -1515,33 +1978,6 @@ document
 
 
 /* =====================================================
-   LOCATION
-===================================================== */
-
-document
-
-.getElementById("locate")
-
-.addEventListener(
-
-    "click",
-
-    function(){
-
-        map.locate({
-
-            setView:true,
-
-            maxZoom:12
-
-        });
-
-    }
-
-);
-
-
-/* =====================================================
    SEARCH
 ===================================================== */
 
@@ -1579,6 +2015,11 @@ searchInput.addEventListener(
             return;
 
         }
+
+
+        setStatus(
+            "Пошук..."
+        );
 
 
         try{
@@ -1640,6 +2081,19 @@ searchInput.addEventListener(
 
                 );
 
+
+                setStatus(
+                    place.display_name
+                );
+
+            }
+
+            else{
+
+                setStatus(
+                    "Населений пункт не знайдено"
+                );
+
             }
 
         }
@@ -1649,6 +2103,11 @@ searchInput.addEventListener(
             console.log(
                 "Search error:",
                 error
+            );
+
+
+            setStatus(
+                "Помилка пошуку"
             );
 
         }
@@ -1662,10 +2121,10 @@ searchInput.addEventListener(
    PANELS
 ===================================================== */
 
-const legendPanel =
+const infoPanel =
 
     document.getElementById(
-        "legendPanel"
+        "infoPanel"
     );
 
 
@@ -1685,7 +2144,7 @@ const aboutPanel =
 
 function closePanels(){
 
-    legendPanel.classList.remove(
+    infoPanel.classList.remove(
         "open"
     );
 
@@ -1753,7 +2212,7 @@ document
                 }
 
 
-                if(tab === "legend"){
+                if(tab === "info"){
 
                     eventsPanel
                     .classList.remove(
@@ -1765,7 +2224,7 @@ document
                         "open"
                     );
 
-                    legendPanel
+                    infoPanel
                     .classList.toggle(
                         "open"
                     );
@@ -1775,7 +2234,7 @@ document
 
                 if(tab === "events"){
 
-                    legendPanel
+                    infoPanel
                     .classList.remove(
                         "open"
                     );
@@ -1795,7 +2254,7 @@ document
 
                 if(tab === "about"){
 
-                    legendPanel
+                    infoPanel
                     .classList.remove(
                         "open"
                     );
@@ -1833,7 +2292,7 @@ map.on(
 
         const panelIsOpen =
 
-            legendPanel.classList.contains(
+            infoPanel.classList.contains(
                 "open"
             ) ||
 
