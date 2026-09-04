@@ -8,10 +8,10 @@
 <meta
     name="viewport"
     content="width=device-width,
-             initial-scale=1,
-             maximum-scale=1,
-             user-scalable=no,
-             viewport-fit=cover"
+    initial-scale=1,
+    maximum-scale=1,
+    user-scalable=no,
+    viewport-fit=cover"
 >
 
 <title>Monitor Map UA</title>
@@ -20,7 +20,6 @@
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
-
 
 <style>
 
@@ -55,21 +54,15 @@ body{
 }
 
 body{
-
     position:fixed;
-
     inset:0;
 }
 
 #map{
-
     position:fixed;
-
     inset:0;
-
     width:100%;
     height:100%;
-
     background:#02070b;
 }
 
@@ -79,26 +72,19 @@ body{
 ===================================================== */
 
 .leaflet-container{
-
     background:#02070b;
 }
 
-.leaflet-tile{
-
-    filter:none;
-}
-
 .leaflet-control-zoom{
-
     display:none;
 }
 
 .leaflet-control-attribution{
 
     background:
-        rgba(0,0,0,.62)!important;
+        rgba(0,0,0,.65)!important;
 
-    color:#65737b!important;
+    color:#68767e!important;
 
     font-size:8px!important;
 
@@ -108,13 +94,33 @@ body{
 }
 
 .leaflet-control-attribution a{
-
-    color:#71828b!important;
+    color:#73848c!important;
 }
 
 
 /* =====================================================
-   TOP PANEL
+   HIGH ZOOM STREET MAP
+===================================================== */
+
+/*
+   Esri dark canvas не має нормальних тайлів
+   на дуже великому zoom.
+
+   Тому після zoom 15 автоматично показуємо
+   вуличну карту і затемнюємо її.
+*/
+
+.street-tiles{
+
+    filter:
+        brightness(.52)
+        saturate(.55)
+        contrast(1.08);
+}
+
+
+/* =====================================================
+   TOP CARD
 ===================================================== */
 
 .top-card{
@@ -150,7 +156,6 @@ body{
         inset 0 1px rgba(255,255,255,.035);
 
     backdrop-filter:blur(20px);
-
     -webkit-backdrop-filter:blur(20px);
 }
 
@@ -197,8 +202,7 @@ body{
 
     background:#061a27;
 
-    border:
-        1px solid #08628f;
+    border:1px solid #08628f;
 
     font-size:24px;
 
@@ -207,7 +211,6 @@ body{
 }
 
 .brand-text{
-
     min-width:0;
 }
 
@@ -231,8 +234,6 @@ body{
     color:#87949b;
 
     font-size:13px;
-
-    line-height:1.1;
 }
 
 
@@ -332,7 +333,6 @@ body{
 }
 
 .search input::placeholder{
-
     color:#6e777d;
 }
 
@@ -389,10 +389,7 @@ body{
 }
 
 .control:active{
-
     transform:scale(.94);
-
-    background:#082033;
 }
 
 .control.location{
@@ -400,6 +397,104 @@ body{
     color:#42baff;
 
     font-size:27px;
+}
+
+
+/* =====================================================
+   CRIMEA STYLE
+===================================================== */
+
+.crimea-zone{
+
+    fill:#ff3d48;
+
+    fill-opacity:.075;
+
+    stroke:#ff4c55;
+
+    stroke-width:2;
+
+    stroke-opacity:.8;
+
+    stroke-dasharray:8 7;
+
+}
+
+
+/*
+   Маленький акуратний підпис,
+   без білого popup.
+*/
+
+.crimea-label{
+
+    color:#ff7379;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:.4px;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 2px 7px #000;
+}
+
+
+/* =====================================================
+   KYIV
+===================================================== */
+
+.kyiv-zone{
+
+    fill:#169fe7;
+
+    fill-opacity:.13;
+
+    stroke:#48c3ff;
+
+    stroke-width:2.2;
+
+    stroke-opacity:.95;
+}
+
+.kyiv-label{
+
+    color:#59c9ff;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    letter-spacing:.8px;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 2px 8px #000;
+}
+
+
+/* =====================================================
+   UKRAINE LABEL
+===================================================== */
+
+.big-label{
+
+    color:#8298a4;
+
+    font-size:21px;
+
+    font-weight:750;
+
+    letter-spacing:7px;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 2px 8px #000;
 }
 
 
@@ -440,39 +535,15 @@ body{
         0 20px 60px rgba(0,0,0,.7);
 
     backdrop-filter:blur(22px);
-
     -webkit-backdrop-filter:blur(22px);
 
     color:#b9c4ca;
 
     display:none;
-
-    animation:
-        legendIn .18s ease-out;
 }
 
 .legend.open{
-
     display:block;
-}
-
-@keyframes legendIn{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(12px);
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0);
-    }
 }
 
 .legend-title{
@@ -517,23 +588,17 @@ body{
 }
 
 .icon-event{
-
     color:#ff5750;
-
     font-size:20px;
 }
 
 .icon-activity{
-
     color:#ff514a;
-
     font-size:21px;
 }
 
 .icon-air{
-
     color:#ffc83d;
-
     font-size:18px;
 }
 
@@ -566,7 +631,7 @@ body{
 
 
 /* =====================================================
-   EVENTS PANEL
+   EVENTS
 ===================================================== */
 
 .events-panel{
@@ -604,7 +669,6 @@ body{
 }
 
 .events-panel.open{
-
     display:block;
 }
 
@@ -669,7 +733,6 @@ body{
 }
 
 .about-panel.open{
-
     display:block;
 }
 
@@ -689,6 +752,40 @@ body{
     font-size:13px;
 
     line-height:1.55;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status{
+
+    position:fixed;
+
+    z-index:900;
+
+    left:18px;
+
+    bottom:
+        calc(
+            108px +
+            env(safe-area-inset-bottom)
+        );
+
+    padding:9px 13px;
+
+    border-radius:16px;
+
+    background:
+        rgba(3,13,20,.92);
+
+    border:
+        1px solid rgba(80,145,175,.18);
+
+    color:#7f8b92;
+
+    font-size:11px;
 }
 
 
@@ -730,11 +827,9 @@ body{
         1px solid rgba(70,130,165,.20);
 
     box-shadow:
-        0 -10px 40px rgba(0,0,0,.52),
-        inset 0 1px rgba(255,255,255,.025);
+        0 -10px 40px rgba(0,0,0,.52);
 
     backdrop-filter:blur(22px);
-
     -webkit-backdrop-filter:blur(22px);
 }
 
@@ -767,8 +862,7 @@ body{
 
     color:#45baff;
 
-    background:
-        #062237;
+    background:#062237;
 }
 
 .nav-icon{
@@ -778,27 +872,6 @@ body{
     font-size:23px;
 
     line-height:1;
-}
-
-
-/* =====================================================
-   MAP LABELS
-===================================================== */
-
-.big-label{
-
-    color:#7e98a5;
-
-    font-size:21px;
-
-    font-weight:750;
-
-    letter-spacing:7px;
-
-    white-space:nowrap;
-
-    text-shadow:
-        0 2px 8px #000;
 }
 
 
@@ -825,12 +898,10 @@ body{
     }
 
     .title{
-
         font-size:19px;
     }
 
     .subtitle{
-
         font-size:12px;
     }
 
@@ -842,7 +913,6 @@ body{
     }
 
     .search{
-
         height:47px;
     }
 
@@ -859,7 +929,6 @@ body{
     }
 
     .nav-item{
-
         font-size:11px;
     }
 }
@@ -872,15 +941,11 @@ body{
 <body>
 
 
-<!-- =====================================================
-     MAP
-===================================================== -->
-
 <div id="map"></div>
 
 
 <!-- =====================================================
-     TOP PANEL
+     TOP
 ===================================================== -->
 
 <div class="top-card">
@@ -950,14 +1015,12 @@ body{
         +
     </div>
 
-
     <div
         class="control"
         id="zoomOut"
     >
         −
     </div>
-
 
     <div
         class="control location"
@@ -1061,7 +1124,7 @@ body{
 
 
 <!-- =====================================================
-     EVENTS PANEL
+     EVENTS
 ===================================================== -->
 
 <div
@@ -1097,22 +1160,14 @@ body{
         Monitor Map UA
     </h2>
 
-
     <p>
         Інтерактивна карта для зручної
         візуалізації географічної інформації.
     </p>
 
-
     <p>
         Джерело даних буде підключено
         окремо.
-    </p>
-
-
-    <p>
-        Карта:
-        OpenStreetMap / Esri.
     </p>
 
 </div>
@@ -1122,31 +1177,18 @@ body{
      STATUS
 ===================================================== -->
 
-<div class="status"
-     style="
-        position:fixed;
-        z-index:900;
-        left:18px;
-        bottom:calc(
-            108px +
-            env(safe-area-inset-bottom)
-        );
-        padding:9px 13px;
-        border-radius:16px;
-        background:rgba(3,13,20,.92);
-        border:1px solid rgba(80,145,175,.18);
-        color:#7f8b92;
-        font-size:11px;
-     "
+<div
+    class="status"
+    id="status"
 >
 
-    Дані: OpenStreetMap
+    Дані: Esri / OpenStreetMap
 
 </div>
 
 
 <!-- =====================================================
-     BOTTOM NAV
+     NAV
 ===================================================== -->
 
 <div class="bottom-nav">
@@ -1210,15 +1252,13 @@ body{
 </div>
 
 
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
 <script>
 
 /* =====================================================
-   TELEGRAM MINI APP
+   TELEGRAM
 ===================================================== */
 
 if(
@@ -1248,13 +1288,17 @@ const map = L.map(
         attributionControl:true,
 
         /*
-         * 4.5 = можна побачити всю Україну
-         * 18  = можна наблизитись до рівня вулиць
+         * Тепер можна віддалитися
+         * достатньо далеко для всієї України.
          */
 
-        minZoom:4.5,
+        minZoom:4,
 
-        maxZoom:18,
+        /*
+         * Максимум для вуличної карти.
+         */
+
+        maxZoom:19,
 
         zoomSnap:.25,
 
@@ -1266,8 +1310,7 @@ const map = L.map(
 
 
 /*
- * Початковий вигляд:
- * вся Україна + запас навколо
+ * Старт — Україна цілком.
  */
 
 map.setView(
@@ -1280,8 +1323,10 @@ map.setView(
 
 
 /* =====================================================
-   DARK BASEMAP
+   DARK ESRI BASE
 ===================================================== */
+
+const darkLayer =
 
 L.tileLayer(
 
@@ -1289,14 +1334,119 @@ L.tileLayer(
 
     {
 
-        maxZoom:19,
+        maxZoom:15,
 
         attribution:
             "Tiles © Esri"
 
     }
 
-).addTo(map);
+);
+
+
+/* =====================================================
+   STREET LAYER
+===================================================== */
+
+const streetLayer =
+
+L.tileLayer(
+
+    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+        maxZoom:19,
+
+        className:"street-tiles",
+
+        attribution:
+            "&copy; OpenStreetMap contributors"
+
+    }
+
+);
+
+
+/*
+ * На старті показуємо темну карту.
+ */
+
+darkLayer.addTo(map);
+
+
+/* =====================================================
+   SWITCH MAP AT HIGH ZOOM
+===================================================== */
+
+function updateMapLayer(){
+
+    const zoom =
+        map.getZoom();
+
+
+    /*
+     * До 15 — красива темна
+     * оглядова карта.
+     */
+
+    if(zoom <= 15){
+
+        if(
+            map.hasLayer(streetLayer)
+        ){
+
+            map.removeLayer(
+                streetLayer
+            );
+
+        }
+
+        if(
+            !map.hasLayer(darkLayer)
+        ){
+
+            darkLayer.addTo(map);
+
+        }
+
+    }
+
+
+    /*
+     * Після 15 — OSM street map,
+     * затемнений через CSS.
+     */
+
+    else{
+
+        if(
+            map.hasLayer(darkLayer)
+        ){
+
+            map.removeLayer(
+                darkLayer
+            );
+
+        }
+
+        if(
+            !map.hasLayer(streetLayer)
+        ){
+
+            streetLayer.addTo(map);
+
+        }
+
+    }
+
+}
+
+
+map.on(
+    "zoomend",
+    updateMapLayer
+);
 
 
 /* =====================================================
@@ -1324,106 +1474,62 @@ fetch(oblastsURL)
 
         oblastLayer =
 
-            L.geoJSON(
+        L.geoJSON(
 
-                data,
+            data,
 
-                {
+            {
 
-                    style:function(){
+                style:function(){
 
-                        return {
+                    return {
 
-                            color:"#39b9ff",
+                        color:"#39b9ff",
 
-                            weight:1.35,
+                        weight:1.35,
 
-                            opacity:.88,
+                        opacity:.88,
 
-                            dashArray:"5 6",
+                        dashArray:"5 6",
 
-                            fillColor:"#06304a",
+                        fillColor:"#06304a",
 
-                            fillOpacity:.06
+                        fillOpacity:.055
 
-                        };
+                    };
 
-                    },
-
-
-                    onEachFeature:function(
-
-                        feature,
-                        layer
-
-                    ){
-
-                        const name =
-
-                            feature.properties?.name ||
-
-                            feature.properties?.NAME ||
-
-                            feature.properties?.NAME_UA ||
-
-                            "";
+                },
 
 
-                        if(name){
+                onEachFeature:function(
+                    feature,
+                    layer
+                ){
 
-                            layer.bindTooltip(
+                    const name =
 
-                                name,
+                        feature.properties?.name ||
 
-                                {
+                        feature.properties?.NAME ||
 
-                                    sticky:true,
+                        feature.properties?.NAME_UA ||
 
-                                    direction:"top",
-
-                                    opacity:.95
-
-                                }
-
-                            );
-
-                        }
+                        "";
 
 
-                        layer.on(
+                    if(name){
 
-                            "mouseover",
+                        layer.bindTooltip(
 
-                            function(){
+                            name,
 
-                                this.setStyle({
+                            {
 
-                                    weight:2.2,
+                                sticky:true,
 
-                                    color:"#5bc8ff",
+                                direction:"top",
 
-                                    fillOpacity:.12
-
-                                });
-
-                            }
-
-                        );
-
-
-                        layer.on(
-
-                            "mouseout",
-
-                            function(){
-
-                                if(oblastLayer){
-
-                                    oblastLayer.resetStyle(
-                                        this
-                                    );
-
-                                }
+                                opacity:.95
 
                             }
 
@@ -1431,10 +1537,46 @@ fetch(oblastsURL)
 
                     }
 
+
+                    layer.on(
+                        "mouseover",
+                        function(){
+
+                            this.setStyle({
+
+                                weight:2.1,
+
+                                color:"#5bc8ff",
+
+                                fillOpacity:.10
+
+                            });
+
+                        }
+                    );
+
+
+                    layer.on(
+                        "mouseout",
+                        function(){
+
+                            if(oblastLayer){
+
+                                oblastLayer.resetStyle(
+                                    this
+                                );
+
+                            }
+
+                        }
+                    );
+
                 }
 
-            )
-            .addTo(map);
+            }
+
+        )
+        .addTo(map);
 
     }
 
@@ -1456,44 +1598,212 @@ fetch(oblastsURL)
 
 /* =====================================================
    CRIMEA
-   VISUAL ZONE ONLY
-   NO TEXT / NO POPUP
 ===================================================== */
 
-const occupiedStyle = {
+/*
+ * Акуратний контур Криму.
+ *
+ * Без popup.
+ * Без білого прямокутника.
+ * Без величезного напису.
+ */
 
-    color:"#ff4d4d",
+const crimeaCoords = [
 
-    weight:1.8,
+    [46.20,32.55],
+    [46.18,33.05],
+    [46.10,33.65],
+    [46.05,34.15],
+    [45.85,34.65],
+    [45.55,35.10],
+    [45.35,35.45],
+    [45.15,35.75],
+    [44.90,36.10],
+    [44.60,36.35],
+    [44.35,36.50],
+    [44.30,36.15],
+    [44.40,35.70],
+    [44.55,35.25],
+    [44.60,34.75],
+    [44.75,34.20],
+    [45.00,33.75],
+    [45.15,33.20],
+    [45.25,32.75],
+    [45.55,32.55],
+    [45.85,32.45],
+    [46.20,32.55]
 
-    opacity:.8,
+];
 
-    fillColor:"#ff3030",
 
-    fillOpacity:.10,
+const crimea =
 
-    dashArray:"7 5"
+L.polygon(
 
-};
+    crimeaCoords,
+
+    {
+
+        className:
+            "crimea-zone",
+
+        color:"#ff4c55",
+
+        weight:2,
+
+        opacity:.82,
+
+        fillColor:"#ff3d48",
+
+        fillOpacity:.075,
+
+        dashArray:"8 7",
+
+        interactive:false
+
+    }
+
+)
+
+.addTo(map);
+
+
+/* =====================================================
+   CRIMEA LABEL
+===================================================== */
+
+L.marker(
+
+    [45.20,34.25],
+
+    {
+
+        interactive:false,
+
+        icon:
+
+        L.divIcon(
+
+            {
+
+                className:"",
+
+                html:`
+
+                    <div class="crimea-label">
+                        КРИМ
+                    </div>
+
+                `,
+
+                iconSize:[70,25],
+
+                iconAnchor:[35,12]
+
+            }
+
+        )
+
+    }
+
+)
+
+.addTo(map);
+
+
+/* =====================================================
+   KYIV CITY
+===================================================== */
+
+/*
+ * ВИДІЛЯЄМО САМЕ КИЇВ,
+ * а не Київську область.
+ *
+ * Це окрема зона міста.
+ */
+
+const kyivCoords = [
+
+    [50.590,30.365],
+    [50.610,30.440],
+    [50.610,30.545],
+    [50.585,30.665],
+    [50.520,30.700],
+    [50.420,30.690],
+    [50.335,30.620],
+    [50.340,30.500],
+    [50.390,30.390],
+    [50.480,30.335],
+    [50.590,30.365]
+
+];
 
 
 L.polygon(
 
-    [
+    kyivCoords,
 
-        [46.18,32.50],
-        [46.25,33.00],
-        [46.05,34.00],
-        [45.55,35.40],
-        [45.05,36.40],
-        [44.35,36.55],
-        [44.35,35.00],
-        [45.00,33.50],
-        [45.55,32.70]
+    {
 
-    ],
+        className:
+            "kyiv-zone",
 
-    occupiedStyle
+        color:"#48c3ff",
+
+        weight:2.2,
+
+        opacity:.95,
+
+        fillColor:"#169fe7",
+
+        fillOpacity:.13,
+
+        interactive:false
+
+    }
+
+)
+
+.addTo(map);
+
+
+/* =====================================================
+   KYIV LABEL
+===================================================== */
+
+L.marker(
+
+    [50.455,30.52],
+
+    {
+
+        interactive:false,
+
+        icon:
+
+        L.divIcon(
+
+            {
+
+                className:"",
+
+                html:`
+
+                    <div class="kyiv-label">
+                        КИЇВ
+                    </div>
+
+                `,
+
+                iconSize:[65,25],
+
+                iconAnchor:[32,12]
+
+            }
+
+        )
+
+    }
 
 )
 
@@ -1506,7 +1816,7 @@ L.polygon(
 
 L.marker(
 
-    [49.1,31.2],
+    [49.05,31.25],
 
     {
 
@@ -1545,18 +1855,18 @@ L.marker(
 
 /* =====================================================
    NO DEMO EVENTS
-=====================================================
-
-   Тут спеціально НІЧОГО не додаємо.
-
-   Коли ти дасте одне конкретне джерело,
-   підключимо його сюди.
-
 ===================================================== */
+
+/*
+ * Тут поки порожньо.
+ *
+ * Коли ти скажеш джерело,
+ * підключимо тільки його.
+ */
 
 
 /* =====================================================
-   ZOOM IN
+   ZOOM BUTTONS
 ===================================================== */
 
 document
@@ -1575,10 +1885,6 @@ document
 
 );
 
-
-/* =====================================================
-   ZOOM OUT
-===================================================== */
 
 document
 
@@ -1615,7 +1921,7 @@ document
 
             setView:true,
 
-            maxZoom:12
+            maxZoom:14
 
         });
 
@@ -1713,7 +2019,7 @@ searchInput.addEventListener(
 
                     ],
 
-                    13,
+                    14,
 
                     {
 
@@ -1746,21 +2052,16 @@ searchInput.addEventListener(
 ===================================================== */
 
 const legendPanel =
-
     document.getElementById(
         "legendPanel"
     );
 
-
 const eventsPanel =
-
     document.getElementById(
         "eventsPanel"
     );
 
-
 const aboutPanel =
-
     document.getElementById(
         "aboutPanel"
     );
@@ -1784,7 +2085,7 @@ function closePanels(){
 
 
 /* =====================================================
-   BOTTOM NAV
+   NAVIGATION
 ===================================================== */
 
 document
@@ -1905,7 +2206,7 @@ document
 
 
 /* =====================================================
-   MAP CLICK
+   CLOSE PANELS ON MAP
 ===================================================== */
 
 map.on(
@@ -1914,7 +2215,7 @@ map.on(
 
     function(){
 
-        const panelIsOpen =
+        const open =
 
             legendPanel.classList.contains(
                 "open"
@@ -1929,7 +2230,7 @@ map.on(
             );
 
 
-        if(panelIsOpen){
+        if(open){
 
             closePanels();
 
@@ -2006,12 +2307,16 @@ window.addEventListener(
 
 
 setTimeout(
-
     resizeMap,
-
     700
-
 );
+
+
+/* =====================================================
+   INITIAL LAYER CHECK
+===================================================== */
+
+updateMapLayer();
 
 </script>
 
