@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-
+  <meta charset="UTF-8" />
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-  >
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
 
   <title>Monitor Map UA</title>
 
@@ -16,11 +15,12 @@
   <!-- Leaflet -->
   <link
     rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    href="https://unpkg.com/[email protected]/dist/leaflet.css"
   />
 
-  <style>
+  <script src="https://unpkg.com/[email protected]/dist/leaflet.js"></script>
 
+  <style>
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -30,1281 +30,1228 @@
     body {
       margin: 0;
       padding: 0;
-
       width: 100%;
       height: 100%;
-
       overflow: hidden;
-
-      background: #080c11;
-      color: #ffffff;
-
+      background: #070b12;
       font-family:
         -apple-system,
         BlinkMacSystemFont,
         "SF Pro Display",
-        "Segoe UI",
+        "SF Pro Text",
+        Arial,
         sans-serif;
-
-      touch-action: manipulation;
+      color: #fff;
     }
-
-    body {
-      position: fixed;
-      inset: 0;
-    }
-
-    /* =========================
-       MAP
-    ========================= */
 
     #map {
       position: fixed;
       inset: 0;
-
-      width: 100%;
-      height: 100%;
-
-      background: #10151b;
-
       z-index: 1;
+      background: #080d15;
     }
 
+    /* --------------------------------------------------
+       MAP DARK MODE
+    -------------------------------------------------- */
 
-    /* =========================
+    .map-dark {
+      filter:
+        brightness(0.72)
+        saturate(0.72)
+        contrast(1.08);
+    }
+
+    /* --------------------------------------------------
        TOP CARD
-    ========================= */
+    -------------------------------------------------- */
 
     .top-card {
       position: fixed;
+      z-index: 1000;
 
-      top: calc(14px + env(safe-area-inset-top));
+      top: max(14px, env(safe-area-inset-top));
       left: 14px;
       right: 14px;
 
-      z-index: 1000;
+      padding: 14px 16px;
 
-      padding: 17px;
+      border-radius: 22px;
 
-      border-radius: 24px;
-
-      background: rgba(11, 17, 24, 0.88);
-
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(10, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.09);
 
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
 
       box-shadow:
-        0 14px 40px rgba(0,0,0,0.38);
-    }
+        0 14px 45px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
+      pointer-events: none;
+    }
 
     .top-row {
       display: flex;
-
       align-items: center;
       justify-content: space-between;
-
       gap: 12px;
     }
 
-
     .brand {
-      min-width: 0;
-    }
-
-
-    .title {
-      font-size: 20px;
-
-      font-weight: 750;
-
-      letter-spacing: -0.4px;
-    }
-
-
-    .subtitle {
-      margin-top: 5px;
-
-      font-size: 13px;
-
-      line-height: 1.35;
-
-      color: rgba(255,255,255,0.55);
-    }
-
-
-    .online {
-      flex-shrink: 0;
-
       display: flex;
-
       align-items: center;
-
-      gap: 7px;
-
-      padding: 9px 12px;
-
-      border-radius: 20px;
-
-      background: rgba(37, 211, 125, 0.10);
-
-      color: #55d99a;
-
-      font-size: 12px;
-
-      font-weight: 700;
+      gap: 11px;
     }
 
+    .brand-icon {
+      width: 38px;
+      height: 38px;
 
-    .online-dot {
-      width: 8px;
-      height: 8px;
-
-      border-radius: 50%;
-
-      background: #45d98b;
-
-      box-shadow:
-        0 0 12px rgba(69,217,139,0.85);
-    }
-
-
-    /* =========================
-       SEARCH
-    ========================= */
-
-    .search {
-      margin-top: 15px;
-
-      height: 47px;
+      border-radius: 13px;
 
       display: flex;
-
-      align-items: center;
-
-      padding: 0 14px;
-
-      border-radius: 16px;
-
-      background: rgba(255,255,255,0.055);
-
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-
-    .search-icon {
-      margin-right: 9px;
-
-      font-size: 20px;
-
-      color: rgba(255,255,255,0.45);
-    }
-
-
-    .search input {
-      width: 100%;
-
-      border: 0;
-      outline: none;
-
-      background: transparent;
-
-      color: white;
-
-      font-size: 15px;
-    }
-
-
-    .search input::placeholder {
-      color: rgba(255,255,255,0.40);
-    }
-
-
-    /* =========================
-       MAP BUTTONS
-    ========================= */
-
-    .map-controls {
-      position: fixed;
-
-      right: 14px;
-
-      bottom: calc(91px + env(safe-area-inset-bottom));
-
-      z-index: 1000;
-
-      display: flex;
-
-      flex-direction: column;
-
-      gap: 9px;
-    }
-
-
-    .map-button {
-      width: 46px;
-      height: 46px;
-
-      display: flex;
-
       align-items: center;
       justify-content: center;
 
-      border-radius: 15px;
+      background:
+        radial-gradient(
+          circle at 30% 20%,
+          rgba(65, 154, 255, 0.5),
+          rgba(21, 83, 170, 0.12)
+        );
 
-      background: rgba(10,16,23,0.90);
+      border: 1px solid rgba(70, 150, 255, 0.35);
 
-      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        0 0 25px rgba(30, 120, 255, 0.16);
+    }
+
+    .brand-icon span {
+      font-size: 19px;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-subtitle {
+      margin-top: 2px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.48);
+    }
+
+    .online {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+
+      background: #36d67b;
+
+      box-shadow:
+        0 0 10px rgba(54, 214, 123, 0.8);
+    }
+
+    /* --------------------------------------------------
+       SEARCH
+    -------------------------------------------------- */
+
+    .search-wrap {
+      position: fixed;
+      z-index: 1000;
+
+      top: 108px;
+      left: 14px;
+      right: 14px;
+
+      pointer-events: auto;
+    }
+
+    .search-box {
+      width: 100%;
+
+      height: 48px;
+
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+
+      outline: none;
+
+      padding: 0 16px 0 45px;
 
       color: white;
 
-      font-size: 24px;
+      font-size: 14px;
+
+      background: rgba(9, 14, 23, 0.78);
+
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
 
       box-shadow:
-        0 9px 26px rgba(0,0,0,0.35);
+        0 12px 30px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .search-box::placeholder {
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    .search-box:focus {
+      border-color: rgba(52, 137, 255, 0.55);
+      box-shadow:
+        0 0 0 3px rgba(38, 120, 255, 0.08),
+        0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 14px;
+
+      color: rgba(255, 255, 255, 0.45);
+
+      font-size: 17px;
+
+      pointer-events: none;
+    }
+
+    /* --------------------------------------------------
+       MAP CONTROLS
+    -------------------------------------------------- */
+
+    .map-controls {
+      position: fixed;
+      z-index: 1000;
+
+      right: 14px;
+      bottom: calc(88px + env(safe-area-inset-bottom));
+
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .map-btn {
+      width: 45px;
+      height: 45px;
+
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+
+      color: white;
+
+      font-size: 21px;
+      font-weight: 500;
+
+      background: rgba(10, 15, 24, 0.82);
 
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
 
-      user-select: none;
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-
-    .map-button:active {
-      transform: scale(0.93);
+    .map-btn:active {
+      transform: scale(0.94);
+      background: rgba(22, 34, 53, 0.95);
     }
 
+    /* --------------------------------------------------
+       ALERT CARD
+    -------------------------------------------------- */
 
-    /* =========================
+    .alert-card {
+      position: fixed;
+      z-index: 1000;
+
+      left: 14px;
+      bottom: calc(88px + env(safe-area-inset-bottom));
+
+      width: calc(100% - 72px);
+      max-width: 310px;
+
+      padding: 13px 14px;
+
+      border-radius: 18px;
+
+      background: rgba(10, 15, 24, 0.82);
+
+      border: 1px solid rgba(255, 255, 255, 0.08);
+
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+
+      box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .alert-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .alert-dot {
+      width: 11px;
+      height: 11px;
+
+      flex: 0 0 auto;
+
+      border-radius: 50%;
+
+      background: #36d67b;
+
+      box-shadow:
+        0 0 0 4px rgba(54, 214, 123, 0.08),
+        0 0 16px rgba(54, 214, 123, 0.45);
+    }
+
+    .alert-dot.active {
+      background: #ff4058;
+
+      box-shadow:
+        0 0 0 4px rgba(255, 64, 88, 0.08),
+        0 0 18px rgba(255, 64, 88, 0.65);
+
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(0.78);
+        opacity: 0.65;
+      }
+    }
+
+    .alert-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .alert-subtitle {
+      margin-top: 2px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.48);
+    }
+
+    .alert-time {
+      margin-top: 8px;
+      padding-left: 22px;
+
+      font-size: 10px;
+
+      color: rgba(255, 255, 255, 0.38);
+    }
+
+    /* --------------------------------------------------
        BOTTOM NAV
-    ========================= */
+    -------------------------------------------------- */
 
     .bottom-nav {
       position: fixed;
+      z-index: 1001;
 
       left: 10px;
       right: 10px;
+      bottom: max(10px, env(safe-area-inset-bottom));
 
-      bottom: calc(10px + env(safe-area-inset-bottom));
-
-      height: 68px;
-
-      z-index: 1000;
+      height: 62px;
 
       display: grid;
+      grid-template-columns: repeat(4, 1fr);
 
-      grid-template-columns:
-        repeat(4, 1fr);
+      padding: 5px;
 
-      border-radius: 23px;
+      border-radius: 22px;
 
-      background: rgba(8,14,21,0.93);
+      background: rgba(9, 14, 23, 0.86);
 
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.09);
 
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
 
       box-shadow:
-        0 15px 40px rgba(0,0,0,0.45);
+        0 16px 45px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
+    .nav-btn {
+      border: none;
+      background: transparent;
 
-    .nav-item {
+      color: rgba(255, 255, 255, 0.42);
+
+      border-radius: 17px;
+
+      font-size: 10px;
+
       display: flex;
-
       flex-direction: column;
-
       align-items: center;
       justify-content: center;
 
       gap: 4px;
-
-      color: rgba(255,255,255,0.42);
-
-      font-size: 11px;
-
-      user-select: none;
     }
 
-
-    .nav-item .icon {
-      font-size: 20px;
-
+    .nav-icon {
+      font-size: 19px;
       line-height: 1;
     }
 
-
-    .nav-item.active {
-      color: #58c5ff;
+    .nav-btn.active {
+      color: #55a7ff;
+      background: rgba(55, 137, 255, 0.10);
     }
 
-
-    /* =========================
+    /* --------------------------------------------------
        PANELS
-    ========================= */
+    -------------------------------------------------- */
 
     .panel {
       position: fixed;
+      z-index: 2000;
 
-      left: 10px;
-      right: 10px;
+      left: 0;
+      right: 0;
+      bottom: 0;
 
-      bottom: calc(88px + env(safe-area-inset-bottom));
+      min-height: 55%;
 
-      max-height: calc(100vh - 180px);
+      padding:
+        18px
+        18px
+        calc(90px + env(safe-area-inset-bottom))
+        18px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(11, 17, 27, 0.96),
+          rgba(5, 9, 15, 0.99)
+        );
+
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+      border-radius: 28px 28px 0 0;
+
+      box-shadow:
+        0 -25px 80px rgba(0, 0, 0, 0.55);
+
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+
+      transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 
       overflow-y: auto;
-
-      z-index: 999;
-
-      padding: 20px;
-
-      border-radius: 24px;
-
-      background: rgba(7,14,21,0.95);
-
-      border: 1px solid rgba(255,255,255,0.08);
-
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-
-      box-shadow:
-        0 16px 45px rgba(0,0,0,0.48);
-
-      display: none;
     }
 
-
-    .panel.show {
-      display: block;
+    .panel.open {
+      transform: translateY(0);
     }
 
+    .panel-handle {
+      width: 42px;
+      height: 4px;
+
+      margin: 0 auto 22px;
+
+      border-radius: 20px;
+
+      background: rgba(255, 255, 255, 0.16);
+    }
 
     .panel-title {
-      margin-bottom: 16px;
-
-      font-size: 22px;
-
+      font-size: 23px;
       font-weight: 750;
+
+      margin-bottom: 7px;
+
+      letter-spacing: -0.5px;
     }
 
-
-    /* =========================
-       EVENT CARD
-    ========================= */
-
-    .event-card {
-      padding: 17px;
-
-      border-radius: 18px;
-
-      background: rgba(255,255,255,0.055);
-
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-
-
-    .event-row {
-      display: flex;
-
-      align-items: center;
-
-      gap: 13px;
-    }
-
-
-    .alert-dot {
-      width: 13px;
-      height: 13px;
-
-      flex-shrink: 0;
-
-      border-radius: 50%;
-
-      background: #48d98a;
-
-      box-shadow:
-        0 0 14px rgba(72,217,138,0.65);
-    }
-
-
-    .alert-dot.active {
-      background: #ff4d5e;
-
-      box-shadow:
-        0 0 15px rgba(255,77,94,0.85);
-    }
-
-
-    .event-title {
-      font-size: 16px;
-
-      font-weight: 700;
-    }
-
-
-    .event-subtitle {
-      margin-top: 4px;
-
+    .panel-subtitle {
       font-size: 13px;
+      line-height: 1.55;
 
-      color: rgba(255,255,255,0.52);
+      color: rgba(255, 255, 255, 0.52);
+
+      margin-bottom: 22px;
     }
 
+    .info-card {
+      padding: 16px;
 
-    .event-time {
-      margin-top: 14px;
+      margin-bottom: 12px;
 
-      font-size: 12px;
+      border-radius: 19px;
 
-      color: rgba(255,255,255,0.40);
+      background: rgba(255, 255, 255, 0.045);
+
+      border: 1px solid rgba(255, 255, 255, 0.07);
     }
 
+    .info-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 6px;
+    }
 
-    /* =========================
-       INFO
-    ========================= */
-
-    .info-text {
+    .info-value {
       font-size: 14px;
-
-      line-height: 1.6;
-
-      color: rgba(255,255,255,0.63);
+      line-height: 1.45;
     }
-
 
     .source-link {
       display: block;
 
-      margin-top: 18px;
-
-      padding: 14px;
-
-      border-radius: 15px;
-
-      background: rgba(255,255,255,0.05);
-
-      color: #62c9ff;
+      color: #55a7ff;
 
       text-decoration: none;
 
       font-size: 13px;
+
+      margin-top: 8px;
     }
 
+    .close-panel {
+      width: 100%;
+      height: 48px;
 
-    /* =========================
+      margin-top: 8px;
+
+      border: 1px solid rgba(255, 255, 255, 0.08);
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.05);
+
+      color: white;
+
+      font-size: 14px;
+    }
+
+    /* --------------------------------------------------
        LEAFLET
-    ========================= */
-
-    .leaflet-control-zoom {
-      display: none !important;
-    }
-
+    -------------------------------------------------- */
 
     .leaflet-control-attribution {
-      background: rgba(0,0,0,0.35) !important;
+      background: rgba(5, 9, 15, 0.55) !important;
+      color: rgba(255, 255, 255, 0.45) !important;
 
-      color: rgba(255,255,255,0.45) !important;
+      border-radius: 8px 0 0 0;
 
-      font-size: 8px !important;
+      backdrop-filter: blur(8px);
     }
-
 
     .leaflet-control-attribution a {
-      color: rgba(255,255,255,0.55) !important;
+      color: rgba(130, 185, 255, 0.8) !important;
     }
 
-
-    .leaflet-container {
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      background: #10151b;
+    .leaflet-control-zoom {
+      display: none;
     }
 
+    /* --------------------------------------------------
+       BLUE UKRAINE BORDERS
+    -------------------------------------------------- */
+
+    .oblast-border {
+      color: #3f9cff;
+
+      weight: 1.4;
+
+      opacity: 0.9;
+
+      fillColor: #1b6ed8;
+
+      fillOpacity: 0.035;
+
+      lineJoin: round;
+
+      lineCap: round;
+    }
+
+    .oblast-border:hover {
+      weight: 2.2;
+
+      color: #66b4ff;
+
+      fillOpacity: 0.07;
+    }
+
+    /* --------------------------------------------------
+       LOADING
+    -------------------------------------------------- */
+
+    .loading {
+      position: fixed;
+      z-index: 3000;
+
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #070b12;
+
+      transition:
+        opacity 0.35s ease,
+        visibility 0.35s ease;
+    }
+
+    .loading.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-box {
+      text-align: center;
+    }
+
+    .loader-icon {
+      width: 54px;
+      height: 54px;
+
+      margin: 0 auto 14px;
+
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(45, 129, 255, 0.1);
+
+      border: 1px solid rgba(70, 150, 255, 0.3);
+
+      font-size: 25px;
+    }
+
+    .loader-text {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* --------------------------------------------------
+       DESKTOP
+    -------------------------------------------------- */
+
+    @media (min-width: 700px) {
+      .top-card {
+        left: 24px;
+        right: auto;
+        width: 360px;
+      }
+
+      .search-wrap {
+        left: 24px;
+        width: 360px;
+        right: auto;
+      }
+
+      .alert-card {
+        left: 24px;
+      }
+
+      .bottom-nav {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 500px;
+      }
+    }
   </style>
 </head>
 
-
 <body>
-
-  <!-- =========================
-       MAP
-  ========================= -->
 
   <div id="map"></div>
 
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="loader-box">
+      <div class="loader-icon">◉</div>
+      <div class="loader-text">Завантаження карти…</div>
+    </div>
+  </div>
 
-  <!-- =========================
-       TOP CARD
-  ========================= -->
-
+  <!-- TOP -->
   <div class="top-card">
-
     <div class="top-row">
 
       <div class="brand">
-
-        <div class="title">
-          Monitor Map UA
+        <div class="brand-icon">
+          <span>⌁</span>
         </div>
 
-        <div class="subtitle">
-          Київська область · цивільна інформація
+        <div>
+          <div class="brand-title">Monitor Map UA</div>
+          <div class="brand-subtitle">Мінізастосунок</div>
         </div>
-
       </div>
-
 
       <div class="online">
-
         <span class="online-dot"></span>
+        online
+      </div>
 
-        ONLINE
+    </div>
+  </div>
 
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+
+    <input
+      id="searchInput"
+      class="search-box"
+      type="text"
+      placeholder="Пошук населеного пункту..."
+      autocomplete="off"
+      enterkeyhint="search"
+    />
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert-card">
+
+    <div class="alert-row">
+
+      <div id="alertDot" class="alert-dot"></div>
+
+      <div>
+        <div id="alertTitle" class="alert-title">
+          Перевірка статусу…
+        </div>
+
+        <div id="alertSubtitle" class="alert-subtitle">
+          Київська область
+        </div>
       </div>
 
     </div>
 
-
-    <div class="search">
-
-      <div class="search-icon">
-        ⌕
-      </div>
-
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Пошук населеного пункту..."
-        autocomplete="off"
-      />
-
+    <div id="alertTime" class="alert-time">
+      Завантаження…
     </div>
 
   </div>
 
-
-  <!-- =========================
-       MAP CONTROLS
-  ========================= -->
-
+  <!-- CONTROLS -->
   <div class="map-controls">
 
-    <div
-      class="map-button"
-      id="zoomIn"
-    >
+    <button class="map-btn" id="zoomIn">
       +
-    </div>
+    </button>
 
-    <div
-      class="map-button"
-      id="zoomOut"
-    >
+    <button class="map-btn" id="zoomOut">
       −
-    </div>
+    </button>
 
-    <div
-      class="map-button"
-      id="locate"
-    >
+    <button class="map-btn" id="locationBtn">
       ◎
-    </div>
+    </button>
 
   </div>
 
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
 
-  <!-- =========================
-       EVENTS
-  ========================= -->
+    <button class="nav-btn active" data-panel="mapPanel">
+      <div class="nav-icon">⌖</div>
+      <div>Карта</div>
+    </button>
 
-  <div
-    class="panel"
-    id="eventsPanel"
-  >
+    <button class="nav-btn" data-panel="eventsPanel">
+      <div class="nav-icon">◌</div>
+      <div>Події</div>
+    </button>
+
+    <button class="nav-btn" data-panel="infoPanel">
+      <div class="nav-icon">ⓘ</div>
+      <div>Інфо</div>
+    </button>
+
+    <button class="nav-btn" data-panel="aboutPanel">
+      <div class="nav-icon">✦</div>
+      <div>Про проєкт</div>
+    </button>
+
+  </div>
+
+  <!-- EVENTS -->
+  <div class="panel" id="eventsPanel">
+
+    <div class="panel-handle"></div>
 
     <div class="panel-title">
       Події
     </div>
 
-
-    <div class="event-card">
-
-      <div class="event-row">
-
-        <div
-          class="alert-dot"
-          id="alertDot"
-        ></div>
-
-
-        <div>
-
-          <div
-            class="event-title"
-            id="alertTitle"
-          >
-            Завантаження...
-          </div>
-
-
-          <div
-            class="event-subtitle"
-            id="alertSubtitle"
-          >
-            Київська область
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div
-        class="event-time"
-        id="alertTime"
-      >
-        Перевіряємо статус...
-      </div>
-
+    <div class="panel-subtitle">
+      Тут з'являтиметься стрічка подій та статусів,
+      які ми будемо підключати до Monitor Map UA.
     </div>
+
+    <div class="info-card">
+      <div class="info-label">
+        СТАТУС
+      </div>
+
+      <div class="info-value">
+        Система працює в режимі реального часу.
+      </div>
+    </div>
+
+    <button class="close-panel">
+      Закрити
+    </button>
 
   </div>
 
+  <!-- INFO -->
+  <div class="panel" id="infoPanel">
 
-  <!-- =========================
-       INFO
-  ========================= -->
-
-  <div
-    class="panel"
-    id="infoPanel"
-  >
+    <div class="panel-handle"></div>
 
     <div class="panel-title">
-      Інфо
+      Інформація
     </div>
 
+    <div class="panel-subtitle">
+      Дані використовуються виключно для
+      інформаційного відображення.
+    </div>
 
-    <div class="info-text">
+    <div class="info-card">
 
-      <b>Monitor Map UA</b>
+      <div class="info-label">
+        ПОВІТРЯНІ ТРИВОГИ
+      </div>
 
-      <br><br>
+      <div class="info-value">
+        Статус Київської області отримується
+        з відкритого API NEPTUN.
+      </div>
 
-      Статус повітряних тривог
-      отримується через відкритий
-      API NEPTUN.
-
-      <br><br>
-
-      Інформація може надходити
-      із затримкою.
-
-      <br><br>
-
-      У разі загрози завжди
-      орієнтуйтеся на офіційні
-      сигнали повітряної тривоги.
+      <a
+        class="source-link"
+        href="https://neptun.in.ua"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Дані: Карта повітряних тривог — NEPTUN →
+      </a>
 
     </div>
 
+    <div class="info-card">
 
-    <a
-      class="source-link"
-      href="https://neptun.in.ua"
-      target="_blank"
-      rel="noopener"
-    >
-      Дані: Карта повітряних тривог — NEPTUN →
-    </a>
+      <div class="info-label">
+        ВАЖЛИВО
+      </div>
+
+      <div class="info-value">
+        Monitor Map UA є інформаційним сервісом.
+        У разі повітряної тривоги користуйтеся
+        офіційними повідомленнями та сигналами.
+      </div>
+
+    </div>
+
+    <button class="close-panel">
+      Закрити
+    </button>
 
   </div>
 
+  <!-- ABOUT -->
+  <div class="panel" id="aboutPanel">
 
-  <!-- =========================
-       ABOUT
-  ========================= -->
-
-  <div
-    class="panel"
-    id="aboutPanel"
-  >
+    <div class="panel-handle"></div>
 
     <div class="panel-title">
       Про проєкт
     </div>
 
+    <div class="panel-subtitle">
+      Monitor Map UA — мінізастосунок для
+      зручного перегляду карти України,
+      подій та інформаційних статусів.
+    </div>
 
-    <div class="info-text">
+    <div class="info-card">
 
-      <b>Monitor Map UA</b>
+      <div class="info-label">
+        ВЕРСІЯ
+      </div>
 
-      <br><br>
-
-      Інтерактивна карта з цивільною
-      інформацією для Київської області.
-
-      <br><br>
-
-      Тут можна переглядати карту,
-      шукати населені пункти та
-      перевіряти актуальний статус
-      повітряної тривоги.
+      <div class="info-value">
+        Monitor Map UA · 1.0
+      </div>
 
     </div>
+
+    <div class="info-card">
+
+      <div class="info-label">
+        ПЛАТФОРМА
+      </div>
+
+      <div class="info-value">
+        Telegram Mini App
+      </div>
+
+    </div>
+
+    <button class="close-panel">
+      Закрити
+    </button>
 
   </div>
-
-
-  <!-- =========================
-       BOTTOM NAV
-  ========================= -->
-
-  <div class="bottom-nav">
-
-    <div
-      class="nav-item active"
-      data-panel="map"
-    >
-
-      <div class="icon">
-        ⌖
-      </div>
-
-      <div>
-        Карта
-      </div>
-
-    </div>
-
-
-    <div
-      class="nav-item"
-      data-panel="events"
-    >
-
-      <div class="icon">
-        ◉
-      </div>
-
-      <div>
-        Події
-      </div>
-
-    </div>
-
-
-    <div
-      class="nav-item"
-      data-panel="info"
-    >
-
-      <div class="icon">
-        ⓘ
-      </div>
-
-      <div>
-        Інфо
-      </div>
-
-    </div>
-
-
-    <div
-      class="nav-item"
-      data-panel="about"
-    >
-
-      <div class="icon">
-        ☰
-      </div>
-
-      <div>
-        Про проєкт
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       LEAFLET
-  ========================= -->
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 
   <script>
 
-    /* =========================
+    /* ==================================================
        TELEGRAM
-    ========================= */
+    ================================================== */
 
-    if (
-      window.Telegram &&
-      window.Telegram.WebApp
-    ) {
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
 
-      const tg =
-        window.Telegram.WebApp;
-
-      tg.ready();
-      tg.expand();
-
+      try {
+        Telegram.WebApp.setHeaderColor("#070b12");
+        Telegram.WebApp.setBackgroundColor("#070b12");
+      } catch (e) {}
     }
 
 
-    /* =========================
-       MAP INITIALIZATION
-    ========================= */
+    /* ==================================================
+       MAP
+    ================================================== */
 
-    const map = L.map(
-      "map",
-      {
-        zoomControl: false,
+    const map = L.map("map", {
+      zoomControl: false,
 
-        minZoom: 5,
+      minZoom: 5,
+      maxZoom: 19,
 
-        /*
-          Нормальний максимальний
-          масштаб для карти з вулицями
-        */
-        maxZoom: 19,
+      zoomSnap: 1,
+      zoomDelta: 1,
 
-        zoomSnap: 1,
+      wheelDebounceTime: 40,
+      wheelPxPerZoomLevel: 80,
 
-        zoomDelta: 1,
+      doubleClickZoom: true,
+      touchZoom: true,
+      dragging: true,
 
-        wheelDebounceTime: 40,
+      worldCopyJump: true
+    });
 
-        wheelPxPerZoomLevel: 80,
-
-        doubleClickZoom: true,
-
-        touchZoom: true,
-
-        dragging: true
-      }
-    );
-
-
-    /*
-      ВАЖЛИВО:
-
-      Карта завжди стартує
-      саме тут.
-
-      Київ.
-    */
 
     map.setView(
-      [50.4501, 30.5234],
-      8
+      [49.2, 31.2],
+      6
     );
 
 
-    /* =========================
-       CARTO DARK MAP
-    ========================= */
+    /* ==================================================
+       ESRI STREET MAP
+       No Carto / No API key
+    ================================================== */
 
-    L.tileLayer(
-
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-
+    const baseMap = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
       {
         attribution:
-          '&copy; OpenStreetMap contributors &copy; CARTO',
+          "Tiles © Esri — Sources: Esri, HERE, DeLorme, USGS, Intermap, increment P Corp., NRCAN, Esri Japan, METI, Esri China (Hong Kong), TomTom",
 
-        subdomains:
-          "abcd",
+        minZoom: 1,
 
-        maxNativeZoom:
-          19,
+        maxZoom: 19,
 
-        maxZoom:
-          19,
+        maxNativeZoom: 19,
 
-        tileSize:
-          256,
+        tileSize: 256,
 
-        detectRetina:
-          true
+        updateWhenZooming: false,
+
+        keepBuffer: 3
       }
+    );
 
-    ).addTo(map);
+
+    baseMap.addTo(map);
 
 
-    /* =========================
+    /* ==================================================
+       DARKEN MAP
+    ================================================== */
+
+    const mapContainer = document.getElementById("map");
+
+    mapContainer.classList.add("map-dark");
+
+
+    /* ==================================================
        UKRAINE OBLAST BORDERS
-    ========================= */
+    ================================================== */
 
     const oblastsURL =
       "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/Ukraine.geojson";
 
 
     fetch(oblastsURL)
-
-      .then(response => {
-
-        if (!response.ok) {
-          throw new Error(
-            "GeoJSON HTTP " +
-            response.status
-          );
-        }
-
-        return response.json();
-
-      })
-
+      .then(response => response.json())
       .then(data => {
 
-        L.geoJSON(
-          data,
-          {
+        L.geoJSON(data, {
 
-            style: {
+          style: {
+            color: "#3f9cff",
+            weight: 1.4,
+            opacity: 0.9,
 
-              color:
-                "#4f9bc4",
+            fillColor: "#1671df",
+            fillOpacity: 0.025,
 
-              weight:
-                0.8,
+            lineJoin: "round",
+            lineCap: "round"
+          },
 
-              opacity:
-                0.35,
+          onEachFeature: function(feature, layer) {
 
-              fillColor:
-                "#17232d",
+            layer.on({
+              mouseover: function(e) {
 
-              fillOpacity:
-                0.08
+                e.target.setStyle({
+                  color: "#67b7ff",
+                  weight: 2.2,
+                  fillOpacity: 0.065
+                });
 
-            }
+              },
+
+              mouseout: function(e) {
+
+                e.target.setStyle({
+                  color: "#3f9cff",
+                  weight: 1.4,
+                  fillOpacity: 0.025
+                });
+
+              }
+            });
 
           }
-        ).addTo(map);
+
+        }).addTo(map);
 
       })
-
       .catch(error => {
 
-        console.log(
-          "GeoJSON error:",
+        console.error(
+          "Не вдалося завантажити кордони:",
           error
         );
 
       });
 
 
-    /* =========================
-       ZOOM IN
-    ========================= */
+    /* ==================================================
+       ZOOM BUTTONS
+    ================================================== */
 
     document
       .getElementById("zoomIn")
-      .addEventListener(
-        "click",
-        () => {
+      .addEventListener("click", function() {
 
-          map.zoomIn();
-
-        }
-      );
-
-
-    /* =========================
-       ZOOM OUT
-    ========================= */
-
-    document
-      .getElementById("zoomOut")
-      .addEventListener(
-        "click",
-        () => {
-
-          map.zoomOut();
-
-        }
-      );
-
-
-    /* =========================
-       LOCATION
-    ========================= */
-
-    document
-      .getElementById("locate")
-      .addEventListener(
-        "click",
-        () => {
-
-          map.locate(
-            {
-              setView: false,
-
-              enableHighAccuracy:
-                true,
-
-              maximumAge:
-                10000,
-
-              timeout:
-                10000
-            }
-          );
-
-        }
-      );
-
-
-    map.on(
-      "locationfound",
-      event => {
-
-        L.circleMarker(
-          event.latlng,
-          {
-
-            radius:
-              7,
-
-            weight:
-              3,
-
-            fillOpacity:
-              0.9
-
-          }
-        )
-        .addTo(map)
-        .bindPopup(
-          "Ви знаходитесь тут"
-        );
-
-      }
-    );
-
-
-    map.on(
-      "locationerror",
-      event => {
-
-        console.log(
-          "Location error:",
-          event.message
-        );
-
-      }
-    );
-
-
-    /* =========================
-       SEARCH
-    ========================= */
-
-    const searchInput =
-      document.getElementById(
-        "searchInput"
-      );
-
-
-    searchInput.addEventListener(
-      "keydown",
-      async event => {
-
-        if (
-          event.key !== "Enter"
-        ) {
-          return;
-        }
-
-
-        const query =
-          searchInput.value.trim();
-
-
-        if (!query) {
-          return;
-        }
-
-
-        try {
-
-          const url =
-            "https://nominatim.openstreetmap.org/search" +
-            "?format=json" +
-            "&limit=1" +
-            "&countrycodes=ua" +
-            "&accept-language=uk" +
-            "&q=" +
-            encodeURIComponent(
-              query
-            );
-
-
-          const response =
-            await fetch(url);
-
-
-          const results =
-            await response.json();
-
-
-          if (
-            !results.length
-          ) {
-
-            return;
-
-          }
-
-
-          const place =
-            results[0];
-
-
-          const lat =
-            Number(place.lat);
-
-
-          const lon =
-            Number(place.lon);
-
-
-          map.flyTo(
-            [lat, lon],
-
-            15,
-
-            {
-              duration:
-                1.2
-            }
-          );
-
-
-          searchInput.blur();
-
-
-        } catch (error) {
-
-          console.log(
-            "Search error:",
-            error
-          );
-
-        }
-
-      }
-    );
-
-
-    /* =========================
-       PANELS
-    ========================= */
-
-    const panels = {
-
-      events:
-        document.getElementById(
-          "eventsPanel"
-        ),
-
-      info:
-        document.getElementById(
-          "infoPanel"
-        ),
-
-      about:
-        document.getElementById(
-          "aboutPanel"
-        )
-
-    };
-
-
-    document
-      .querySelectorAll(".nav-item")
-      .forEach(item => {
-
-        item.addEventListener(
-          "click",
-          () => {
-
-            const panel =
-              item.dataset.panel;
-
-
-            document
-              .querySelectorAll(
-                ".nav-item"
-              )
-              .forEach(nav => {
-
-                nav.classList.remove(
-                  "active"
-                );
-
-              });
-
-
-            item.classList.add(
-              "active"
-            );
-
-
-            Object
-              .values(panels)
-              .forEach(element => {
-
-                element.classList.remove(
-                  "show"
-                );
-
-              });
-
-
-            if (
-              panel === "map"
-            ) {
-
-              map.invalidateSize();
-
-              return;
-
-            }
-
-
-            if (
-              panels[panel]
-            ) {
-
-              panels[panel]
-                .classList
-                .add("show");
-
-            }
-
-          }
-        );
+        map.zoomIn();
 
       });
 
 
-    /* =========================
-       NEPTUN
-    ========================= */
+    document
+      .getElementById("zoomOut")
+      .addEventListener("click", function() {
+
+        map.zoomOut();
+
+      });
+
+
+    /* ==================================================
+       LOCATION
+    ================================================== */
+
+    document
+      .getElementById("locationBtn")
+      .addEventListener("click", function() {
+
+        map.locate({
+          setView: true,
+          maxZoom: 14,
+
+          enableHighAccuracy: true,
+
+          maximumAge: 10000,
+
+          timeout: 10000
+        });
+
+      });
+
+
+    map.on("locationerror", function() {
+
+      alert(
+        "Не вдалося визначити ваше місцезнаходження."
+      );
+
+    });
+
+
+    /* ==================================================
+       SEARCH
+    ================================================== */
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+
+    async function searchPlace() {
+
+      const query =
+        searchInput.value.trim();
+
+
+      if (!query) {
+        return;
+      }
+
+
+      searchInput.blur();
+
+
+      try {
+
+        const url =
+          "https://nominatim.openstreetmap.org/search" +
+
+          "?format=json" +
+
+          "&limit=1" +
+
+          "&countrycodes=ua" +
+
+          "&accept-language=uk" +
+
+          "&q=" +
+          encodeURIComponent(query);
+
+
+        const response =
+          await fetch(url, {
+            headers: {
+              "Accept":
+                "application/json"
+            }
+          });
+
+
+        const results =
+          await response.json();
+
+
+        if (!results.length) {
+
+          alert(
+            "Населений пункт не знайдено."
+          );
+
+          return;
+
+        }
+
+
+        const lat =
+          Number(results[0].lat);
+
+        const lon =
+          Number(results[0].lon);
+
+
+        map.flyTo(
+          [lat, lon],
+          13,
+
+          {
+            duration: 1.2
+          }
+        );
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Помилка пошуку."
+        );
+
+      }
+
+    }
+
+
+    searchInput.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (event.key === "Enter") {
+
+          searchPlace();
+
+        }
+
+      }
+    );
+
+
+    /* ==================================================
+       NEPTUN — KYIV OBLAST ALERT
+    ================================================== */
 
     const alertDot =
       document.getElementById(
@@ -1330,30 +1277,35 @@
       );
 
 
-    function formatTime(
-      value
-    ) {
+    function formatTime(value) {
 
-      try {
+      if (!value) {
+        return "";
+      }
 
-        return new Date(
-          value
-        ).toLocaleTimeString(
-          "uk-UA",
-          {
-            hour:
-              "2-digit",
 
-            minute:
-              "2-digit"
-          }
-        );
+      const date =
+        new Date(value);
 
-      } catch {
 
-        return value;
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return "";
 
       }
+
+
+      return date.toLocaleTimeString(
+        "uk-UA",
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
 
     }
 
@@ -1364,26 +1316,18 @@
 
         const response =
           await fetch(
-
             "https://neptun.in.ua/api/v1/alerts",
-
             {
-              cache:
-                "no-store"
+              cache: "no-store"
             }
-
           );
 
 
-        if (
-          !response.ok
-        ) {
-
+        if (!response.ok) {
           throw new Error(
             "NEPTUN HTTP " +
             response.status
           );
-
         }
 
 
@@ -1392,9 +1336,7 @@
 
 
         const oblasts =
-          Array.isArray(
-            data.oblasts
-          )
+          Array.isArray(data.oblasts)
             ? data.oblasts
             : [];
 
@@ -1405,22 +1347,19 @@
 
               const key =
                 String(
-                  item.key ||
-                  ""
+                  item.key || ""
                 ).toLowerCase();
 
 
               const name =
                 String(
-                  item.name ||
-                  ""
+                  item.name || ""
                 ).toLowerCase();
 
 
               const oblast =
                 String(
-                  item.oblast ||
-                  ""
+                  item.oblast || ""
                 ).toLowerCase();
 
 
@@ -1449,11 +1388,9 @@
 
         if (kyiv) {
 
-          alertDot
-            .classList
-            .add(
-              "active"
-            );
+          alertDot.classList.add(
+            "active"
+          );
 
 
           alertTitle.textContent =
@@ -1474,14 +1411,13 @@
 
               : "Статус активний";
 
+        }
 
-        } else {
+        else {
 
-          alertDot
-            .classList
-            .remove(
-              "active"
-            );
+          alertDot.classList.remove(
+            "active"
+          );
 
 
           alertTitle.textContent =
@@ -1494,35 +1430,30 @@
 
           alertTime.textContent =
             "Оновлено " +
-
             new Date()
               .toLocaleTimeString(
                 "uk-UA",
                 {
-                  hour:
-                    "2-digit",
-
-                  minute:
-                    "2-digit"
+                  hour: "2-digit",
+                  minute: "2-digit"
                 }
               );
 
         }
 
+      }
 
-      } catch (error) {
+      catch (error) {
 
-        console.log(
-          "NEPTUN error:",
+        console.error(
+          "NEPTUN:",
           error
         );
 
 
-        alertDot
-          .classList
-          .remove(
-            "active"
-          );
+        alertDot.classList.remove(
+          "active"
+        );
 
 
         alertTitle.textContent =
@@ -1534,7 +1465,7 @@
 
 
         alertTime.textContent =
-          "Не вдалося отримати дані";
+          "Помилка отримання даних";
 
       }
 
@@ -1550,13 +1481,162 @@
     );
 
 
-    /* =========================
+    /* ==================================================
+       BOTTOM NAV
+    ================================================== */
+
+    const navButtons =
+      document.querySelectorAll(
+        ".nav-btn"
+      );
+
+
+    const panels =
+      document.querySelectorAll(
+        ".panel"
+      );
+
+
+    function closeAllPanels() {
+
+      panels.forEach(
+        panel =>
+          panel.classList.remove(
+            "open"
+          )
+      );
+
+    }
+
+
+    navButtons.forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            const panelId =
+              button.dataset.panel;
+
+
+            if (
+              panelId ===
+              "mapPanel"
+            ) {
+
+              closeAllPanels();
+
+              navButtons.forEach(
+                btn =>
+                  btn.classList.remove(
+                    "active"
+                  )
+              );
+
+              button.classList.add(
+                "active"
+              );
+
+              setTimeout(
+                () => map.invalidateSize(),
+                50
+              );
+
+              return;
+
+            }
+
+
+            const panel =
+              document.getElementById(
+                panelId
+              );
+
+
+            const wasOpen =
+              panel.classList.contains(
+                "open"
+              );
+
+
+            closeAllPanels();
+
+
+            navButtons.forEach(
+              btn =>
+                btn.classList.remove(
+                  "active"
+                )
+            );
+
+
+            if (!wasOpen) {
+
+              panel.classList.add(
+                "open"
+              );
+
+              button.classList.add(
+                "active"
+              );
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+
+    /* ==================================================
+       CLOSE PANEL BUTTONS
+    ================================================== */
+
+    document
+      .querySelectorAll(
+        ".close-panel"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            function() {
+
+              closeAllPanels();
+
+              navButtons.forEach(
+                btn =>
+                  btn.classList.remove(
+                    "active"
+                  )
+              );
+
+
+              document
+                .querySelector(
+                  '.nav-btn[data-panel="mapPanel"]'
+                )
+                ?.classList.add(
+                  "active"
+                );
+
+            }
+          );
+
+        }
+      );
+
+
+    /* ==================================================
        RESIZE
-    ========================= */
+    ================================================== */
 
     window.addEventListener(
       "resize",
-      () => {
+      function() {
 
         map.invalidateSize();
 
@@ -1564,19 +1644,27 @@
     );
 
 
-    /*
-      Додатково примусово
-      перемальовуємо карту після
-      повного завантаження.
-    */
+    /* ==================================================
+       FINISH
+    ================================================== */
 
     setTimeout(
-      () => {
+      function() {
+
+        document
+          .getElementById(
+            "loading"
+          )
+          .classList.add(
+            "hidden"
+          );
+
 
         map.invalidateSize();
 
       },
-      500
+
+      900
     );
 
   </script>
