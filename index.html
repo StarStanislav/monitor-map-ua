@@ -2,21 +2,13 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no,
-               viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-<title>ONLINE MONITOR</title>
+<title>MONITOR MAP UA</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 * {
@@ -30,8 +22,8 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #05070a;
-  color: #f4f6f8;
+  background: #070b0e;
+  color: #f4f7f7;
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -46,130 +38,163 @@ body {
   position: relative;
 }
 
-/* =========================
-   MAP
-========================= */
-
 #map {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: #080b0f;
+  background: #080c10;
 }
 
 .leaflet-container {
-  background: #080b0f;
+  background: #080c10;
   font-family: inherit;
 }
 
 .leaflet-control-attribution {
-  background: rgba(5, 7, 10, 0.72) !important;
-  color: rgba(255,255,255,.45) !important;
-  backdrop-filter: blur(10px);
-  font-size: 9px;
+  background: rgba(5, 8, 10, .7) !important;
+  color: rgba(255,255,255,.42) !important;
+  font-size: 8px;
+  backdrop-filter: blur(8px);
 }
 
 .leaflet-control-attribution a {
-  color: rgba(255,255,255,.65) !important;
+  color: rgba(255,255,255,.58) !important;
 }
 
 /* =========================
-   TOP HEADER
+   HEADER
 ========================= */
 
 .top-ui {
   position: absolute;
-  top: max(14px, env(safe-area-inset-top));
-  left: 14px;
-  right: 14px;
+  top: max(12px, env(safe-area-inset-top));
+  left: 13px;
+  right: 13px;
   z-index: 1000;
   pointer-events: none;
 }
 
 .header-card {
   pointer-events: auto;
+
+  height: 82px;
+  padding: 10px 12px 10px 11px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 
-  padding: 13px 15px;
+  border-radius: 24px;
 
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.09);
 
   background:
     linear-gradient(
       135deg,
-      rgba(18,22,28,.94),
-      rgba(7,10,14,.88)
+      rgba(18,25,30,.94),
+      rgba(7,12,16,.91)
     );
 
   box-shadow:
-    0 12px 35px rgba(0,0,0,.38),
+    0 14px 38px rgba(0,0,0,.38),
     inset 0 1px 0 rgba(255,255,255,.035);
 
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
+
+/* =========================
+   BRAND
+========================= */
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 13px;
   min-width: 0;
 }
 
 .brand-icon {
-  width: 39px;
-  height: 39px;
-  flex: 0 0 39px;
+  position: relative;
 
-  border-radius: 12px;
+  width: 58px;
+  height: 58px;
+
+  flex: 0 0 58px;
+
+  border-radius: 18px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border: 1px solid rgba(109,221,190,.22);
+
   background:
-    radial-gradient(
-      circle at 50% 45%,
-      rgba(255,255,255,.11),
-      rgba(255,255,255,.025) 55%,
-      transparent 56%
-    ),
-    #0d1218;
-
-  border: 1px solid rgba(255,255,255,.09);
-
-  position: relative;
-  overflow: hidden;
-}
-
-.brand-icon::before {
-  content: "";
-  position: absolute;
-
-  width: 18px;
-  height: 18px;
-
-  border: 1px solid rgba(255,255,255,.75);
-  border-radius: 50%;
-}
-
-.brand-icon::after {
-  content: "";
-
-  position: absolute;
-
-  width: 5px;
-  height: 5px;
-
-  border-radius: 50%;
-  background: #fff;
+    linear-gradient(
+      145deg,
+      rgba(22,38,40,.95),
+      rgba(8,17,20,.92)
+    );
 
   box-shadow:
-    0 0 12px rgba(255,255,255,.75);
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.radar-ring {
+  position: absolute;
+
+  border: 1.5px solid rgba(91,220,185,.78);
+
+  border-radius: 50%;
+}
+
+.radar-ring.r1 {
+  width: 34px;
+  height: 34px;
+}
+
+.radar-ring.r2 {
+  width: 22px;
+  height: 22px;
+
+  border-color: rgba(91,220,185,.48);
+}
+
+.radar-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #67dfbd;
+
+  box-shadow:
+    0 0 12px rgba(103,223,189,.72);
+}
+
+.radar-sweep {
+  position: absolute;
+
+  width: 17px;
+  height: 1px;
+
+  right: 10px;
+  top: 18px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #67dfbd
+    );
+
+  transform: rotate(-35deg);
+
+  transform-origin: right center;
+
+  opacity: .65;
 }
 
 .brand-text {
@@ -177,53 +202,65 @@ body {
 }
 
 .brand-title {
-  font-size: 14px;
+  font-size: 19px;
+  line-height: 22px;
+
   font-weight: 800;
-  letter-spacing: .14em;
+
+  letter-spacing: .115em;
+
   white-space: nowrap;
 }
 
 .brand-subtitle {
-  margin-top: 3px;
+  margin-top: 5px;
 
-  color: rgba(255,255,255,.42);
+  font-size: 7.5px;
+  line-height: 10px;
 
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: .13em;
+  font-weight: 650;
+
+  letter-spacing: .19em;
+
+  color: rgba(231,239,239,.39);
 
   white-space: nowrap;
 }
 
+/* =========================
+   ONLINE INDICATOR
+========================= */
+
 .system-status {
+  width: 39px;
+  height: 39px;
+
+  flex: 0 0 39px;
+
+  border-radius: 14px;
+
   display: flex;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
 
-  padding: 7px 9px;
+  border: 1px solid rgba(255,255,255,.085);
 
-  border-radius: 10px;
+  background: rgba(255,255,255,.025);
 
-  background: rgba(255,255,255,.035);
-  border: 1px solid rgba(255,255,255,.06);
-
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .08em;
-
-  color: rgba(255,255,255,.6);
+  box-shadow:
+    inset 0 0 0 5px rgba(103,223,189,.025);
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 
   border-radius: 50%;
-  background: #65d98b;
+
+  background: #69ddb9;
 
   box-shadow:
-    0 0 0 4px rgba(101,217,139,.08),
-    0 0 10px rgba(101,217,139,.55);
+    0 0 13px rgba(105,221,185,.62);
 }
 
 /* =========================
@@ -233,45 +270,51 @@ body {
 .search-wrap {
   position: absolute;
 
-  top: 91px;
-  left: 14px;
-  right: 14px;
+  top: 104px;
+
+  left: 13px;
+  right: 13px;
 
   z-index: 1000;
 }
 
 .search-box {
-  height: 47px;
+  height: 50px;
+
+  padding: 0 11px 0 15px;
 
   display: flex;
   align-items: center;
 
-  padding: 0 14px;
+  border-radius: 17px;
 
-  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,.085);
 
-  background: rgba(9,12,16,.88);
-
-  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(9,14,18,.89);
 
   box-shadow:
-    0 10px 28px rgba(0,0,0,.3);
+    0 11px 28px rgba(0,0,0,.31),
+    inset 0 1px 0 rgba(255,255,255,.025);
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .search-icon {
-  width: 17px;
-  height: 17px;
-
-  margin-right: 9px;
-
-  border: 1.5px solid rgba(255,255,255,.48);
-  border-radius: 50%;
-
   position: relative;
-  flex: 0 0 auto;
+
+  width: 16px;
+  height: 16px;
+
+  margin-right: 11px;
+
+  flex: 0 0 16px;
+
+  border:
+    1.6px solid
+    rgba(222,232,232,.5);
+
+  border-radius: 50%;
 }
 
 .search-icon::after {
@@ -280,15 +323,16 @@ body {
   position: absolute;
 
   width: 7px;
-  height: 1.5px;
+  height: 1.6px;
 
   right: -5px;
   bottom: -3px;
 
-  background: rgba(255,255,255,.48);
+  background: rgba(222,232,232,.5);
+
+  border-radius: 2px;
 
   transform: rotate(45deg);
-  border-radius: 2px;
 }
 
 #search {
@@ -299,32 +343,32 @@ body {
 
   background: transparent;
 
-  color: #fff;
+  color: #f4f7f7;
 
-  font-size: 14px;
+  font-size: 13.5px;
+
   font-weight: 500;
 }
 
 #search::placeholder {
-  color: rgba(255,255,255,.36);
+  color: rgba(226,234,234,.34);
 }
 
 .search-clear {
   display: none;
 
-  width: 26px;
-  height: 26px;
+  width: 27px;
+  height: 27px;
 
   border: 0;
-  border-radius: 50%;
 
-  background: rgba(255,255,255,.08);
+  border-radius: 9px;
 
-  color: rgba(255,255,255,.65);
+  background: rgba(255,255,255,.07);
+
+  color: rgba(255,255,255,.58);
 
   font-size: 17px;
-
-  cursor: pointer;
 }
 
 /* =========================
@@ -332,28 +376,31 @@ body {
 ========================= */
 
 .search-results {
+  display: none;
+
   margin-top: 7px;
 
   overflow: hidden;
 
   border-radius: 14px;
 
-  background: rgba(9,12,16,.95);
+  background: rgba(8,13,17,.96);
 
   border: 1px solid rgba(255,255,255,.08);
 
-  box-shadow: 0 15px 35px rgba(0,0,0,.42);
+  box-shadow:
+    0 16px 35px rgba(0,0,0,.42);
 
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-
-  display: none;
 }
 
 .search-result {
-  padding: 12px 14px;
+  padding: 11px 13px;
 
-  border-bottom: 1px solid rgba(255,255,255,.055);
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.055);
 
   cursor: pointer;
 }
@@ -363,15 +410,16 @@ body {
 }
 
 .search-result-title {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 650;
 }
 
 .search-result-type {
   margin-top: 3px;
 
-  font-size: 9px;
-  color: rgba(255,255,255,.38);
+  font-size: 8.5px;
+
+  color: rgba(255,255,255,.36);
 }
 
 /* =========================
@@ -381,29 +429,26 @@ body {
 .status-card {
   position: absolute;
 
-  left: 14px;
-  right: 14px;
-  bottom: 91px;
+  left: 13px;
+  right: 13px;
+
+  bottom: 88px;
 
   z-index: 900;
 
-  padding: 13px 14px;
+  padding: 12px 13px;
 
   border-radius: 16px;
 
-  background: rgba(8,11,15,.88);
-
   border: 1px solid rgba(255,255,255,.075);
+
+  background: rgba(7,11,15,.87);
 
   box-shadow:
     0 12px 32px rgba(0,0,0,.38);
 
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-
-  transition:
-    background .25s ease,
-    border-color .25s ease;
 }
 
 .status-top {
@@ -415,48 +460,49 @@ body {
 .status-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 
-  font-size: 10px;
+  font-size: 9px;
+
   font-weight: 750;
-  letter-spacing: .11em;
-  text-transform: uppercase;
 
-  color: rgba(255,255,255,.65);
+  letter-spacing: .11em;
+
+  color: rgba(255,255,255,.58);
 }
 
 .status-light {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 
   border-radius: 50%;
 
-  background: #65d98b;
+  background: #67ddb8;
 
   box-shadow:
-    0 0 12px rgba(101,217,139,.55);
+    0 0 10px rgba(103,221,184,.55);
 }
 
 .status-time {
-  font-size: 9px;
-  color: rgba(255,255,255,.32);
+  font-size: 8.5px;
+
+  color: rgba(255,255,255,.3);
 }
 
 .status-main {
-  margin-top: 8px;
+  margin-top: 7px;
 
-  font-size: 13px;
+  font-size: 12px;
+
   font-weight: 650;
-
-  color: #f5f6f7;
 }
 
 .status-sub {
-  margin-top: 4px;
+  margin-top: 3px;
 
-  font-size: 10px;
+  font-size: 9.5px;
 
-  color: rgba(255,255,255,.37);
+  color: rgba(255,255,255,.34);
 }
 
 /* =========================
@@ -466,43 +512,42 @@ body {
 .map-controls {
   position: absolute;
 
-  right: 14px;
-  bottom: 176px;
+  right: 13px;
+  bottom: 170px;
 
   z-index: 900;
 
   display: flex;
+
   flex-direction: column;
-  gap: 8px;
+
+  gap: 7px;
 }
 
 .map-btn {
-  width: 43px;
-  height: 43px;
+  width: 40px;
+  height: 40px;
 
-  border-radius: 13px;
+  border-radius: 12px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border:
+    1px solid
+    rgba(255,255,255,.08);
 
-  background: rgba(8,11,15,.89);
+  background:
+    rgba(8,12,16,.89);
 
-  border: 1px solid rgba(255,255,255,.08);
-
-  color: rgba(255,255,255,.72);
+  color:
+    rgba(255,255,255,.7);
 
   box-shadow:
     0 8px 22px rgba(0,0,0,.34);
 
   backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
 
-  font-size: 20px;
+  font-size: 19px;
 
   cursor: pointer;
-
-  user-select: none;
 }
 
 .map-btn:active {
@@ -518,22 +563,29 @@ body {
 
   left: 10px;
   right: 10px;
-  bottom: max(10px, env(safe-area-inset-bottom));
 
-  height: 65px;
+  bottom:
+    max(9px, env(safe-area-inset-bottom));
+
+  height: 61px;
 
   z-index: 1000;
 
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
 
-  padding: 6px;
+  grid-template-columns:
+    repeat(3, 1fr);
 
-  border-radius: 19px;
+  padding: 5px;
 
-  background: rgba(8,11,15,.93);
+  border-radius: 18px;
 
-  border: 1px solid rgba(255,255,255,.08);
+  background:
+    rgba(7,11,15,.93);
+
+  border:
+    1px solid
+    rgba(255,255,255,.08);
 
   box-shadow:
     0 15px 40px rgba(0,0,0,.46);
@@ -547,34 +599,43 @@ body {
 
   background: transparent;
 
-  color: rgba(255,255,255,.36);
+  color:
+    rgba(255,255,255,.34);
 
-  border-radius: 14px;
+  border-radius: 13px;
 
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   justify-content: center;
 
-  gap: 4px;
+  gap: 3px;
 
   cursor: pointer;
 }
 
 .nav-btn.active {
-  background: rgba(255,255,255,.075);
+  background:
+    rgba(255,255,255,.07);
+
   color: #fff;
 }
 
 .nav-icon {
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 17px;
+  line-height: 17px;
 }
 
 .nav-label {
-  font-size: 8px;
+  font-size: 7.5px;
+
   font-weight: 700;
+
   letter-spacing: .08em;
+
   text-transform: uppercase;
 }
 
@@ -587,19 +648,23 @@ body {
 
   left: 10px;
   right: 10px;
-  bottom: 85px;
+
+  bottom: 79px;
 
   z-index: 1100;
 
   max-height: 62vh;
 
-  padding: 17px;
+  padding: 16px;
 
-  border-radius: 20px;
+  border-radius: 19px;
 
-  background: rgba(8,11,15,.96);
+  background:
+    rgba(7,11,15,.96);
 
-  border: 1px solid rgba(255,255,255,.09);
+  border:
+    1px solid
+    rgba(255,255,255,.09);
 
   box-shadow:
     0 20px 55px rgba(0,0,0,.52);
@@ -608,6 +673,7 @@ body {
   -webkit-backdrop-filter: blur(25px);
 
   transform: translateY(120%);
+
   opacity: 0;
 
   pointer-events: none;
@@ -619,34 +685,43 @@ body {
 
 .panel.open {
   transform: translateY(0);
+
   opacity: 1;
+
   pointer-events: auto;
 }
 
 .panel-head {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .panel-title {
-  font-size: 14px;
+  font-size: 13px;
+
   font-weight: 800;
+
   letter-spacing: .06em;
 }
 
 .panel-close {
-  width: 30px;
-  height: 30px;
+  width: 29px;
+  height: 29px;
 
   border: 0;
+
   border-radius: 9px;
 
-  background: rgba(255,255,255,.07);
+  background:
+    rgba(255,255,255,.07);
 
-  color: rgba(255,255,255,.55);
+  color:
+    rgba(255,255,255,.55);
 
   font-size: 17px;
 
@@ -655,12 +730,14 @@ body {
 
 .panel-row {
   display: flex;
-  align-items: center;
+
   justify-content: space-between;
 
-  padding: 13px 0;
+  padding: 12px 0;
 
-  border-bottom: 1px solid rgba(255,255,255,.055);
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.055);
 }
 
 .panel-row:last-child {
@@ -668,27 +745,35 @@ body {
 }
 
 .panel-row-name {
-  font-size: 12px;
-  color: rgba(255,255,255,.7);
+  font-size: 11.5px;
+
+  color:
+    rgba(255,255,255,.68);
 }
 
 .panel-row-value {
-  font-size: 11px;
-  color: rgba(255,255,255,.4);
+  font-size: 10px;
+
+  color:
+    rgba(255,255,255,.38);
 }
 
 /* =========================
-   REGION LABEL
+   REGION LABELS
 ========================= */
 
 .region-label {
   background: transparent;
+
   border: 0;
+
   box-shadow: none;
 
-  color: rgba(255,255,255,.62);
+  color:
+    rgba(255,255,255,.55);
 
-  font-size: 9px;
+  font-size: 8px;
+
   font-weight: 700;
 
   text-shadow:
@@ -699,35 +784,39 @@ body {
 }
 
 /* =========================
-   CUSTOM OBJECTS
+   OBJECT MARKERS
 ========================= */
 
 .object-marker {
-  width: 28px;
-  height: 28px;
+  width: 27px;
+  height: 27px;
 
   border-radius: 50%;
 
-  position: relative;
-
   display: flex;
+
   align-items: center;
   justify-content: center;
 
-  background: rgba(10,13,17,.92);
+  background:
+    rgba(9,13,17,.93);
 
-  border: 1px solid rgba(255,255,255,.45);
+  border:
+    1px solid
+    rgba(255,255,255,.42);
 
   box-shadow:
-    0 0 0 5px rgba(255,255,255,.045),
+    0 0 0 5px rgba(255,255,255,.04),
     0 5px 18px rgba(0,0,0,.4);
+
+  position: relative;
 }
 
 .object-marker::before {
   content: "";
 
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 
   border-radius: 50%;
 
@@ -740,40 +829,48 @@ body {
 .object-label {
   position: absolute;
 
-  left: 34px;
+  left: 32px;
   top: 50%;
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 
-  padding: 5px 7px;
+  padding: 4px 6px;
 
   border-radius: 6px;
 
-  background: rgba(5,7,10,.82);
+  background:
+    rgba(5,8,11,.82);
 
-  border: 1px solid rgba(255,255,255,.07);
+  border:
+    1px solid
+    rgba(255,255,255,.07);
 
-  color: rgba(255,255,255,.72);
+  color:
+    rgba(255,255,255,.68);
 
-  font-size: 8px;
+  font-size: 7.5px;
+
   font-weight: 700;
-  letter-spacing: .07em;
+
+  letter-spacing: .06em;
 
   white-space: nowrap;
-
-  backdrop-filter: blur(8px);
 }
 
 /* =========================
-   POPUP
+   POPUPS
 ========================= */
 
 .leaflet-popup-content-wrapper {
-  background: rgba(8,11,15,.95);
+  background:
+    rgba(8,12,16,.95);
+
   color: #fff;
 
   border:
-    1px solid rgba(255,255,255,.09);
+    1px solid
+    rgba(255,255,255,.09);
 
   border-radius: 13px;
 
@@ -784,32 +881,37 @@ body {
 }
 
 .leaflet-popup-tip {
-  background: rgba(8,11,15,.95);
+  background:
+    rgba(8,12,16,.95);
 }
 
 .leaflet-popup-content {
-  margin: 13px 15px;
+  margin: 12px 14px;
 
   font-family: inherit;
 }
 
 .popup-title {
-  font-size: 13px;
+  font-size: 12.5px;
+
   font-weight: 800;
 
   margin-bottom: 4px;
 }
 
 .popup-sub {
-  font-size: 10px;
-  color: rgba(255,255,255,.42);
+  font-size: 9px;
+
+  color:
+    rgba(255,255,255,.4);
 }
 
 /* =========================
-   RESPONSIVE
+   DESKTOP
 ========================= */
 
 @media (min-width: 700px) {
+
   .top-ui,
   .search-wrap {
     left: 22px;
@@ -831,7 +933,9 @@ body {
     left: 50%;
     right: auto;
     width: 420px;
-    transform: translateX(-50%);
+
+    transform:
+      translateX(-50%);
   }
 }
 </style>
@@ -841,40 +945,49 @@ body {
 
 <div id="map"></div>
 
-<!-- =========================
-     TOP UI
-========================= -->
+<!-- HEADER -->
 
 <div class="top-ui">
+
   <div class="header-card">
 
     <div class="brand">
 
-      <div class="brand-icon"></div>
+      <div class="brand-icon">
+
+        <span class="radar-ring r1"></span>
+
+        <span class="radar-ring r2"></span>
+
+        <span class="radar-sweep"></span>
+
+        <span class="radar-dot"></span>
+
+      </div>
 
       <div class="brand-text">
+
         <div class="brand-title">
-          ONLINE MONITOR
+          MONITOR MAP UA
         </div>
 
         <div class="brand-subtitle">
           PERSONAL MONITORING SYSTEM
         </div>
+
       </div>
 
     </div>
 
     <div class="system-status">
       <span class="status-dot"></span>
-      ONLINE
     </div>
 
   </div>
+
 </div>
 
-<!-- =========================
-     SEARCH
-========================= -->
+<!-- SEARCH -->
 
 <div class="search-wrap">
 
@@ -886,7 +999,7 @@ body {
       id="search"
       type="text"
       autocomplete="off"
-      placeholder="Пошук населеного пункту..."
+      placeholder="Пошук населеного пункту"
     >
 
     <button
@@ -906,17 +1019,18 @@ body {
 
 </div>
 
-<!-- =========================
-     STATUS
-========================= -->
+<!-- STATUS -->
 
 <div class="status-card">
 
   <div class="status-top">
 
     <div class="status-label">
+
       <span class="status-light"></span>
+
       СТАН СИСТЕМИ
+
     </div>
 
     <div
@@ -944,16 +1058,14 @@ body {
 
 </div>
 
-<!-- =========================
-     MAP BUTTONS
-========================= -->
+<!-- MAP CONTROLS -->
 
 <div class="map-controls">
 
   <button
     id="locateBtn"
     class="map-btn"
-    title="Моє місцезнаходження"
+    type="button"
   >
     ⌾
   </button>
@@ -961,7 +1073,7 @@ body {
   <button
     id="resetBtn"
     class="map-btn"
-    title="Україна"
+    type="button"
   >
     ⌂
   </button>
@@ -969,7 +1081,7 @@ body {
   <button
     id="zoomIn"
     class="map-btn"
-    title="Збільшити"
+    type="button"
   >
     +
   </button>
@@ -977,16 +1089,14 @@ body {
   <button
     id="zoomOut"
     class="map-btn"
-    title="Зменшити"
+    type="button"
   >
     −
   </button>
 
 </div>
 
-<!-- =========================
-     PANELS
-========================= -->
+<!-- INFO PANEL -->
 
 <div
   id="infoPanel"
@@ -996,12 +1106,13 @@ body {
   <div class="panel-head">
 
     <div class="panel-title">
-      ONLINE MONITOR
+      MONITOR MAP UA
     </div>
 
     <button
       class="panel-close"
       data-close="infoPanel"
+      type="button"
     >
       ×
     </button>
@@ -1009,6 +1120,7 @@ body {
   </div>
 
   <div class="panel-row">
+
     <div class="panel-row-name">
       Статус системи
     </div>
@@ -1016,9 +1128,11 @@ body {
     <div class="panel-row-value">
       ONLINE
     </div>
+
   </div>
 
   <div class="panel-row">
+
     <div class="panel-row-name">
       Карта
     </div>
@@ -1026,9 +1140,11 @@ body {
     <div class="panel-row-value">
       Leaflet / OpenStreetMap
     </div>
+
   </div>
 
   <div class="panel-row">
+
     <div class="panel-row-name">
       Режим
     </div>
@@ -1036,9 +1152,12 @@ body {
     <div class="panel-row-value">
       PERSONAL
     </div>
+
   </div>
 
 </div>
+
+<!-- SETTINGS PANEL -->
 
 <div
   id="settingsPanel"
@@ -1054,6 +1173,7 @@ body {
     <button
       class="panel-close"
       data-close="settingsPanel"
+      type="button"
     >
       ×
     </button>
@@ -1098,34 +1218,56 @@ body {
 
 </div>
 
-<!-- =========================
-     BOTTOM NAV
-========================= -->
+<!-- BOTTOM NAV -->
 
 <div class="bottom-nav">
 
   <button
     class="nav-btn active"
     data-panel="map"
+    type="button"
   >
-    <div class="nav-icon">⌖</div>
-    <div class="nav-label">Карта</div>
+
+    <div class="nav-icon">
+      ⌖
+    </div>
+
+    <div class="nav-label">
+      Карта
+    </div>
+
   </button>
 
   <button
     class="nav-btn"
     data-panel="infoPanel"
+    type="button"
   >
-    <div class="nav-icon">◉</div>
-    <div class="nav-label">Система</div>
+
+    <div class="nav-icon">
+      ◉
+    </div>
+
+    <div class="nav-label">
+      Система
+    </div>
+
   </button>
 
   <button
     class="nav-btn"
     data-panel="settingsPanel"
+    type="button"
   >
-    <div class="nav-icon">⚙</div>
-    <div class="nav-label">Налаштування</div>
+
+    <div class="nav-icon">
+      ⚙
+    </div>
+
+    <div class="nav-label">
+      Налаштування
+    </div>
+
   </button>
 
 </div>
@@ -1133,101 +1275,119 @@ body {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* =========================================
-   TELEGRAM
-========================================= */
 
-const tg = window.Telegram?.WebApp;
+/* =========================
+   TELEGRAM
+========================= */
+
+const tg =
+  window.Telegram?.WebApp;
 
 if (tg) {
+
   tg.ready();
+
   tg.expand();
 
   try {
-    tg.setHeaderColor("#05070a");
-    tg.setBackgroundColor("#05070a");
+
+    tg.setHeaderColor("#070b0e");
+
+    tg.setBackgroundColor("#070b0e");
+
   } catch (e) {}
+
 }
 
-/* =========================================
-   MAP
-========================================= */
 
-const map = L.map("map", {
-  zoomControl: false,
-  attributionControl: true,
-  minZoom: 5,
-  maxZoom: 12,
-  preferCanvas: true
-});
+/* =========================
+   MAP
+========================= */
+
+const map =
+  L.map("map", {
+
+    zoomControl: false,
+
+    attributionControl: true,
+
+    minZoom: 5,
+
+    maxZoom: 12,
+
+    preferCanvas: true
+
+  });
+
 
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
+
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap'
+
+    attribution:
+      "&copy; OpenStreetMap"
+
   }
 ).addTo(map);
 
-/* =========================================
-   UKRAINE VIEW
-========================================= */
+
+/* =========================
+   UKRAINE
+========================= */
 
 const ukraineBounds = [
-  [44.0, 21.0],
-  [53.0, 41.0]
+
+  [44, 21],
+
+  [53, 41]
+
 ];
 
-map.fitBounds(ukraineBounds, {
-  padding: [20, 20]
-});
+map.fitBounds(
+  ukraineBounds,
+  {
+    padding: [20,20]
+  }
+);
 
-/* =========================================
+
+/* =========================
    GEOJSON
-========================================= */
+========================= */
 
 const GEOJSON_URL =
   "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/Ukraine.geojson";
 
 let regionsLayer = null;
 
-/* =========================================
-   REGION STYLE
-========================================= */
 
 function regionStyle() {
+
   return {
-    color: "rgba(255,255,255,.26)",
+
+    color:
+      "rgba(255,255,255,.25)",
+
     weight: 1,
+
     opacity: .75,
 
-    fillColor: "#0d1319",
-    fillOpacity: .22
+    fillColor:
+      "#0d1419",
+
+    fillOpacity: .23
+
   };
+
 }
 
-function regionHoverStyle(layer) {
 
-  layer.setStyle({
-    color: "rgba(255,255,255,.7)",
-    weight: 1.4,
-    fillColor: "#1b252e",
-    fillOpacity: .42
-  });
-
-  layer.bringToFront();
-}
-
-function regionLeaveStyle(layer) {
-
-  regionsLayer.resetStyle(layer);
-}
-
-/* =========================================
-   REGION INTERACTION
-========================================= */
-
-function onRegionEachFeature(feature, layer) {
+function onRegionEachFeature(
+  feature,
+  layer
+) {
 
   const name =
     feature?.properties?.name ||
@@ -1236,221 +1396,394 @@ function onRegionEachFeature(feature, layer) {
     feature?.properties?.name_1 ||
     "Регіон";
 
+
   layer.bindTooltip(
+
     name,
+
     {
+
       permanent: true,
+
       direction: "center",
-      className: "region-label",
+
+      className:
+        "region-label",
+
       opacity: .9
+
     }
+
   );
 
-  layer.bindPopup(
-    `
-      <div class="popup-title">
-        ${escapeHtml(name)}
-      </div>
 
-      <div class="popup-sub">
-        Регіон України
-      </div>
-    `
-  );
+  layer.bindPopup(`
+
+    <div class="popup-title">
+      ${escapeHtml(name)}
+    </div>
+
+    <div class="popup-sub">
+      Регіон України
+    </div>
+
+  `);
+
 
   layer.on({
+
     mouseover: () => {
-      regionHoverStyle(layer);
+
+      layer.setStyle({
+
+        color:
+          "rgba(103,221,185,.62)",
+
+        weight: 1.4,
+
+        fillColor:
+          "#16221f",
+
+        fillOpacity: .38
+
+      });
+
+      layer.bringToFront();
+
     },
+
 
     mouseout: () => {
-      regionLeaveStyle(layer);
+
+      if (regionsLayer) {
+
+        regionsLayer.resetStyle(layer);
+
+      }
+
     },
 
+
     click: () => {
-      regionHoverStyle(layer);
+
+      layer.setStyle({
+
+        color:
+          "rgba(103,221,185,.62)",
+
+        weight: 1.4,
+
+        fillColor:
+          "#16221f",
+
+        fillOpacity: .38
+
+      });
+
     }
+
   });
+
 }
 
-/* =========================================
-   LOAD GEOJSON
-========================================= */
 
 fetch(GEOJSON_URL)
+
   .then(response => {
 
     if (!response.ok) {
-      throw new Error("GeoJSON error");
+
+      throw new Error(
+        "GeoJSON error"
+      );
+
     }
 
     return response.json();
+
   })
+
   .then(data => {
 
-    regionsLayer = L.geoJSON(
-      data,
-      {
-        style: regionStyle,
-        onEachFeature: onRegionEachFeature
-      }
-    ).addTo(map);
+    regionsLayer =
+      L.geoJSON(
+
+        data,
+
+        {
+
+          style:
+            regionStyle,
+
+          onEachFeature:
+            onRegionEachFeature
+
+        }
+
+      ).addTo(map);
 
   })
+
   .catch(error => {
 
     console.warn(
-      "Не вдалося завантажити межі регіонів:",
+      "GeoJSON:",
       error
     );
 
   });
 
-/* =========================================
+
+/* =========================
    DEMO OBJECTS
-========================================= */
+========================= */
 
 const demoObjects = [
 
   {
+
     id: "OBJ-01",
+
     type: "MONITOR",
+
     lat: 50.45,
+
     lng: 30.52,
-    speedLat: 0.000004,
-    speedLng: 0.000006
+
+    speedLat: .000004,
+
+    speedLng: .000006
+
   },
 
   {
+
     id: "OBJ-02",
+
     type: "SCOUT",
+
     lat: 49.84,
+
     lng: 24.03,
-    speedLat: -0.000003,
-    speedLng: 0.000004
+
+    speedLat: -.000003,
+
+    speedLng: .000004
+
   },
 
   {
+
     id: "OBJ-03",
+
     type: "TARGET",
+
     lat: 48.46,
+
     lng: 35.05,
-    speedLat: 0.000002,
-    speedLng: -0.000005
+
+    speedLat: .000002,
+
+    speedLng: -.000005
+
   }
 
 ];
 
-/* =========================================
-   OBJECT MARKERS
-========================================= */
 
 const objectMarkers = [];
 
-demoObjects.forEach(object => {
 
-  const html = `
-    <div class="object-marker">
-      <div class="object-label">
-        ${object.id}
+demoObjects.forEach(
+  object => {
+
+    const icon =
+      L.divIcon({
+
+        className: "",
+
+        html: `
+
+          <div class="object-marker">
+
+            <div class="object-label">
+
+              ${object.id}
+
+            </div>
+
+          </div>
+
+        `,
+
+        iconSize:
+          [27,27],
+
+        iconAnchor:
+          [13.5,13.5]
+
+      });
+
+
+    const marker =
+      L.marker(
+
+        [
+          object.lat,
+          object.lng
+        ],
+
+        {
+
+          icon,
+
+          interactive: true
+
+        }
+
+      ).addTo(map);
+
+
+    marker.bindPopup(`
+
+      <div class="popup-title">
+
+        ${escapeHtml(
+          object.id
+        )}
+
       </div>
-    </div>
-  `;
 
-  const icon = L.divIcon({
-    className: "",
-    html,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14]
-  });
+      <div class="popup-sub">
 
-  const marker = L.marker(
-    [object.lat, object.lng],
-    {
-      icon,
-      interactive: true
-    }
-  ).addTo(map);
+        DEMO OBJECT ·
+        ${escapeHtml(
+          object.type
+        )}
 
-  marker.bindPopup(`
-    <div class="popup-title">
-      ${escapeHtml(object.id)}
-    </div>
+      </div>
 
-    <div class="popup-sub">
-      DEMO OBJECT · ${escapeHtml(object.type)}
-    </div>
-  `);
+    `);
 
-  objectMarkers.push({
-    object,
-    marker
-  });
 
-});
+    objectMarkers.push({
 
-/* =========================================
+      object,
+
+      marker
+
+    });
+
+  }
+);
+
+
+/* =========================
    DEMO ANIMATION
-========================================= */
+========================= */
 
-let lastTime = performance.now();
+let lastTime =
+  performance.now();
+
 
 function animateObjects(now) {
 
-  const delta = now - lastTime;
+  const delta =
+    now - lastTime;
+
   lastTime = now;
 
-  if (delta < 0 || delta > 1000) {
-    requestAnimationFrame(animateObjects);
-    return;
+
+  if (
+    delta >= 0 &&
+    delta < 1000
+  ) {
+
+    objectMarkers.forEach(
+      item => {
+
+        const object =
+          item.object;
+
+
+        object.lat +=
+          object.speedLat *
+          delta;
+
+
+        object.lng +=
+          object.speedLng *
+          delta;
+
+
+        if (
+          object.lat > 52.4 ||
+          object.lat < 46
+        ) {
+
+          object.speedLat *= -1;
+
+        }
+
+
+        if (
+          object.lng > 38 ||
+          object.lng < 23
+        ) {
+
+          object.speedLng *= -1;
+
+        }
+
+
+        item.marker.setLatLng([
+
+          object.lat,
+
+          object.lng
+
+        ]);
+
+      }
+    );
+
   }
 
-  objectMarkers.forEach(item => {
 
-    const obj = item.object;
+  requestAnimationFrame(
+    animateObjects
+  );
 
-    obj.lat += obj.speedLat * delta;
-    obj.lng += obj.speedLng * delta;
-
-    /*
-      Обмеження демонстраційних об'єктів
-      в межах умовної області.
-    */
-
-    if (obj.lat > 52.4 || obj.lat < 46.0) {
-      obj.speedLat *= -1;
-    }
-
-    if (obj.lng > 38.0 || obj.lng < 23.0) {
-      obj.speedLng *= -1;
-    }
-
-    item.marker.setLatLng([
-      obj.lat,
-      obj.lng
-    ]);
-
-  });
-
-  requestAnimationFrame(animateObjects);
 }
 
-requestAnimationFrame(animateObjects);
 
-/* =========================================
+requestAnimationFrame(
+  animateObjects
+);
+
+
+/* =========================
    SEARCH
-========================================= */
+========================= */
 
 const searchInput =
-  document.getElementById("search");
+  document.getElementById(
+    "search"
+  );
 
 const searchResults =
-  document.getElementById("searchResults");
+  document.getElementById(
+    "searchResults"
+  );
 
 const searchClear =
-  document.getElementById("searchClear");
+  document.getElementById(
+    "searchClear"
+  );
+
 
 let searchTimer = null;
+
 
 searchInput.addEventListener(
   "input",
@@ -1459,34 +1792,54 @@ searchInput.addEventListener(
     const value =
       searchInput.value.trim();
 
+
     searchClear.style.display =
-      value ? "block" : "none";
+      value
+        ? "block"
+        : "none";
 
-    clearTimeout(searchTimer);
 
-    if (value.length < 2) {
+    clearTimeout(
+      searchTimer
+    );
+
+
+    if (
+      value.length < 2
+    ) {
 
       searchResults.style.display =
         "none";
 
-      searchResults.innerHTML = "";
+      searchResults.innerHTML =
+        "";
 
       return;
+
     }
 
-    searchTimer = setTimeout(
-      () => searchPlace(value),
-      450
-    );
+
+    searchTimer =
+      setTimeout(
+
+        () =>
+          searchPlace(value),
+
+        450
+
+      );
 
   }
 );
 
-/* =========================================
-   NOMINATIM SEARCH
-========================================= */
 
-async function searchPlace(query) {
+/* =========================
+   NOMINATIM
+========================= */
+
+async function searchPlace(
+  query
+) {
 
   try {
 
@@ -1499,27 +1852,36 @@ async function searchPlace(query) {
       "&q=" +
       encodeURIComponent(query);
 
+
     const response =
-      await fetch(url, {
-        headers: {
-          "Accept":
-            "application/json"
-        }
-      });
+      await fetch(url);
+
 
     if (!response.ok) {
-      throw new Error("Search failed");
+
+      throw new Error(
+        "Search failed"
+      );
+
     }
 
-    const data =
+
+    const results =
       await response.json();
 
-    renderSearchResults(data);
 
-  } catch (error) {
+    renderSearchResults(
+      results
+    );
+
+  }
+
+  catch (error) {
 
     searchResults.innerHTML = `
+
       <div class="search-result">
+
         <div class="search-result-title">
           Помилка пошуку
         </div>
@@ -1527,24 +1889,33 @@ async function searchPlace(query) {
         <div class="search-result-type">
           Спробуйте ще раз
         </div>
+
       </div>
+
     `;
 
     searchResults.style.display =
       "block";
+
   }
+
 }
 
-/* =========================================
-   SEARCH RESULTS
-========================================= */
 
-function renderSearchResults(results) {
+/* =========================
+   RESULTS
+========================= */
+
+function renderSearchResults(
+  results
+) {
 
   if (!results.length) {
 
     searchResults.innerHTML = `
+
       <div class="search-result">
+
         <div class="search-result-title">
           Нічого не знайдено
         </div>
@@ -1552,105 +1923,148 @@ function renderSearchResults(results) {
         <div class="search-result-type">
           Спробуйте іншу назву
         </div>
+
       </div>
+
     `;
 
     searchResults.style.display =
       "block";
 
     return;
+
   }
 
+
   searchResults.innerHTML =
-    results.map((place, index) => {
+    results.map(
+      (place, index) => {
 
-      const title =
-        place.display_name
-          ?.split(",")[0] ||
-        "Населений пункт";
+        const title =
+          place.display_name
+            ?.split(",")[0] ||
+          "Населений пункт";
 
-      const type =
-        place.type ||
-        "location";
 
-      return `
-        <div
-          class="search-result"
-          data-index="${index}"
-        >
+        return `
 
-          <div class="search-result-title">
-            ${escapeHtml(title)}
+          <div
+            class="search-result"
+            data-index="${index}"
+          >
+
+            <div class="search-result-title">
+
+              ${escapeHtml(
+                title
+              )}
+
+            </div>
+
+            <div class="search-result-type">
+
+              ${escapeHtml(
+                place.type ||
+                "location"
+              )}
+
+            </div>
+
           </div>
 
-          <div class="search-result-type">
-            ${escapeHtml(type)}
-          </div>
+        `;
 
-        </div>
-      `;
+      }
+    ).join("");
 
-    }).join("");
 
   searchResults.style.display =
     "block";
 
+
   document
-    .querySelectorAll(".search-result")
-    .forEach((element, index) => {
+    .querySelectorAll(
+      ".search-result"
+    )
+    .forEach(
+      (element, index) => {
 
-      element.addEventListener(
-        "click",
-        () => {
+        element.addEventListener(
+          "click",
+          () => {
 
-          const place =
-            results[index];
+            const place =
+              results[index];
 
-          const lat =
-            Number(place.lat);
 
-          const lon =
-            Number(place.lon);
+            const lat =
+              Number(place.lat);
 
-          map.flyTo(
-            [lat, lon],
-            10,
-            {
-              duration: 1.1
-            }
-          );
+            const lon =
+              Number(place.lon);
 
-          L.popup()
-            .setLatLng([lat, lon])
-            .setContent(`
-              <div class="popup-title">
-                ${escapeHtml(
-                  place.display_name
-                    ?.split(",")[0] ||
-                  "Місце"
-                )}
-              </div>
 
-              <div class="popup-sub">
-                ${escapeHtml(
-                  place.type || "location"
-                )}
-              </div>
-            `)
-            .openOn(map);
+            map.flyTo(
 
-          searchResults.style.display =
-            "none";
+              [lat,lon],
 
-        }
-      );
+              10,
 
-    });
+              {
+                duration: 1.1
+              }
+
+            );
+
+
+            L.popup()
+
+              .setLatLng(
+                [lat,lon]
+              )
+
+              .setContent(`
+
+                <div class="popup-title">
+
+                  ${escapeHtml(
+                    place
+                      .display_name
+                      ?.split(",")[0] ||
+                    "Місце"
+                  )}
+
+                </div>
+
+                <div class="popup-sub">
+
+                  ${escapeHtml(
+                    place.type ||
+                    "location"
+                  )}
+
+                </div>
+
+              `)
+
+              .openOn(map);
+
+
+            searchResults.style.display =
+              "none";
+
+          }
+        );
+
+      }
+    );
+
 }
 
-/* =========================================
+
+/* =========================
    CLEAR SEARCH
-========================================= */
+========================= */
 
 searchClear.addEventListener(
   "click",
@@ -1664,128 +2078,175 @@ searchClear.addEventListener(
     searchResults.style.display =
       "none";
 
-    searchResults.innerHTML = "";
-
     searchInput.focus();
 
   }
 );
 
-/* =========================================
-   MAP CONTROLS
-========================================= */
+
+/* =========================
+   MAP BUTTONS
+========================= */
 
 document
-  .getElementById("zoomIn")
+  .getElementById(
+    "zoomIn"
+  )
   .addEventListener(
     "click",
     () => map.zoomIn()
   );
 
+
 document
-  .getElementById("zoomOut")
+  .getElementById(
+    "zoomOut"
+  )
   .addEventListener(
     "click",
     () => map.zoomOut()
   );
 
+
 document
-  .getElementById("resetBtn")
+  .getElementById(
+    "resetBtn"
+  )
   .addEventListener(
     "click",
     () => {
 
       map.flyToBounds(
+
         ukraineBounds,
+
         {
-          padding: [20, 20],
+
+          padding:
+            [20,20],
+
           duration: 1
+
         }
+
       );
 
     }
   );
 
-/* =========================================
+
+/* =========================
    GEOLOCATION
-========================================= */
+========================= */
 
 document
-  .getElementById("locateBtn")
+  .getElementById(
+    "locateBtn"
+  )
   .addEventListener(
     "click",
     () => {
 
-      if (!navigator.geolocation) {
+      if (
+        !navigator.geolocation
+      ) {
 
         alert(
           "Геолокація недоступна"
         );
 
         return;
+
       }
 
-      navigator.geolocation.getCurrentPosition(
-        position => {
 
-          const lat =
-            position.coords.latitude;
+      navigator.geolocation
+        .getCurrentPosition(
 
-          const lng =
-            position.coords.longitude;
+          position => {
 
-          map.flyTo(
-            [lat, lng],
-            14,
-            {
-              duration: 1
-            }
-          );
+            const lat =
+              position.coords.latitude;
 
-          L.circleMarker(
-            [lat, lng],
-            {
-              radius: 7,
-              color: "#fff",
-              weight: 2,
-              fillColor: "#fff",
-              fillOpacity: .22
-            }
-          )
-          .addTo(map)
-          .bindPopup(
-            "Ваше місцезнаходження"
-          )
-          .openPopup();
+            const lng =
+              position.coords.longitude;
 
-        },
 
-        error => {
+            map.flyTo(
 
-          console.warn(
-            "Geolocation:",
-            error
-          );
+              [lat,lng],
 
-          alert(
-            "Не вдалося отримати місцезнаходження"
-          );
+              14,
 
-        },
+              {
+                duration: 1
+              }
 
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 30000
-        }
-      );
+            );
+
+
+            L.circleMarker(
+
+              [lat,lng],
+
+              {
+
+                radius: 7,
+
+                color: "#fff",
+
+                weight: 2,
+
+                fillColor: "#fff",
+
+                fillOpacity: .22
+
+              }
+
+            )
+
+            .addTo(map)
+
+            .bindPopup(
+              "Ваше місцезнаходження"
+            )
+
+            .openPopup();
+
+          },
+
+
+          () => {
+
+            alert(
+              "Не вдалося отримати місцезнаходження"
+            );
+
+          },
+
+
+          {
+
+            enableHighAccuracy:
+              true,
+
+            timeout:
+              10000,
+
+            maximumAge:
+              30000
+
+          }
+
+        );
 
     }
   );
 
-/* =========================================
+
+/* =========================
    NAVIGATION
-========================================= */
+========================= */
 
 const navButtons =
   document.querySelectorAll(
@@ -1797,86 +2258,127 @@ const panels =
     ".panel"
   );
 
-navButtons.forEach(button => {
 
-  button.addEventListener(
-    "click",
-    () => {
-
-      const panelId =
-        button.dataset.panel;
-
-      navButtons.forEach(btn =>
-        btn.classList.remove("active")
-      );
-
-      button.classList.add("active");
-
-      panels.forEach(panel =>
-        panel.classList.remove("open")
-      );
-
-      if (panelId === "map") {
-
-        map.invalidateSize();
-
-        return;
-      }
-
-      const panel =
-        document.getElementById(panelId);
-
-      if (panel) {
-        panel.classList.add("open");
-      }
-
-    }
-  );
-
-});
-
-/* =========================================
-   CLOSE PANELS
-========================================= */
-
-document
-  .querySelectorAll(
-    "[data-close]"
-  )
-  .forEach(button => {
+navButtons.forEach(
+  button => {
 
     button.addEventListener(
       "click",
       () => {
 
-        const id =
-          button.dataset.close;
+        const panelId =
+          button.dataset.panel;
 
-        const panel =
-          document.getElementById(id);
 
-        if (panel) {
-          panel.classList.remove("open");
-        }
-
-        navButtons.forEach(btn =>
-          btn.classList.remove("active")
+        navButtons.forEach(
+          btn =>
+            btn.classList.remove(
+              "active"
+            )
         );
 
-        document
-          .querySelector(
-            '.nav-btn[data-panel="map"]'
-          )
-          ?.classList.add("active");
+
+        button.classList.add(
+          "active"
+        );
+
+
+        panels.forEach(
+          panel =>
+            panel.classList.remove(
+              "open"
+            )
+        );
+
+
+        if (
+          panelId === "map"
+        ) {
+
+          map.invalidateSize();
+
+          return;
+
+        }
+
+
+        const panel =
+          document.getElementById(
+            panelId
+          );
+
+
+        if (panel) {
+
+          panel.classList.add(
+            "open"
+          );
+
+        }
 
       }
     );
 
-  });
+  }
+);
 
-/* =========================================
-   CLICK MAP
-========================================= */
+
+/* =========================
+   CLOSE PANELS
+========================= */
+
+document
+  .querySelectorAll(
+    "[data-close]"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const panel =
+            document.getElementById(
+              button.dataset.close
+            );
+
+
+          if (panel) {
+
+            panel.classList.remove(
+              "open"
+            );
+
+          }
+
+
+          navButtons.forEach(
+            btn =>
+              btn.classList.remove(
+                "active"
+              )
+          );
+
+
+          document
+            .querySelector(
+              '.nav-btn[data-panel="map"]'
+            )
+            ?.classList.add(
+              "active"
+            );
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================
+   MAP CLICK
+========================= */
 
 map.on(
   "click",
@@ -1888,29 +2390,39 @@ map.on(
   }
 );
 
-/* =========================================
+
+/* =========================
    ESCAPE HTML
-========================================= */
+========================= */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
-  return String(value ?? "")
+  return String(
+    value ?? ""
+  )
+
     .replace(
       /&/g,
       "&amp;"
     )
+
     .replace(
       /</g,
       "&lt;"
     )
+
     .replace(
       />/g,
       "&gt;"
     )
+
     .replace(
       /"/g,
       "&quot;"
     )
+
     .replace(
       /'/g,
       "&#039;"
@@ -1918,39 +2430,52 @@ function escapeHtml(value) {
 
 }
 
-/* =========================================
+
+/* =========================
    CLOCK
-========================================= */
+========================= */
 
 function updateClock() {
 
   const now =
     new Date();
 
+
   const time =
     now.toLocaleTimeString(
       "uk-UA",
       {
+
         hour: "2-digit",
+
         minute: "2-digit"
+
       }
     );
 
+
   document
-    .getElementById("statusTime")
-    .textContent = time;
+    .getElementById(
+      "statusTime"
+    )
+    .textContent =
+      time;
+
 }
 
+
 updateClock();
+
 
 setInterval(
   updateClock,
   30000
 );
 
-/* =========================================
-   FINAL MAP SIZE
-========================================= */
+
+/* =========================
+   MAP SIZE
+========================= */
 
 setTimeout(
   () => map.invalidateSize(),
