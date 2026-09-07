@@ -6,14 +6,7 @@
 
   <title>ONLINE RADAR</title>
 
-  <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -25,17 +18,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-
       background: #05070b;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
-
 
     /* =========================
        TOP BAR
@@ -43,27 +28,25 @@
 
     .top-bar {
       position: fixed;
-
       top: 0;
       left: 0;
       right: 0;
 
       height: 58px;
 
-      z-index: 2000;
+      z-index: 1000;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      background: rgba(5, 7, 11, 0.97);
+      background: rgba(5, 7, 11, 0.98);
 
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
-
 
     .logo {
       display: flex;
@@ -80,8 +63,9 @@
       letter-spacing: 2.5px;
     }
 
-
-    /* ONLINE */
+    /* =========================
+       ONLINE DOT
+    ========================= */
 
     .online-dot {
       width: 9px;
@@ -94,48 +78,42 @@
       animation: onlinePulse 1.5s ease-in-out infinite;
     }
 
-
     @keyframes onlinePulse {
 
       0% {
         opacity: 1;
-
         transform: scale(1);
 
         box-shadow:
-          0 0 5px rgba(39,230,107,0.9),
-          0 0 14px rgba(39,230,107,0.6);
+          0 0 5px rgba(39, 230, 107, 0.9),
+          0 0 14px rgba(39, 230, 107, 0.6);
       }
 
       50% {
         opacity: 0.35;
-
         transform: scale(0.75);
 
         box-shadow:
-          0 0 2px rgba(39,230,107,0.4),
-          0 0 5px rgba(39,230,107,0.2);
+          0 0 2px rgba(39, 230, 107, 0.4),
+          0 0 5px rgba(39, 230, 107, 0.2);
       }
 
       100% {
         opacity: 1;
-
         transform: scale(1);
 
         box-shadow:
-          0 0 5px rgba(39,230,107,0.9),
-          0 0 14px rgba(39,230,107,0.6);
+          0 0 5px rgba(39, 230, 107, 0.9),
+          0 0 14px rgba(39, 230, 107, 0.6);
       }
 
     }
-
 
     /* =========================
        MAP
     ========================= */
 
-    #map {
-
+    .map-container {
       position: fixed;
 
       top: 58px;
@@ -143,138 +121,23 @@
       right: 0;
       bottom: 90px;
 
-      z-index: 1;
-
-      background: #071019;
+      background: #05070b;
     }
 
+    .map-frame {
+      width: 100%;
+      height: 100%;
+
+      border: 0;
+
+      display: block;
+    }
 
     /* =========================
-       MAP CONTROLS
-    ========================= */
-
-    .map-controls {
-
-      position: absolute;
-
-      right: 14px;
-      bottom: 18px;
-
-      z-index: 1000;
-
-      display: flex;
-      flex-direction: column;
-
-      gap: 8px;
-    }
-
-
-    .map-button {
-
-      width: 44px;
-      height: 44px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border: 1px solid rgba(255,255,255,0.14);
-
-      border-radius: 13px;
-
-      background: rgba(7,10,15,0.90);
-
-      color: #ffffff;
-
-      font-size: 25px;
-      font-weight: 300;
-
-      cursor: pointer;
-
-      box-shadow:
-        0 5px 20px rgba(0,0,0,0.35);
-
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-
-      transition:
-        background 0.2s ease,
-        transform 0.15s ease;
-    }
-
-
-    .map-button:hover {
-      background: rgba(30,40,55,0.95);
-    }
-
-
-    .map-button:active {
-      transform: scale(0.92);
-    }
-
-
-    /* Location icon */
-
-    .location-icon {
-
-      width: 17px;
-      height: 17px;
-
-      border: 2px solid #ffffff;
-
-      border-radius: 50%;
-
-      position: relative;
-    }
-
-
-    .location-icon::before {
-
-      content: "";
-
-      position: absolute;
-
-      top: 50%;
-      left: 50%;
-
-      width: 5px;
-      height: 5px;
-
-      transform: translate(-50%, -50%);
-
-      border-radius: 50%;
-
-      background: #3d9cff;
-    }
-
-
-    /* =========================
-       USER LOCATION
-    ========================= */
-
-    .user-location {
-
-      width: 18px;
-      height: 18px;
-
-      border-radius: 50%;
-
-      background: #3d9cff;
-
-      border: 3px solid #ffffff;
-
-      box-shadow:
-        0 0 0 6px rgba(61,156,255,0.20),
-        0 0 20px rgba(61,156,255,0.8);
-    }
-
-
-    /* =========================
-       NEPTUN ATTRIBUTION
+       NEPTUN SOURCE
     ========================= */
 
     .neptun-source {
-
       position: absolute;
 
       left: 0;
@@ -289,55 +152,21 @@
       align-items: center;
       justify-content: center;
 
-      background: rgba(5,7,11,0.94);
+      background: rgba(5, 7, 11, 0.94);
 
       font-size: 11px;
     }
 
-
     .neptun-source a {
-
       color: #5aa6ff;
-
       text-decoration: none;
     }
-
-
-    .neptun-source a:hover {
-      text-decoration: underline;
-    }
-
-
-    /* =========================
-       LEAFLET
-    ========================= */
-
-    .leaflet-control-zoom {
-      display: none;
-    }
-
-
-    .leaflet-control-attribution {
-
-      background: rgba(5,7,11,0.75) !important;
-
-      color: #858b96 !important;
-
-      font-size: 9px !important;
-    }
-
-
-    .leaflet-control-attribution a {
-      color: #7eaee8 !important;
-    }
-
 
     /* =========================
        BOTTOM MENU
     ========================= */
 
     .bottom-menu {
-
       position: fixed;
 
       left: 0;
@@ -346,23 +175,21 @@
 
       height: 64px;
 
-      z-index: 2000;
+      z-index: 1000;
 
       display: flex;
       align-items: center;
       justify-content: center;
 
-      background: rgba(5,7,11,0.98);
+      background: rgba(5, 7, 11, 0.98);
 
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
 
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
 
-
     .navigation {
-
       width: 100%;
       max-width: 500px;
 
@@ -374,14 +201,11 @@
       justify-content: space-around;
     }
 
-
     .nav-item {
-
       width: 33.333%;
       height: 100%;
 
       display: flex;
-
       flex-direction: column;
 
       align-items: center;
@@ -399,34 +223,26 @@
       transition: 0.2s ease;
     }
 
-
     .nav-icon {
-
       font-size: 20px;
-
       line-height: 1;
     }
-
 
     .nav-item.active {
       color: #ffffff;
     }
 
-
     .nav-item.active .nav-icon {
-
       color: #3d9cff;
 
       filter:
-        drop-shadow(0 0 5px rgba(61,156,255,0.8))
-        drop-shadow(0 0 12px rgba(61,156,255,0.35));
+        drop-shadow(0 0 5px rgba(61, 156, 255, 0.8))
+        drop-shadow(0 0 12px rgba(61, 156, 255, 0.35));
     }
-
 
     .nav-item:active {
       transform: scale(0.95);
     }
-
 
     /* =========================
        MOBILE
@@ -443,7 +259,7 @@
         letter-spacing: 2.2px;
       }
 
-      #map {
+      .map-container {
         top: 54px;
         bottom: 90px;
       }
@@ -452,28 +268,14 @@
         height: 62px;
       }
 
-      .map-controls {
-        right: 12px;
-        bottom: 16px;
-      }
-
-      .map-button {
-        width: 43px;
-        height: 43px;
-      }
-
     }
 
   </style>
 </head>
 
-
 <body>
 
-
-  <!-- =========================
-       TOP
-  ========================= -->
+  <!-- TOP BAR -->
 
   <header class="top-bar">
 
@@ -488,49 +290,19 @@
   </header>
 
 
+  <!-- NEPTUN MAP -->
 
-  <!-- =========================
-       MAP
-  ========================= -->
+  <main class="map-container">
 
-  <div id="map">
+    <iframe
+      class="map-frame"
+      src="https://neptun.in.ua/embed/map?lang=uk"
+      title="Карта повітряних тривог України — NEPTUN"
+      loading="eager"
+      allow="geolocation">
+    </iframe>
 
-
-    <!-- MAP BUTTONS -->
-
-    <div class="map-controls">
-
-      <button
-        class="map-button"
-        id="zoomIn"
-        aria-label="Збільшити карту">
-
-        +
-      </button>
-
-
-      <button
-        class="map-button"
-        id="zoomOut"
-        aria-label="Зменшити карту">
-
-        −
-      </button>
-
-
-      <button
-        class="map-button"
-        id="myLocation"
-        aria-label="Моє місцерозташування">
-
-        <span class="location-icon"></span>
-
-      </button>
-
-    </div>
-
-
-    <!-- NEPTUN LINK -->
+    <!-- NEPTUN attribution -->
 
     <div class="neptun-source">
 
@@ -539,24 +311,20 @@
         target="_blank"
         rel="noopener noreferrer">
 
-        Дані: Карта повітряних тривог — NEPTUN
+        Карта повітряних тривог України — NEPTUN
 
       </a>
 
     </div>
 
-  </div>
+  </main>
 
 
-
-  <!-- =========================
-       BOTTOM MENU
-  ========================= -->
+  <!-- BOTTOM MENU -->
 
   <nav class="bottom-menu">
 
     <div class="navigation">
-
 
       <a
         href="#"
@@ -590,289 +358,9 @@
 
       </a>
 
-
     </div>
 
   </nav>
-
-
-
-  <!-- Leaflet -->
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-
-  <script>
-
-    /* =========================
-       CREATE MAP
-    ========================= */
-
-    const map = L.map("map", {
-
-      zoomControl: false,
-
-      attributionControl: true,
-
-      minZoom: 5,
-
-      maxZoom: 12
-
-    });
-
-
-    /* =========================
-       BASE MAP
-    ========================= */
-
-    L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        maxZoom: 19,
-
-        attribution:
-          '&copy; OpenStreetMap contributors'
-      }
-    ).addTo(map);
-
-
-    /* =========================
-       UKRAINE START POSITION
-    ========================= */
-
-    const ukraineCenter = [48.55, 31.0];
-
-    map.setView(ukraineCenter, 6);
-
-
-    /* =========================
-       UKRAINE / OBLASTS
-    ========================= */
-
-    let oblastLayer = null;
-
-
-    fetch("https://neptun.in.ua/oblasts.geojson")
-
-      .then(response => response.json())
-
-      .then(data => {
-
-        oblastLayer = L.geoJSON(data, {
-
-          style: {
-
-            color: "#4da3ff",
-
-            weight: 1.3,
-
-            opacity: 0.75,
-
-            fillColor: "#164a75",
-
-            fillOpacity: 0.10
-          },
-
-
-          onEachFeature: function(feature, layer) {
-
-            layer.on({
-
-              mouseover: function(e) {
-
-                e.target.setStyle({
-
-                  weight: 2,
-
-                  color: "#66b5ff",
-
-                  fillOpacity: 0.20
-
-                });
-
-              },
-
-
-              mouseout: function(e) {
-
-                oblastLayer.resetStyle(e.target);
-
-              }
-
-            });
-
-          }
-
-        }).addTo(map);
-
-      })
-
-      .catch(error => {
-
-        console.log(
-          "Не вдалося завантажити межі областей:",
-          error
-        );
-
-      });
-
-
-    /* =========================
-       ZOOM BUTTONS
-    ========================= */
-
-    document
-      .getElementById("zoomIn")
-      .addEventListener("click", function() {
-
-        map.zoomIn();
-
-      });
-
-
-    document
-      .getElementById("zoomOut")
-      .addEventListener("click", function() {
-
-        map.zoomOut();
-
-      });
-
-
-    /* =========================
-       USER LOCATION
-    ========================= */
-
-    let userMarker = null;
-
-
-    document
-      .getElementById("myLocation")
-      .addEventListener("click", function() {
-
-        if (!navigator.geolocation) {
-
-          alert(
-            "Ваш браузер не підтримує визначення місцерозташування."
-          );
-
-          return;
-        }
-
-
-        navigator.geolocation.getCurrentPosition(
-
-          function(position) {
-
-            const lat =
-              position.coords.latitude;
-
-            const lon =
-              position.coords.longitude;
-
-
-            /* Remove previous marker */
-
-            if (userMarker) {
-
-              map.removeLayer(userMarker);
-
-            }
-
-
-            /* Create user marker */
-
-            userMarker = L.marker(
-              [lat, lon],
-              {
-                icon: L.divIcon({
-
-                  className: "",
-
-                  html:
-                    '<div class="user-location"></div>',
-
-                  iconSize: [18, 18],
-
-                  iconAnchor: [9, 9]
-                })
-              }
-            ).addTo(map);
-
-
-            /* Center map */
-
-            map.setView(
-              [lat, lon],
-              10,
-              {
-                animate: true
-              }
-            );
-
-          },
-
-
-          function(error) {
-
-            let message =
-              "Не вдалося визначити ваше місцерозташування.";
-
-            if (error.code === 1) {
-
-              message =
-                "Дозволь доступ до геолокації для цього сайту.";
-
-            }
-
-            alert(message);
-
-          },
-
-          {
-
-            enableHighAccuracy: true,
-
-            timeout: 10000,
-
-            maximumAge: 30000
-
-          }
-
-        );
-
-      });
-
-
-    /* =========================
-       NEPTUN ACTIVE ALERTS
-    ========================= */
-
-    fetch("https://neptun.in.ua/api/v1/alerts")
-
-      .then(response => response.json())
-
-      .then(alertData => {
-
-        console.log(
-          "NEPTUN alerts:",
-          alertData
-        );
-
-      })
-
-      .catch(error => {
-
-        console.log(
-          "NEPTUN alerts error:",
-          error
-        );
-
-      });
-
-
-  </script>
-
 
 </body>
 </html>
