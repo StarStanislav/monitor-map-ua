@@ -214,6 +214,54 @@ body {
 
 
 /* =====================================================
+   NEPTUN INFO OVERLAY
+===================================================== */
+
+.neptun-overlay {
+
+    position: absolute;
+
+    top: 18px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 340px;
+    max-width: calc(100% - 32px);
+
+    padding: 14px 18px;
+
+    background: rgba(10, 12, 17, .96);
+
+    border: 1px solid #292e37;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.45);
+
+    text-align: center;
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    font-size: 14px;
+    line-height: 1.4;
+
+    color: #d9dde3;
+}
+
+
+.neptun-overlay strong {
+
+    color: #ffffff;
+
+    font-weight: 700;
+}
+
+
+/* =====================================================
    EVENTS PAGE
 ===================================================== */
 
@@ -854,6 +902,17 @@ body {
             src="https://neptun.in.ua/embed/map?lang=uk"
             allowfullscreen>
         </iframe>
+
+
+        <div class="neptun-overlay">
+
+            <strong>Дані: NEPTUN</strong><br>
+
+            Моніторинг повітряних тривог України.<br>
+
+            ⚠️ Не є офіційною системою оповіщення.
+
+        </div>
 
 
     </div>
