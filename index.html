@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>NEPTUN — Карта повітряних загроз України</title>
+  <title>ONLINE RADAR</title>
 
   <style>
     * {
@@ -17,54 +17,360 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      background: #000;
+      overflow: hidden;
+      background: #05070b;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
 
-    .map {
-      width: 100%;
-      height: calc(100vh - 28px);
+    /* =========================
+       TOP BAR
+    ========================= */
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 58px;
+
+      z-index: 1000;
+
+      display: flex;
+      align-items: center;
+
+      padding: 0 20px;
+
+      background: rgba(5, 7, 11, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
 
-    iframe {
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      color: #ffffff;
+
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: #27e66b;
+
+      box-shadow:
+        0 0 6px rgba(39, 230, 107, 0.9),
+        0 0 14px rgba(39, 230, 107, 0.5);
+    }
+
+
+    /* =========================
+       MAP
+    ========================= */
+
+    .map-container {
+      position: fixed;
+
+      top: 58px;
+      left: 0;
+      right: 0;
+      bottom: 64px;
+
+      background: #05070b;
+    }
+
+    .map-frame {
       width: 100%;
       height: 100%;
+
       border: 0;
+
       display: block;
     }
 
-    .source {
-      height: 28px;
-      background: #000;
-      text-align: center;
-      font: 12px/28px Arial, sans-serif;
+
+    /* =========================
+       NEPTUN SOURCE LINK
+    ========================= */
+
+    .neptun-source {
+      position: absolute;
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      height: 26px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(5, 7, 11, 0.92);
+
+      font-size: 11px;
     }
 
-    .source a {
+    .neptun-source a {
       color: #5aa6ff;
       text-decoration: none;
     }
+
+    .neptun-source a:hover {
+      text-decoration: underline;
+    }
+
+
+    /* =========================
+       BOTTOM NAVIGATION
+    ========================= */
+
+    .bottom-menu {
+      position: fixed;
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      height: 64px;
+
+      z-index: 1000;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(5, 7, 11, 0.97);
+
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .navigation {
+      width: 100%;
+      max-width: 500px;
+
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .nav-item {
+      position: relative;
+
+      width: 33.333%;
+      height: 100%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      gap: 5px;
+
+      color: #737985;
+
+      text-decoration: none;
+
+      font-size: 11px;
+      font-weight: 500;
+
+      transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      line-height: 1;
+
+      transition:
+        color 0.2s ease,
+        filter 0.2s ease;
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+    }
+
+    .nav-item.active .nav-icon {
+      color: #3d9cff;
+
+      filter:
+        drop-shadow(0 0 5px rgba(61, 156, 255, 0.8))
+        drop-shadow(0 0 12px rgba(61, 156, 255, 0.35));
+    }
+
+    .nav-item:hover {
+      color: #ffffff;
+    }
+
+    .nav-item:active {
+      transform: scale(0.95);
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      .top-bar {
+        height: 54px;
+        padding: 0 16px;
+      }
+
+      .logo {
+        font-size: 14px;
+        letter-spacing: 1.8px;
+      }
+
+      .map-container {
+        top: 54px;
+        bottom: 62px;
+      }
+
+      .bottom-menu {
+        height: 62px;
+      }
+
+      .nav-icon {
+        font-size: 19px;
+      }
+
+      .nav-item {
+        font-size: 10px;
+      }
+    }
+
   </style>
 </head>
 
+
 <body>
 
-  <div class="map">
+
+  <!-- =========================
+       TOP BAR
+  ========================= -->
+
+  <header class="top-bar">
+
+    <div class="logo">
+
+      <span class="online-dot"></span>
+
+      <span>ONLINE RADAR</span>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =========================
+       MAP
+  ========================= -->
+
+  <main class="map-container">
+
     <iframe
+      class="map-frame"
       src="https://neptun.in.ua/embed/map?lang=uk"
       title="Карта повітряних загроз України — NEPTUN"
       loading="eager"
       allow="geolocation">
     </iframe>
-  </div>
 
-  <div class="source">
-    <a
-      href="https://neptun.in.ua/"
-      target="_blank"
-      rel="noopener">
-      Карта повітряних загроз України — NEPTUN
-    </a>
-  </div>
+
+    <!-- Обов'язкове посилання NEPTUN -->
+
+    <div class="neptun-source">
+
+      <a
+        href="https://neptun.in.ua/"
+        target="_blank"
+        rel="noopener noreferrer">
+
+        Карта повітряних тривог України — NEPTUN
+
+      </a>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- =========================
+       BOTTOM MENU
+  ========================= -->
+
+  <nav class="bottom-menu">
+
+    <div class="navigation">
+
+
+      <!-- КАРТА -->
+
+      <a
+        href="#"
+        class="nav-item active">
+
+        <span class="nav-icon">⌁</span>
+
+        <span>Карта</span>
+
+      </a>
+
+
+
+      <!-- ПОДІЇ -->
+
+      <a
+        href="#"
+        class="nav-item">
+
+        <span class="nav-icon">◷</span>
+
+        <span>Події</span>
+
+      </a>
+
+
+
+      <!-- ІНФО -->
+
+      <a
+        href="#"
+        class="nav-item">
+
+        <span class="nav-icon">ⓘ</span>
+
+        <span>Інфо</span>
+
+      </a>
+
+
+    </div>
+
+  </nav>
+
 
 </body>
 </html>
