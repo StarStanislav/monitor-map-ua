@@ -38,8 +38,7 @@
 
       display: flex;
       align-items: center;
-
-      padding: 0 20px;
+      justify-content: center;
 
       background: rgba(5, 7, 11, 0.96);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -51,26 +50,55 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      gap: 11px;
 
       color: #ffffff;
 
       font-size: 16px;
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
     }
 
+    /* Мигаючий ONLINE індикатор */
+
     .online-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
 
       border-radius: 50%;
 
       background: #27e66b;
 
-      box-shadow:
-        0 0 6px rgba(39, 230, 107, 0.9),
-        0 0 14px rgba(39, 230, 107, 0.5);
+      animation: onlinePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes onlinePulse {
+
+      0% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow:
+          0 0 5px rgba(39, 230, 107, 0.9),
+          0 0 14px rgba(39, 230, 107, 0.6);
+      }
+
+      50% {
+        opacity: 0.35;
+        transform: scale(0.75);
+        box-shadow:
+          0 0 2px rgba(39, 230, 107, 0.4),
+          0 0 5px rgba(39, 230, 107, 0.2);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow:
+          0 0 5px rgba(39, 230, 107, 0.9),
+          0 0 14px rgba(39, 230, 107, 0.6);
+      }
+
     }
 
 
@@ -100,7 +128,7 @@
 
 
     /* =========================
-       NEPTUN SOURCE LINK
+       NEPTUN SOURCE
     ========================= */
 
     .neptun-source {
@@ -132,7 +160,7 @@
 
 
     /* =========================
-       BOTTOM NAVIGATION
+       BOTTOM MENU
     ========================= */
 
     .bottom-menu {
@@ -232,12 +260,16 @@
 
       .top-bar {
         height: 54px;
-        padding: 0 16px;
       }
 
       .logo {
-        font-size: 14px;
-        letter-spacing: 1.8px;
+        font-size: 15px;
+        letter-spacing: 2.2px;
+      }
+
+      .online-dot {
+        width: 8px;
+        height: 8px;
       }
 
       .map-container {
@@ -298,8 +330,6 @@
     </iframe>
 
 
-    <!-- Обов'язкове посилання NEPTUN -->
-
     <div class="neptun-source">
 
       <a
@@ -326,8 +356,6 @@
     <div class="navigation">
 
 
-      <!-- КАРТА -->
-
       <a
         href="#"
         class="nav-item active">
@@ -339,9 +367,6 @@
       </a>
 
 
-
-      <!-- ПОДІЇ -->
-
       <a
         href="#"
         class="nav-item">
@@ -352,9 +377,6 @@
 
       </a>
 
-
-
-      <!-- ІНФО -->
 
       <a
         href="#"
