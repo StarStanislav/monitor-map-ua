@@ -1,1784 +1,1404 @@
 <!DOCTYPE html>
 <html lang="uk">
-
 <head>
-
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>ONLINE RADAR</title>
 
-
 <style>
-
-/* =====================================================
-   RESET
-===================================================== */
-
 * {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
-
-  width: 100%;
-  height: 100%;
-
-  overflow: hidden;
-
-  background: #05070b;
-
-  color: white;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Arial,
-    sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #05070b;
+    color: #f2f4f7;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        Arial,
+        sans-serif;
 }
 
-
-/* =====================================================
-   TOP BAR
-===================================================== */
-
-.top-bar {
-
-  position: fixed;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
-  height: 58px;
-
-  z-index: 5000;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(5, 7, 11, 0.98);
-
-  border-bottom:
-    1px solid rgba(255,255,255,0.06);
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+body {
+    overflow-x: hidden;
 }
 
+/* =========================
+   HEADER
+========================= */
+
+.top-header {
+    height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-bottom: 1px solid #171b21;
+
+    background: #05070b;
+
+    position: relative;
+    z-index: 20;
+}
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 
-  display: flex;
-
-  align-items: center;
-
-  gap: 11px;
-
-  color: #fff;
-
-  font-size: 16px;
-
-  font-weight: 700;
-
-  letter-spacing: 2.7px;
+    font-size: 29px;
+    font-weight: 700;
+    letter-spacing: 4px;
 }
-
-
-/* =====================================================
-   ONLINE DOT
-===================================================== */
 
 .online-dot {
+    width: 13px;
+    height: 13px;
 
-  width: 9px;
-  height: 9px;
+    border-radius: 50%;
+    background: #20e875;
 
-  border-radius: 50%;
+    box-shadow:
+        0 0 10px rgba(32,232,117,.7);
 
-  background: #27e66b;
-
-  animation: onlinePulse 1.5s infinite;
+    animation: pulse 1.7s infinite;
 }
 
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
 
-@keyframes onlinePulse {
+    50% {
+        opacity: .45;
+        transform: scale(.82);
+    }
 
-  0% {
-
-    opacity: 1;
-
-    transform: scale(1);
-
-    box-shadow:
-      0 0 5px rgba(39,230,107,.9),
-      0 0 15px rgba(39,230,107,.6);
-  }
-
-  50% {
-
-    opacity: .3;
-
-    transform: scale(.72);
-
-    box-shadow:
-      0 0 2px rgba(39,230,107,.3);
-  }
-
-  100% {
-
-    opacity: 1;
-
-    transform: scale(1);
-
-    box-shadow:
-      0 0 5px rgba(39,230,107,.9),
-      0 0 15px rgba(39,230,107,.6);
-  }
-
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-
-/* =====================================================
-   MAIN APP
-===================================================== */
+/* =========================
+   APP
+========================= */
 
 .app {
-
-  position: fixed;
-
-  top: 58px;
-  left: 0;
-  right: 0;
-  bottom: 90px;
-
-  overflow: hidden;
+    width: 100%;
+    min-height: calc(100vh - 82px);
+    padding-bottom: 100px;
 }
 
-
-/* =====================================================
-   PAGES
-===================================================== */
-
 .page {
-
-  position: absolute;
-
-  inset: 0;
-
-  display: none;
-
-  overflow: hidden;
+    display: none;
+    width: 100%;
 }
 
 .page.active {
-
-  display: block;
+    display: block;
 }
 
-
-/* =====================================================
+/* =========================
    MAP
-===================================================== */
+========================= */
 
 .map-page {
-
-  background: #05070b;
+    width: 100%;
 }
 
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 182px);
+
+    min-height: 520px;
+
+    overflow: hidden;
+
+    background: #05070b;
+}
 
 .map-frame {
+    position: absolute;
 
-  position: absolute;
+    top: 0;
+    left: 0;
 
-  inset: 0;
+    width: 100%;
+    height: 100%;
 
-  width: 100%;
-  height: 100%;
-
-  border: 0;
-
-  display: block;
+    border: 0;
 }
 
+/*
+   Невеликий темний інформаційний блок
+   поверх стандартного білого повідомлення NEPTUN.
+*/
 
-/* =====================================================
-   COVER ORIGINAL NEPTUN WHITE NOTICE
-===================================================== */
+.neptun-cover {
+    position: absolute;
 
-.neptun-notice-cover {
+    top: 12px;
+    left: 50%;
 
-  position: absolute;
+    transform: translateX(-50%);
 
-  top: 5px;
+    width: 570px;
+    max-width: calc(100% - 70px);
 
-  left: 50%;
+    height: 155px;
 
-  transform: translateX(-50%);
+    background: #07090e;
 
-  width: 300px;
+    border-radius: 30px;
 
-  height: 105px;
+    z-index: 5;
 
-  z-index: 1500;
-
-  background: rgba(5,7,11,.98);
-
-  border-radius: 25px;
-
-  pointer-events: none;
+    pointer-events: none;
 }
-
-
-/* =====================================================
-   OUR DARK NOTICE
-===================================================== */
 
 .neptun-notice {
+    position: absolute;
 
-  position: absolute;
+    top: 30px;
+    left: 50%;
 
-  top: 20px;
+    transform: translateX(-50%);
 
-  left: 50%;
+    width: 415px;
+    max-width: calc(100% - 110px);
 
-  transform: translateX(-50%);
+    padding: 17px 20px;
 
-  width: 220px;
+    text-align: center;
 
-  padding: 8px 14px;
+    background: #0d1016;
 
-  z-index: 1600;
+    border: 1px solid #292e37;
 
-  border-radius: 20px;
+    border-radius: 25px;
 
-  background:
-    rgba(13,16,22,.95);
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.35);
 
-  border:
-    1px solid rgba(255,255,255,.12);
+    z-index: 6;
 
-  box-shadow:
-    0 7px 25px rgba(0,0,0,.45),
-    inset 0 1px 0 rgba(255,255,255,.04);
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  color: #aeb5c0;
-
-  text-align: center;
-
-  font-size: 11px;
-
-  line-height: 1.35;
-
-  pointer-events: none;
+    pointer-events: none;
 }
 
+.neptun-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: .5px;
 
-.neptun-notice strong {
-
-  display: block;
-
-  margin-bottom: 2px;
-
-  color: #fff;
-
-  font-size: 12px;
-
-  font-weight: 700;
-
-  letter-spacing: .4px;
+    margin-bottom: 7px;
 }
 
+.neptun-text {
+    color: #aeb4bf;
 
-/* =====================================================
-   NEPTUN SOURCE
-===================================================== */
-
-.neptun-source {
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-
-  bottom: 0;
-
-  height: 30px;
-
-  z-index: 1700;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  background:
-    rgba(5,7,11,.96);
-
-  border-top:
-    1px solid rgba(255,255,255,.05);
-
-  font-size: 11px;
+    font-size: 16px;
+    line-height: 1.3;
 }
 
-
-.neptun-source a {
-
-  color: #5aa6ff;
-
-  text-decoration: none;
-}
-
-
-/* =====================================================
-   EVENTS PAGE
-===================================================== */
+/* =========================
+   EVENTS
+========================= */
 
 .events-page {
-
-  background: #05070b;
-
-  overflow-y: auto;
-
-  -webkit-overflow-scrolling: touch;
-
-  padding: 20px 15px 30px;
+    padding: 35px 28px 120px;
 }
 
+.events-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-.events-header {
-
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 18px;
+    margin-bottom: 42px;
 }
-
 
 .events-title {
-
-  font-size: 24px;
-
-  font-weight: 700;
-
-  letter-spacing: -.5px;
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -1px;
 }
 
+.updated {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-.events-status {
+    color: #7f8794;
 
-  display: flex;
-
-  align-items: center;
-
-  gap: 7px;
-
-  font-size: 11px;
-
-  color: #777e8a;
+    font-size: 20px;
+    white-space: nowrap;
 }
 
+.updated-dot {
+    width: 15px;
+    height: 15px;
 
-.events-status-dot {
+    border-radius: 50%;
+    background: #20e875;
 
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: #27e66b;
-
-  box-shadow:
-    0 0 8px rgba(39,230,107,.7);
+    box-shadow:
+        0 0 12px rgba(32,232,117,.65);
 }
-
-
-/* =====================================================
-   ACTIVE ALERTS
-===================================================== */
 
 .section-title {
+    margin: 0 0 22px 8px;
 
-  margin: 18px 3px 10px;
+    color: #7d8592;
 
-  color: #777e8a;
+    font-size: 21px;
+    font-weight: 700;
 
-  font-size: 11px;
-
-  font-weight: 700;
-
-  letter-spacing: 1.4px;
-
-  text-transform: uppercase;
+    letter-spacing: 4px;
 }
 
+/* =========================
+   EVENT CARD
+========================= */
 
-.alert-card {
+.event-card {
+    position: relative;
 
-  width: 100%;
+    margin-bottom: 20px;
 
-  margin-bottom: 9px;
+    padding: 28px 28px 25px 38px;
 
-  padding: 13px 14px;
+    background:
+        linear-gradient(
+            145deg,
+            #151920,
+            #0d1016
+        );
 
-  border-radius: 15px;
+    border: 1px solid #272c34;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(25,28,35,.96),
-      rgba(13,16,22,.96)
-    );
+    border-radius: 30px;
 
-  border:
-    1px solid rgba(255,255,255,.07);
-
-  box-shadow:
-    0 5px 18px rgba(0,0,0,.18);
+    overflow: hidden;
 }
 
-
-.alert-card.active {
-
-  border-left:
-    3px solid #ff4545;
+.event-card.active {
+    border-left: 7px solid #ff4248;
 }
 
-
-.alert-card.resolved {
-
-  border-left:
-    3px solid #50545d;
+.event-card.ended {
+    border-left: 7px solid #26d978;
 }
 
+.event-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-.alert-top {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 10px;
+    gap: 20px;
 }
 
-
-.alert-region {
-
-  color: #fff;
-
-  font-size: 14px;
-
-  font-weight: 600;
+.event-region {
+    font-size: 29px;
+    font-weight: 700;
 }
 
+.event-badge {
+    flex-shrink: 0;
 
-.alert-badge {
+    padding: 10px 20px;
 
-  flex-shrink: 0;
+    border-radius: 30px;
 
-  padding: 4px 8px;
+    font-size: 18px;
+    font-weight: 800;
 
-  border-radius: 20px;
-
-  background: rgba(255,65,65,.12);
-
-  color: #ff6262;
-
-  font-size: 9px;
-
-  font-weight: 700;
-
-  letter-spacing: .6px;
+    letter-spacing: 2px;
 }
 
-
-.alert-card.resolved .alert-badge {
-
-  background:
-    rgba(120,125,135,.10);
-
-  color: #858b96;
+.event-badge.alert {
+    color: #ff686d;
+    background: #32171d;
 }
 
-
-.alert-times {
-
-  display: flex;
-
-  gap: 18px;
-
-  margin-top: 9px;
+.event-badge.end {
+    color: #42df91;
+    background: #123024;
 }
 
+.event-data {
+    display: flex;
+    gap: 52px;
 
-.time-block {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 2px;
+    margin-top: 26px;
 }
 
-
-.time-label {
-
-  color: #666d78;
-
-  font-size: 9px;
-
-  text-transform: uppercase;
-
-  letter-spacing: .7px;
+.data-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
 }
 
+.data-label {
+    color: #727a87;
 
-.time-value {
+    font-size: 17px;
 
-  color: #d8dce2;
-
-  font-size: 12px;
-
-  font-weight: 500;
+    letter-spacing: 3px;
 }
 
+.data-value {
+    color: #dce0e6;
 
-.duration {
-
-  margin-top: 8px;
-
-  color: #777e89;
-
-  font-size: 10px;
+    font-size: 25px;
 }
 
+.event-duration {
+    margin-top: 22px;
 
-/* =====================================================
-   EMPTY
-===================================================== */
+    color: #7c8490;
 
-.empty {
-
-  padding: 45px 20px;
-
-  text-align: center;
-
-  color: #626873;
-
-  font-size: 13px;
-
-  line-height: 1.5;
+    font-size: 20px;
 }
 
-
-/* =====================================================
-   INFO PAGE
-===================================================== */
+/* =========================
+   INFO
+========================= */
 
 .info-page {
-
-  padding: 25px 18px;
-
-  overflow-y: auto;
-
-  background: #05070b;
+    padding: 40px 28px 130px;
 }
-
 
 .info-title {
+    font-size: 46px;
+    font-weight: 700;
 
-  font-size: 25px;
-
-  font-weight: 700;
-
-  margin-bottom: 20px;
+    margin-bottom: 30px;
 }
-
 
 .info-card {
+    padding: 27px;
 
-  margin-bottom: 12px;
+    background: #101319;
 
-  padding: 16px;
+    border: 1px solid #272c34;
 
-  border-radius: 17px;
+    border-radius: 25px;
 
-  background:
-    rgba(15,18,24,.96);
+    color: #9ea5b0;
 
-  border:
-    1px solid rgba(255,255,255,.07);
+    font-size: 18px;
+    line-height: 1.6;
 }
 
-
-.info-card-title {
-
-  margin-bottom: 7px;
-
-  color: #fff;
-
-  font-size: 13px;
-
-  font-weight: 700;
+.info-card strong {
+    color: #f0f2f5;
 }
 
+/* =========================
+   EMPTY
+========================= */
 
-.info-card-text {
+.empty {
+    padding: 55px 20px;
 
-  color: #858c97;
+    text-align: center;
 
-  font-size: 12px;
+    color: #737b88;
 
-  line-height: 1.55;
+    font-size: 19px;
 }
 
-
-.info-link {
-
-  color: #5aa6ff;
-
-  text-decoration: none;
-}
-
-
-/* =====================================================
+/* =========================
    BOTTOM NAV
-===================================================== */
+========================= */
 
-.bottom-menu {
+.bottom-nav {
+    position: fixed;
 
-  position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-  left: 0;
-  right: 0;
+    height: 100px;
 
-  bottom: 0;
+    display: flex;
 
-  height: 64px;
+    background: rgba(5,7,11,.97);
 
-  z-index: 5000;
+    border-top: 1px solid #191d24;
 
-  background:
-    rgba(5,7,11,.98);
+    z-index: 50;
 
-  border-top:
-    1px solid rgba(255,255,255,.08);
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
+.nav-button {
+    flex: 1;
 
-.navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-  width: 100%;
+    gap: 8px;
 
-  max-width: 500px;
+    border: 0;
+    background: transparent;
 
-  height: 100%;
+    color: #707784;
 
-  margin: auto;
+    font-size: 18px;
 
-  display: flex;
+    cursor: pointer;
 }
 
-
-.nav-item {
-
-  width: 33.333%;
-
-  height: 100%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 5px;
-
-  color: #707681;
-
-  text-decoration: none;
-
-  font-size: 11px;
-
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: .2s;
+.nav-button.active {
+    color: #f2f4f7;
 }
-
 
 .nav-icon {
+    width: 28px;
+    height: 28px;
 
-  font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  line-height: 1;
+    font-size: 27px;
 }
 
-
-.nav-item.active {
-
-  color: #fff;
+.nav-button.active .nav-icon {
+    color: #2998ff;
 }
 
-
-.nav-item.active .nav-icon {
-
-  color: #3d9cff;
-
-  filter:
-    drop-shadow(
-      0 0 5px rgba(61,156,255,.8)
-    )
-    drop-shadow(
-      0 0 12px rgba(61,156,255,.35)
-    );
-}
-
-
-.nav-item:active {
-
-  transform: scale(.94);
-}
-
-
-/* =====================================================
+/* =========================
    MOBILE
-===================================================== */
+========================= */
 
 @media (max-width: 600px) {
 
-  .top-bar {
+    .top-header {
+        height: 78px;
+    }
 
-    height: 54px;
-  }
+    .logo {
+        font-size: 27px;
+        letter-spacing: 4px;
+    }
 
+    .online-dot {
+        width: 13px;
+        height: 13px;
+    }
 
-  .logo {
+    .map-wrapper {
+        height: calc(100vh - 178px);
+        min-height: 470px;
+    }
 
-    font-size: 15px;
+    .neptun-cover {
+        top: 12px;
 
-    letter-spacing: 2.2px;
-  }
+        width: calc(100% - 70px);
+        height: 145px;
 
+        border-radius: 28px;
+    }
 
-  .app {
+    .neptun-notice {
+        top: 29px;
 
-    top: 54px;
+        width: calc(100% - 150px);
+        max-width: 420px;
 
-    bottom: 90px;
-  }
+        padding: 15px 15px;
 
+        border-radius: 24px;
+    }
 
-  .bottom-menu {
+    .neptun-title {
+        font-size: 18px;
+    }
 
-    height: 62px;
-  }
+    .neptun-text {
+        font-size: 15px;
+    }
 
+    .events-page {
+        padding: 32px 28px 120px;
+    }
 
-  .neptun-notice-cover {
+    .events-head {
+        margin-bottom: 40px;
+    }
 
-    top: 5px;
+    .events-title {
+        font-size: 43px;
+    }
 
-    width: 300px;
+    .updated {
+        font-size: 16px;
+    }
 
-    height: 105px;
+    .updated-dot {
+        width: 14px;
+        height: 14px;
+    }
 
-    border-radius: 25px;
-  }
+    .section-title {
+        font-size: 19px;
+        margin-left: 8px;
+    }
 
+    .event-card {
+        padding: 26px 24px 24px 31px;
 
-  .neptun-notice {
+        border-radius: 28px;
+    }
 
-    top: 20px;
+    .event-region {
+        font-size: 28px;
+        line-height: 1.1;
+    }
 
-    width: 220px;
+    .event-badge {
+        padding: 9px 17px;
+        font-size: 16px;
+    }
 
-    padding: 8px 14px;
-  }
+    .event-data {
+        gap: 32px;
+        flex-wrap: wrap;
+    }
 
+    .data-label {
+        font-size: 16px;
+    }
 
-  .events-page {
+    .data-value {
+        font-size: 23px;
+    }
 
-    padding:
-      18px 13px 30px;
-  }
+    .event-duration {
+        font-size: 18px;
+    }
 
-
-  .events-title {
-
-    font-size: 23px;
-  }
-
+    .info-title {
+        font-size: 42px;
+    }
 }
 
+/* Маленькі телефони */
+
+@media (max-width: 390px) {
+
+    .logo {
+        font-size: 23px;
+    }
+
+    .events-title {
+        font-size: 38px;
+    }
+
+    .updated {
+        font-size: 13px;
+    }
+
+    .event-region {
+        font-size: 23px;
+    }
+
+    .event-badge {
+        font-size: 13px;
+        padding: 8px 13px;
+    }
+}
 </style>
-
 </head>
-
 
 <body>
 
+<!-- =========================
+     HEADER
+========================= -->
 
-<!-- =====================================================
-     TOP
-===================================================== -->
-
-<header class="top-bar">
-
-  <div class="logo">
-
-    <span class="online-dot"></span>
-
-    <span>ONLINE RADAR</span>
-
-  </div>
-
+<header class="top-header">
+    <div class="logo">
+        <span class="online-dot"></span>
+        <span>ONLINE RADAR</span>
+    </div>
 </header>
 
 
-
-<!-- =====================================================
-     APP
-===================================================== -->
-
 <main class="app">
 
+    <!-- =========================
+         MAP
+    ========================= -->
 
-<!-- =====================================================
-     MAP PAGE
-===================================================== -->
+    <section id="mapPage" class="page active map-page">
 
-<section
-  id="mapPage"
-  class="page map-page active"
->
+        <div class="map-wrapper">
 
+            <iframe
+                class="map-frame"
+                src="https://neptun.in.ua/embed/map?lang=uk"
+                allowfullscreen>
+            </iframe>
 
-  <iframe
+            <!-- Темна заміна інформаційного повідомлення NEPTUN -->
+            <div class="neptun-cover"></div>
 
-    class="map-frame"
+            <div class="neptun-notice">
+                <div class="neptun-title">
+                    NEPTUN
+                </div>
 
-    src="https://neptun.in.ua/embed/map?lang=uk"
+                <div class="neptun-text">
+                    Інформаційний агрегатор. Не офіційна тривога.
+                </div>
+            </div>
 
-    title="Карта повітряних тривог України — NEPTUN"
+        </div>
 
-    loading="eager"
+    </section>
 
-    allow="geolocation">
 
-  </iframe>
+    <!-- =========================
+         EVENTS
+    ========================= -->
 
+    <section id="eventsPage" class="page events-page">
 
-  <!-- COVER -->
+        <div class="events-head">
 
-  <div class="neptun-notice-cover"></div>
+            <div class="events-title">
+                Події
+            </div>
 
+            <div class="updated">
+                <span class="updated-dot"></span>
+                <span id="updatedText">ОНОВЛЕНО --:--</span>
+            </div>
 
-  <!-- OUR NOTICE -->
+        </div>
 
-  <div class="neptun-notice">
+        <div class="section-title">
+            АКТИВНІ ТРИВОГИ
+        </div>
 
-    <strong>NEPTUN</strong>
+        <div id="activeEvents"></div>
 
-    Інформаційний агрегатор.
-    Не офіційна тривога.
+        <div
+            id="historyTitle"
+            class="section-title"
+            style="display:none; margin-top:42px;">
+            ІСТОРІЯ
+        </div>
 
-  </div>
+        <div id="historyEvents"></div>
 
+    </section>
 
-  <!-- SOURCE -->
 
-  <div class="neptun-source">
+    <!-- =========================
+         INFO
+    ========================= -->
 
-    <a
-      href="https://neptun.in.ua/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Карта повітряних тривог України — NEPTUN
-    </a>
+    <section id="infoPage" class="page info-page">
 
-  </div>
+        <div class="info-title">
+            Інфо
+        </div>
 
+        <div class="info-card">
 
-</section>
+            <strong>ONLINE RADAR</strong><br><br>
 
+            Моніторинг повітряних тривог України
+            на основі відкритих даних NEPTUN.
 
+            <br><br>
 
-<!-- =====================================================
-     EVENTS PAGE
-===================================================== -->
+            Дані мають інформаційний характер
+            та не є офіційним попередженням.
 
-<section
-  id="eventsPage"
-  class="page events-page"
->
+            <br><br>
 
+            Стан оновлюється автоматично.
 
-  <div class="events-header">
+        </div>
 
-    <div class="events-title">
-      Події
-    </div>
-
-    <div class="events-status">
-
-      <span class="events-status-dot"></span>
-
-      ОНЛАЙН
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="activeSection"
-  >
-
-    <div class="section-title">
-      Активні тривоги
-    </div>
-
-    <div id="activeEvents">
-
-      <div class="empty">
-        Завантаження даних…
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="historySection"
-  >
-
-    <div class="section-title">
-      Останні події
-    </div>
-
-    <div id="historyEvents">
-
-      <div class="empty">
-        Історія поки порожня
-      </div>
-
-    </div>
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     INFO PAGE
-===================================================== -->
-
-<section
-  id="infoPage"
-  class="page info-page"
->
-
-
-  <div class="info-title">
-    Інфо
-  </div>
-
-
-  <div class="info-card">
-
-    <div class="info-card-title">
-      ONLINE RADAR
-    </div>
-
-    <div class="info-card-text">
-
-      Інформаційний сервіс для перегляду
-      повітряних тривог та подій в Україні.
-
-    </div>
-
-  </div>
-
-
-  <div class="info-card">
-
-    <div class="info-card-title">
-      Джерело даних
-    </div>
-
-    <div class="info-card-text">
-
-      Дані про активні повітряні тривоги
-      отримуються через відкритий API
-      NEPTUN.
-
-      <br><br>
-
-      <a
-        class="info-link"
-        href="https://neptun.in.ua/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Дані: Карта повітряних тривог — NEPTUN
-      </a>
-
-    </div>
-
-  </div>
-
-
-  <div class="info-card">
-
-    <div class="info-card-title">
-      Важливо
-    </div>
-
-    <div class="info-card-text">
-
-      NEPTUN є інформаційним агрегатором
-      і не замінює офіційні сигнали
-      повітряної тривоги.
-
-      У разі оголошення офіційної тривоги
-      користуйтеся офіційними сповіщеннями
-      та прямуйте до укриття.
-
-    </div>
-
-  </div>
-
-
-</section>
-
+    </section>
 
 </main>
 
 
-
-<!-- =====================================================
+<!-- =========================
      BOTTOM NAV
-===================================================== -->
+========================= -->
 
-<nav class="bottom-menu">
+<nav class="bottom-nav">
 
-  <div class="navigation">
+    <button
+        class="nav-button active"
+        onclick="showPage('map')">
 
+        <div class="nav-icon">⌁</div>
+        <div>Карта</div>
 
-    <!-- MAP -->
-
-    <a
-      href="#"
-      class="nav-item active"
-      data-page="mapPage"
-    >
-
-      <span class="nav-icon">⌁</span>
-
-      <span>Карта</span>
-
-    </a>
+    </button>
 
 
-    <!-- EVENTS -->
+    <button
+        class="nav-button"
+        onclick="showPage('events')">
 
-    <a
-      href="#"
-      class="nav-item"
-      data-page="eventsPage"
-    >
+        <div class="nav-icon">◷</div>
+        <div>Події</div>
 
-      <span class="nav-icon">◷</span>
-
-      <span>Події</span>
-
-    </a>
+    </button>
 
 
-    <!-- INFO -->
+    <button
+        class="nav-button"
+        onclick="showPage('info')">
 
-    <a
-      href="#"
-      class="nav-item"
-      data-page="infoPage"
-    >
+        <div class="nav-icon">ⓘ</div>
+        <div>Інфо</div>
 
-      <span class="nav-icon">ⓘ</span>
-
-      <span>Інфо</span>
-
-    </a>
-
-
-  </div>
+    </button>
 
 </nav>
 
 
-
 <script>
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showPage(page) {
+
+    const pages = {
+        map: document.getElementById("mapPage"),
+        events: document.getElementById("eventsPage"),
+        info: document.getElementById("infoPage")
+    };
+
+    Object.values(pages).forEach(p => {
+        p.classList.remove("active");
+    });
+
+    pages[page].classList.add("active");
+
+
+    const buttons = document.querySelectorAll(".nav-button");
+
+    buttons.forEach(button => {
+        button.classList.remove("active");
+    });
+
+    if (page === "map") {
+        buttons[0].classList.add("active");
+    }
+
+    if (page === "events") {
+        buttons[1].classList.add("active");
+    }
+
+    if (page === "info") {
+        buttons[2].classList.add("active");
+    }
+}
+
 
 /* =====================================================
    SETTINGS
 ===================================================== */
 
 const API_URL =
-  "https://neptun.in.ua/api/v1/alerts";
+    "https://neptun.in.ua/api/v1/alerts";
 
 const STORAGE_KEY =
-  "onlineRadarAlertHistory";
-
-
-/* =====================================================
-   STATE
-===================================================== */
-
-let alertHistory =
-  JSON.parse(
-    localStorage.getItem(STORAGE_KEY) || "[]"
-  );
-
+    "onlineRadarAlertHistory";
 
 let currentAlerts = {};
 
+let history = [];
 
-/* =====================================================
-   NAVIGATION
-===================================================== */
+try {
 
-const navItems =
-  document.querySelectorAll(".nav-item");
+    history =
+        JSON.parse(
+            localStorage.getItem(STORAGE_KEY)
+        ) || [];
 
-const pages =
-  document.querySelectorAll(".page");
+} catch (e) {
 
+    history = [];
 
-navItems.forEach(item => {
-
-  item.addEventListener("click", event => {
-
-    event.preventDefault();
-
-    const pageId =
-      item.dataset.page;
-
-
-    pages.forEach(page => {
-
-      page.classList.remove("active");
-
-    });
-
-
-    navItems.forEach(nav => {
-
-      nav.classList.remove("active");
-
-    });
-
-
-    document
-      .getElementById(pageId)
-      .classList.add("active");
-
-
-    item.classList.add("active");
-
-  });
-
-});
+}
 
 
 /* =====================================================
    TIME
 ===================================================== */
 
-function formatTime(iso) {
+function formatTime(date) {
 
-  if (!iso) {
-    return "—";
-  }
-
-  const date =
-    new Date(iso);
-
-
-  return date.toLocaleTimeString(
-    "uk-UA",
-    {
-      hour: "2-digit",
-      minute: "2-digit"
-    }
-  );
-
-}
-
-
-function formatDate(iso) {
-
-  if (!iso) {
-    return "—";
-  }
-
-  const date =
-    new Date(iso);
-
-
-  return date.toLocaleDateString(
-    "uk-UA",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    }
-  );
-
-}
-
-
-function durationText(start, end) {
-
-  if (!start) {
-    return "";
-  }
-
-
-  const startDate =
-    new Date(start);
-
-  const endDate =
-    end
-      ? new Date(end)
-      : new Date();
-
-
-  let minutes =
-    Math.max(
-      0,
-      Math.round(
-        (endDate - startDate) / 60000
-      )
-    );
-
-
-  const hours =
-    Math.floor(minutes / 60);
-
-  const mins =
-    minutes % 60;
-
-
-  if (hours > 0) {
-
-    return `Тривалість: ${hours} год ${mins} хв`;
-
-  }
-
-
-  return `Тривалість: ${mins} хв`;
-
-}
-
-
-/* =====================================================
-   NORMALIZE API
-===================================================== */
-
-function getAlertsFromAPI(data) {
-
-  const result = [];
-
-
-  /*
-     NEPTUN API:
-
-     data.oblasts
-     data.raions
-
-     Нас цікавлять області.
-  */
-
-
-  if (
-    Array.isArray(data.oblasts)
-  ) {
-
-    data.oblasts.forEach(alert => {
-
-      result.push({
-
-        key:
-          alert.key,
-
-        name:
-          alert.name ||
-          alert.oblast ||
-          alert.key,
-
-        since:
-          alert.since
-
-      });
-
-    });
-
-  }
-
-
-  /*
-     Райони теж враховуємо,
-     якщо вони приходять окремо.
-  */
-
-  if (
-    Array.isArray(data.raions)
-  ) {
-
-    data.raions.forEach(alert => {
-
-      result.push({
-
-        key:
-          "raion_" + alert.key,
-
-        name:
-          alert.name,
-
-        since:
-          alert.since
-
-      });
-
-    });
-
-  }
-
-
-  return result;
-
-}
-
-
-/* =====================================================
-   LOAD ALERTS
-===================================================== */
-
-async function loadAlerts() {
-
-  try {
-
-    const response =
-      await fetch(
-        API_URL,
+    return new Intl.DateTimeFormat(
+        "uk-UA",
         {
-          method: "GET",
-          cache: "no-store"
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
         }
-      );
+    ).format(date);
+
+}
 
 
-    if (!response.ok) {
+function formatDate(date) {
 
-      throw new Error(
-        "API error"
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    processAlerts(
-      getAlertsFromAPI(data)
-    );
-
-
-    renderEvents();
-
-
-  } catch (error) {
-
-    console.error(
-      "NEPTUN API:",
-      error
-    );
-
-  }
+    return new Intl.DateTimeFormat(
+        "uk-UA",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        }
+    ).format(date);
 
 }
 
 
 /* =====================================================
-   PROCESS ALERTS
+   DURATION
 ===================================================== */
 
-function processAlerts(alerts) {
+function getDuration(start, end = null) {
 
-  const now =
-    new Date().toISOString();
+    const startTime =
+        new Date(start).getTime();
 
+    const endTime =
+        end
+        ? new Date(end).getTime()
+        : Date.now();
 
-  const incoming = {};
+    let minutes =
+        Math.max(
+            0,
+            Math.floor(
+                (endTime - startTime) / 60000
+            )
+        );
 
+    if (minutes < 60) {
 
-  /*
-     Створюємо список поточних.
-  */
-
-  alerts.forEach(alert => {
-
-    incoming[alert.key] =
-      alert;
-
-  });
-
-
-  /*
-     Перевіряємо нові / існуючі.
-  */
-
-  alerts.forEach(alert => {
-
-    const existing =
-      alertHistory.find(
-        event =>
-          event.key === alert.key &&
-          !event.end
-      );
-
-
-    if (!existing) {
-
-      alertHistory.push({
-
-        id:
-          Date.now() +
-          "_" +
-          alert.key,
-
-        key:
-          alert.key,
-
-        name:
-          alert.name,
-
-        start:
-          alert.since ||
-          now,
-
-        end:
-          null
-
-      });
+        return `${minutes} хв`;
 
     }
 
-  });
+    const hours =
+        Math.floor(minutes / 60);
 
+    const mins =
+        minutes % 60;
 
-  /*
-     Якщо попередня активна тривога
-     більше не прийшла з API —
-     фіксуємо відбій.
-  */
+    if (mins === 0) {
 
-  alertHistory.forEach(event => {
-
-    if (
-      !event.end &&
-      !incoming[event.key]
-    ) {
-
-      event.end = now;
+        return `${hours} год`;
 
     }
 
-  });
-
-
-  currentAlerts =
-    incoming;
-
-
-  /*
-     Зберігаємо локальну історію.
-  */
-
-  /*
-     Не даємо localStorage
-     розростатися безмежно.
-     Залишаємо останні 300 подій.
-  */
-
-  if (
-    alertHistory.length > 300
-  ) {
-
-    alertHistory =
-      alertHistory.slice(-300);
-
-  }
-
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(alertHistory)
-  );
+    return `${hours} год ${mins} хв`;
 
 }
 
 
 /* =====================================================
-   RENDER EVENTS
+   UPDATED TIME
+===================================================== */
+
+function setUpdatedTime() {
+
+    const element =
+        document.getElementById(
+            "updatedText"
+        );
+
+    if (!element) return;
+
+    element.textContent =
+        "ОНОВЛЕНО " +
+        formatTime(new Date());
+
+}
+
+
+/* =====================================================
+   NORMALIZE ALERTS
+===================================================== */
+
+function normalizeAlerts(data) {
+
+    const result = {};
+
+    const oblasts =
+        Array.isArray(data.oblasts)
+            ? data.oblasts
+            : [];
+
+    const raions =
+        Array.isArray(data.raions)
+            ? data.raions
+            : [];
+
+
+    oblasts.forEach(alert => {
+
+        if (!alert.key) return;
+
+        result[
+            "oblast_" + alert.key
+        ] = {
+
+            id:
+                "oblast_" + alert.key,
+
+            name:
+                alert.name ||
+                alert.oblast ||
+                alert.key,
+
+            since:
+                alert.since
+
+        };
+
+    });
+
+
+    raions.forEach(alert => {
+
+        if (!alert.key) return;
+
+        result[
+            "raion_" + alert.key
+        ] = {
+
+            id:
+                "raion_" + alert.key,
+
+            name:
+                alert.name ||
+                alert.key,
+
+            since:
+                alert.since
+
+        };
+
+    });
+
+
+    return result;
+
+}
+
+
+/* =====================================================
+   FETCH
+===================================================== */
+
+async function updateAlerts() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "?t=" +
+                Date.now(),
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "API error"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const alerts =
+            normalizeAlerts(data);
+
+
+        const now =
+            new Date().toISOString();
+
+
+        /*
+         * Якщо тривога зникла з API —
+         * вважаємо це відбоєм.
+         */
+
+        Object.keys(currentAlerts)
+            .forEach(id => {
+
+                if (!alerts[id]) {
+
+                    const old =
+                        currentAlerts[id];
+
+                    history.unshift({
+
+                        id: id,
+
+                        name:
+                            old.name,
+
+                        start:
+                            old.since,
+
+                        end:
+                            now
+
+                    });
+
+                }
+
+            });
+
+
+        /*
+         * Зберігаємо тільки останні 300 подій.
+         */
+
+        history =
+            history.slice(0, 300);
+
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(history)
+        );
+
+
+        currentAlerts =
+            alerts;
+
+
+        setUpdatedTime();
+
+        renderEvents();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Не вдалося оновити тривоги:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   RENDER ACTIVE EVENTS
+===================================================== */
+
+function renderActiveEvents() {
+
+    const container =
+        document.getElementById(
+            "activeEvents"
+        );
+
+    container.innerHTML = "";
+
+
+    const alerts =
+        Object.values(
+            currentAlerts
+        );
+
+
+    /*
+     * Новіші тривоги зверху.
+     */
+
+    alerts.sort(
+        (a, b) =>
+            new Date(b.since) -
+            new Date(a.since)
+    );
+
+
+    if (alerts.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                Наразі активних тривог немає
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    alerts.forEach(alert => {
+
+        const start =
+            new Date(alert.since);
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "event-card active";
+
+
+        card.innerHTML = `
+
+            <div class="event-top">
+
+                <div class="event-region">
+                    ${escapeHtml(alert.name)}
+                </div>
+
+                <div class="event-badge alert">
+                    ТРИВОГА!
+                </div>
+
+            </div>
+
+
+            <div class="event-data">
+
+                <div class="data-item">
+
+                    <div class="data-label">
+                        ПОЧАТОК
+                    </div>
+
+                    <div class="data-value">
+                        ${formatTime(start)}
+                    </div>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <div class="data-label">
+                        СТАТУС
+                    </div>
+
+                    <div class="data-value">
+                        триває
+                    </div>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <div class="data-label">
+                        ДАТА
+                    </div>
+
+                    <div class="data-value">
+                        ${formatDate(start)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="event-duration">
+                Тривалість:
+                ${getDuration(start)}
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =====================================================
+   RENDER HISTORY
+===================================================== */
+
+function renderHistory() {
+
+    const container =
+        document.getElementById(
+            "historyEvents"
+        );
+
+    const title =
+        document.getElementById(
+            "historyTitle"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (!history.length) {
+
+        title.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    title.style.display =
+        "block";
+
+
+    history.forEach(event => {
+
+        const start =
+            new Date(event.start);
+
+        const end =
+            new Date(event.end);
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "event-card ended";
+
+
+        card.innerHTML = `
+
+            <div class="event-top">
+
+                <div class="event-region">
+                    ${escapeHtml(event.name)}
+                </div>
+
+                <div class="event-badge end">
+                    ВІДБІЙ
+                </div>
+
+            </div>
+
+
+            <div class="event-data">
+
+                <div class="data-item">
+
+                    <div class="data-label">
+                        ПОЧАТОК
+                    </div>
+
+                    <div class="data-value">
+                        ${formatTime(start)}
+                    </div>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <div class="data-label">
+                        ВІДБІЙ
+                    </div>
+
+                    <div class="data-value">
+                        ${formatTime(end)}
+                    </div>
+
+                </div>
+
+
+                <div class="data-item">
+
+                    <div class="data-label">
+                        ДАТА
+                    </div>
+
+                    <div class="data-value">
+                        ${formatDate(start)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="event-duration">
+                Тривалість:
+                ${getDuration(start, end)}
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =====================================================
+   RENDER
 ===================================================== */
 
 function renderEvents() {
 
-  const activeContainer =
-    document.getElementById(
-      "activeEvents"
-    );
+    renderActiveEvents();
 
-
-  const historyContainer =
-    document.getElementById(
-      "historyEvents"
-    );
-
-
-  /*
-     ACTIVE
-  */
-
-  const active =
-    alertHistory
-      .filter(event => !event.end)
-      .sort(
-        (a,b) =>
-          new Date(b.start) -
-          new Date(a.start)
-      );
-
-
-  if (!active.length) {
-
-    activeContainer.innerHTML = `
-
-      <div class="empty">
-
-        Зараз активних тривог
-        не зафіксовано.
-
-      </div>
-
-    `;
-
-  } else {
-
-    activeContainer.innerHTML =
-      active
-        .map(event =>
-          createEventCard(
-            event,
-            true
-          )
-        )
-        .join("");
-
-  }
-
-
-  /*
-     HISTORY
-  */
-
-  const history =
-    alertHistory
-      .filter(event => event.end)
-      .sort(
-        (a,b) =>
-          new Date(b.end) -
-          new Date(a.end)
-      )
-      .slice(0, 50);
-
-
-  if (!history.length) {
-
-    historyContainer.innerHTML = `
-
-      <div class="empty">
-
-        Тут з'являться завершені
-        повітряні тривоги.
-
-      </div>
-
-    `;
-
-  } else {
-
-    historyContainer.innerHTML =
-      history
-        .map(event =>
-          createEventCard(
-            event,
-            false
-          )
-        )
-        .join("");
-
-  }
-
-}
-
-
-/* =====================================================
-   EVENT CARD
-===================================================== */
-
-function createEventCard(
-  event,
-  active
-) {
-
-  const start =
-    formatTime(event.start);
-
-
-  const end =
-    active
-      ? "триває"
-      : formatTime(event.end);
-
-
-  const date =
-    formatDate(event.start);
-
-
-  const duration =
-    durationText(
-      event.start,
-      event.end
-    );
-
-
-  return `
-
-    <div class="
-      alert-card
-      ${active ? "active" : "resolved"}
-    ">
-
-      <div class="alert-top">
-
-        <div class="alert-region">
-
-          ${escapeHTML(
-            event.name
-          )}
-
-        </div>
-
-        <div class="alert-badge">
-
-          ${
-            active
-              ? "ТРЕВОГА"
-              : "ВІДБІЙ"
-          }
-
-        </div>
-
-      </div>
-
-
-      <div class="alert-times">
-
-        <div class="time-block">
-
-          <div class="time-label">
-            Початок
-          </div>
-
-          <div class="time-value">
-            ${start}
-          </div>
-
-        </div>
-
-
-        <div class="time-block">
-
-          <div class="time-label">
-            ${
-              active
-                ? "Статус"
-                : "Завершення"
-            }
-          </div>
-
-          <div class="time-value">
-            ${end}
-          </div>
-
-        </div>
-
-
-        <div class="time-block">
-
-          <div class="time-label">
-            Дата
-          </div>
-
-          <div class="time-value">
-            ${date}
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="duration">
-
-        ${duration}
-
-      </div>
-
-    </div>
-
-  `;
+    renderHistory();
 
 }
 
@@ -1787,82 +1407,57 @@ function createEventCard(
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(text) {
+function escapeHtml(value) {
 
-  return String(text)
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
 }
 
 
 /* =====================================================
-   START
+   INITIAL UPDATE
 ===================================================== */
 
-loadAlerts();
+updateAlerts();
 
 
 /*
-   Оновлюємо кожні 10 секунд.
-
-   NEPTUN рекомендує не опитувати
-   REST частіше ніж раз на 5 секунд.
-*/
+ * Оновлення кожні 10 секунд.
+ */
 
 setInterval(
-  loadAlerts,
-  10000
+    updateAlerts,
+    10000
 );
 
 
 /*
-   Якщо повернувся на вкладку —
-   одразу оновлюємо.
-*/
+ * Якщо повернулися на сторінку —
+ * одразу оновлюємо дані.
+ */
 
 document.addEventListener(
-  "visibilitychange",
-  () => {
+    "visibilitychange",
+    () => {
 
-    if (
-      document.visibilityState ===
-      "visible"
-    ) {
+        if (
+            document.visibilityState ===
+            "visible"
+        ) {
 
-      loadAlerts();
+            updateAlerts();
+
+        }
 
     }
-
-  }
 );
 
 </script>
 
-
 </body>
-
 </html>
