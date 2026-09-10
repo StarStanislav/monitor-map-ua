@@ -95,7 +95,7 @@ body {
 
 
 /* =====================================================
-   TOP ONLINE RADAR
+   ONLINE RADAR
 ===================================================== */
 
 .topbar {
@@ -190,7 +190,6 @@ body {
 
             0 0 10px
             rgba(93,255,145,0.9);
-
     }
 
     70% {
@@ -201,7 +200,6 @@ body {
 
             0 0 12px
             rgba(93,255,145,0.9);
-
     }
 
     100% {
@@ -212,7 +210,6 @@ body {
 
             0 0 10px
             rgba(93,255,145,0.9);
-
     }
 }
 
@@ -294,7 +291,7 @@ body {
 
 
 /* =====================================================
-   INFO
+   INFO BUTTON
 ===================================================== */
 
 .info-button {
@@ -434,13 +431,12 @@ body {
 
 
 /* =====================================================
-   MAP ATTRIBUTION
+   ATTRIBUTION
 ===================================================== */
 
 .maplibregl-ctrl-bottom-right {
 
     right: 5px;
-
     bottom: 5px;
 }
 
@@ -465,27 +461,6 @@ body {
 
     color:
         #7b878b !important;
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 430px) {
-
-    .topbar {
-        left: 10px;
-    }
-
-    .bottom-panel {
-        left: 10px;
-    }
-
-    .info-button {
-        right: 10px;
-    }
-
 }
 
 </style>
@@ -538,7 +513,7 @@ body {
 
 
 <!-- =====================================================
-     BOTTOM INFORMATION
+     BOTTOM
 ===================================================== -->
 
 <div class="bottom-panel">
@@ -558,7 +533,7 @@ body {
 
 
 <!-- =====================================================
-     INFO BUTTON
+     INFO
 ===================================================== -->
 
 <div class="info-button">
@@ -569,7 +544,7 @@ body {
 <script>
 
 /* =====================================================
-   TELEGRAM MINI APP
+   TELEGRAM
 ===================================================== */
 
 const tg =
@@ -673,241 +648,437 @@ setInterval(
 
 
 /* =====================================================
-   MAP CONFIGURATION
+   CONFIG
 ===================================================== */
 
-const MAP_STYLE =
+const STYLE_URL =
     "https://tiles.openfreemap.org/styles/dark";
 
 
 /*
- * Справжня адміністративна межа
- * Київської області в OSM.
- *
- * Relation:
- * 71248
- */
-
-const OBLAST_URL =
-    "https://nominatim.openstreetmap.org/lookup" +
-    "?osm_ids=R71248" +
-    "&format=json" +
-    "&polygon_geojson=1";
-
-
-/*
- * Безпечні межі переміщення карти.
+ * Максимальні межі руху.
  */
 
 const MAX_BOUNDS = [
+
     [28.8, 49.0],
+
     [32.7, 51.8]
+
+];
+
+
+/*
+ * Резервний кадр Київщини.
+ *
+ * Він використовується одразу.
+ * Після завантаження справжнього
+ * контуру кадр буде уточнений.
+ */
+
+const FALLBACK_BOUNDS = [
+
+    [29.05, 49.18],
+
+    [32.15, 51.55]
+
 ];
 
 
 /* =====================================================
-   MAP
+   LOAD STYLE
 ===================================================== */
 
-const map =
-    new maplibregl.Map({
+async function createMap() {
 
-        container:
-            "map",
+    let style;
 
-        style:
-            MAP_STYLE,
+
+    try {
 
         /*
-         * Стартова позиція.
-         *
-         * Вона буде замінена fitBounds(),
-         * коли прийде контур області.
+         * Завантажуємо стиль самі,
+         * щоб прибрати стандартні
+         * англійські підписи ДО запуску карти.
          */
 
-        center:
-            [30.72, 50.30],
-
-        zoom:
-            8.1,
-
-        minZoom:
-            7.2,
-
-        maxZoom:
-            16,
-
-        maxBounds:
-            MAX_BOUNDS,
-
-        attributionControl:
-            true,
-
-        pitchWithRotate:
-            false,
-
-        dragRotate:
-            false,
-
-        touchPitch:
-            false,
-
-        touchZoomRotate:
-            true,
-
-        renderWorldCopies:
-            false
-
-    });
+        const response =
+            await fetch(
+                STYLE_URL,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
 
 
-window.KYIV_MAP =
-    map;
+        if (!response.ok) {
+
+            throw new Error(
+                `Style HTTP ${response.status}`
+            );
+
+        }
 
 
-/* =====================================================
-   MAP READY
-===================================================== */
+        style =
+            await response.json();
 
-map.once(
-    "load",
-    async () => {
 
-        console.log(
-            "ONLINE RADAR MAP READY"
+        /*
+         * Прибираємо всі штатні
+         * place-label layers.
+         */
+
+        prepareStyle(
+            style
         );
 
 
-        /*
-         * -------------------------------------------------
-         * 1. Прибираємо штатні дублікати міст.
-         * -------------------------------------------------
-         */
-
-        hideDefaultPlaceLabels();
-
+    } catch (error) {
 
         /*
-         * -------------------------------------------------
-         * 2. Наші українські назви.
-         * -------------------------------------------------
-         */
-
-        try {
-
-            addCityLabels();
-
-        } catch (error) {
-
-            console.warn(
-                "CITY LABELS:",
-                error
-            );
-
-        }
-
-
-        /*
-         * -------------------------------------------------
-         * 3. Вода.
-         * -------------------------------------------------
-         */
-
-        try {
-
-            addWaterLabels();
-
-        } catch (error) {
-
-            console.warn(
-                "WATER LABELS:",
-                error
-            );
-
-        }
-
-
-        /*
-         * -------------------------------------------------
-         * 4. Районні межі.
-         * -------------------------------------------------
-         */
-
-        try {
-
-            addDistrictLines();
-
-        } catch (error) {
-
-            console.warn(
-                "DISTRICT LINES:",
-                error
-            );
-
-        }
-
-
-        /*
-         * -------------------------------------------------
-         * 5. Київська область.
-         * -------------------------------------------------
+         * Якщо style fetch не вдався,
+         * використовуємо прямий URL.
          *
-         * Якщо зовнішній запит впаде,
-         * карта все одно залишається.
-         * -------------------------------------------------
+         * Карта все одно відкриється.
          */
 
-        try {
+        console.warn(
+            "STYLE FETCH:",
+            error
+        );
 
-            await loadOblast();
+        style =
+            STYLE_URL;
 
-        } catch (error) {
+    }
 
-            console.warn(
-                "OBLAST LOAD FAILED:",
-                error
+
+    /* =================================================
+       CREATE MAP
+    ================================================= */
+
+    const map =
+        new maplibregl.Map({
+
+            container:
+                "map",
+
+            style:
+                style,
+
+            center:
+                [30.72, 50.30],
+
+            zoom:
+                8.2,
+
+            minZoom:
+                7.2,
+
+            maxZoom:
+                16,
+
+            maxBounds:
+                MAX_BOUNDS,
+
+            attributionControl:
+                true,
+
+            pitchWithRotate:
+                false,
+
+            dragRotate:
+                false,
+
+            touchPitch:
+                false,
+
+            touchZoomRotate:
+                true,
+
+            renderWorldCopies:
+                false
+
+        });
+
+
+    window.KYIV_MAP =
+        map;
+
+
+    /* =================================================
+       MAP LOAD
+    ================================================= */
+
+    map.once(
+        "load",
+        async () => {
+
+            console.log(
+                "ONLINE RADAR MAP READY"
             );
 
 
             /*
-             * Навіть без GeoJSON
-             * робимо нормальний стартовий кадр.
+             * Якщо fallback style був використаний,
+             * додатково ховаємо штатні labels.
              */
 
-            fallbackView();
+            hidePlaceLabels(
+                map
+            );
+
+
+            /*
+             * Наші українські назви.
+             */
+
+            addCityLabels(
+                map
+            );
+
+
+            /*
+             * Вода.
+             */
+
+            addWaterLabels(
+                map
+            );
+
+
+            /*
+             * Райони.
+             */
+
+            addDistrictLines(
+                map
+            );
+
+
+            /*
+             * Контур.
+             *
+             * Тут використовуємо стабільний
+             * статичний GeoJSON.
+             */
+
+            try {
+
+                await loadOblast(
+                    map
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "OBLAST:",
+                    error
+                );
+
+
+                /*
+                 * Навіть без контуру
+                 * карта залишається.
+                 */
+
+                map.fitBounds(
+                    FALLBACK_BOUNDS,
+                    {
+
+                        padding: {
+
+                            top:
+                                145,
+
+                            bottom:
+                                125,
+
+                            left:
+                                22,
+
+                            right:
+                                22
+
+                        },
+
+                        maxZoom:
+                            8.65,
+
+                        duration:
+                            0
+
+                    }
+                );
+
+            }
+
+
+            /*
+             * Loading.
+             */
+
+            setTimeout(
+                () => {
+
+                    document
+                        .getElementById(
+                            "loading"
+                        )
+                        .classList
+                        .add("hidden");
+
+                },
+                300
+            );
+
+        }
+    );
+
+
+    /*
+     * MapLibre errors не повинні
+     * ламати весь інтерфейс.
+     */
+
+    map.on(
+        "error",
+        event => {
+
+            console.warn(
+                "MAP ERROR:",
+                event?.error ||
+                event
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PREPARE STYLE
+===================================================== */
+
+function prepareStyle(
+    style
+) {
+
+    if (
+        !style ||
+        !Array.isArray(
+            style.layers
+        )
+    ) {
+        return;
+    }
+
+
+    for (
+        const layer
+        of style.layers
+    ) {
+
+        const sourceLayer =
+            String(
+                layer[
+                    "source-layer"
+                ] || ""
+            ).toLowerCase();
+
+
+        const id =
+            String(
+                layer.id || ""
+            ).toLowerCase();
+
+
+        /*
+         * -----------------------------------------------
+         * УСІ стандартні place labels ВИМИКАЄМО.
+         * -----------------------------------------------
+         */
+
+        if (
+            layer.type === "symbol" &&
+            (
+                sourceLayer === "place" ||
+                sourceLayer === "settlement" ||
+                id.includes("place") ||
+                id.includes("settlement")
+            )
+        ) {
+
+            layer.layout = {
+
+                ...(layer.layout || {}),
+
+                visibility:
+                    "none"
+
+            };
 
         }
 
 
         /*
-         * -------------------------------------------------
-         * 6. Прибираємо loading.
-         * -------------------------------------------------
+         * -----------------------------------------------
+         * Дороги з назвами залишаємо тільки
+         * для великого zoom.
+         * -----------------------------------------------
          */
 
-        setTimeout(
-            () => {
+        if (
+            sourceLayer ===
+            "transportation_name"
+        ) {
 
-                document
-                    .getElementById(
-                        "loading"
-                    )
-                    .classList
-                    .add("hidden");
+            layer.minzoom =
+                Math.max(
+                    layer.minzoom || 0,
+                    13
+                );
 
-            },
-            350
-        );
+        }
+
+
+        /*
+         * -----------------------------------------------
+         * POI вимикаємо.
+         * -----------------------------------------------
+         */
+
+        if (
+            sourceLayer === "poi" ||
+            sourceLayer === "housenumber"
+        ) {
+
+            layer.layout = {
+
+                ...(layer.layout || {}),
+
+                visibility:
+                    "none"
+
+            };
+
+        }
 
     }
-);
+
+}
 
 
 /* =====================================================
-   HIDE DEFAULT PLACE LABELS
+   HIDE PLACE LABELS
 ===================================================== */
 
-function hideDefaultPlaceLabels() {
+function hidePlaceLabels(
+    map
+) {
 
     const layers =
         map.getStyle().layers || [];
@@ -918,9 +1089,28 @@ function hideDefaultPlaceLabels() {
         of layers
     ) {
 
+        const sourceLayer =
+            String(
+                layer[
+                    "source-layer"
+                ] || ""
+            ).toLowerCase();
+
+
+        const id =
+            String(
+                layer.id || ""
+            ).toLowerCase();
+
+
         if (
             layer.type === "symbol" &&
-            layer["source-layer"] === "place"
+            (
+                sourceLayer === "place" ||
+                sourceLayer === "settlement" ||
+                id.includes("place") ||
+                id.includes("settlement")
+            )
         ) {
 
             try {
@@ -944,23 +1134,28 @@ function hideDefaultPlaceLabels() {
    LOAD KYIV OBLAST
 ===================================================== */
 
-async function loadOblast() {
+async function loadOblast(
+    map
+) {
+
+    /*
+     * Використовуємо статичний OSM extract.
+     *
+     * Він значно надійніший для Mini App,
+     * ніж Nominatim.
+     */
+
+    const url =
+        "https://geo2day.com/europe/ukraine/" +
+        "kiev_oblast.geojson";
+
 
     const response =
         await fetch(
-            OBLAST_URL,
+            url,
             {
-
                 cache:
-                    "no-store",
-
-                headers: {
-
-                    "Accept":
-                        "application/json"
-
-                }
-
+                    "no-store"
             }
         );
 
@@ -968,54 +1163,19 @@ async function loadOblast() {
     if (!response.ok) {
 
         throw new Error(
-            `HTTP ${response.status}`
+            `GeoJSON HTTP ${response.status}`
         );
 
     }
 
 
-    const result =
+    const data =
         await response.json();
 
 
-    if (
-        !result ||
-        !result.length ||
-        !result[0].geojson
-    ) {
-
-        throw new Error(
-            "OSM GeoJSON not returned"
-        );
-
-    }
-
-
-    const geometry =
-        result[0].geojson;
-
-
-    const feature = {
-
-        type:
-            "Feature",
-
-        properties: {
-
-            name:
-                "Київська область"
-
-        },
-
-        geometry:
-            geometry
-
-    };
-
-
-    /* =================================================
-       SOURCE
-    ================================================= */
+    /*
+     * Source.
+     */
 
     map.addSource(
         "kyiv-oblast",
@@ -1025,15 +1185,15 @@ async function loadOblast() {
                 "geojson",
 
             data:
-                feature
+                data
 
         }
     );
 
 
-    /* =================================================
-       SOFT FILL
-    ================================================= */
+    /*
+     * Дуже легке підсвічування.
+     */
 
     map.addLayer({
 
@@ -1052,16 +1212,16 @@ async function loadOblast() {
                 "#0d3b30",
 
             "fill-opacity":
-                0.13
+                0.12
 
         }
 
     });
 
 
-    /* =================================================
-       MAIN BORDER
-    ================================================= */
+    /*
+     * ГОЛОВНИЙ КОНТУР.
+     */
 
     map.addLayer({
 
@@ -1076,10 +1236,6 @@ async function loadOblast() {
 
         paint: {
 
-            /*
-             * Основний контур області.
-             */
-
             "line-color":
                 "#52e8b0",
 
@@ -1091,8 +1247,8 @@ async function loadOblast() {
 
                 ["zoom"],
 
-                7.2,
-                1.25,
+                7,
+                1.2,
 
                 8,
                 1.55,
@@ -1126,22 +1282,24 @@ async function loadOblast() {
 
 
     /*
-     * Автоматичний правильний масштаб.
+     * Підганяємо карту.
      */
 
     fitOblast(
-        geometry
+        map,
+        data
     );
 
 }
 
 
 /* =====================================================
-   FIT WHOLE KYIV OBLAST
+   FIT OBLAST
 ===================================================== */
 
 function fitOblast(
-    geometry
+    map,
+    data
 ) {
 
     const bounds =
@@ -1171,32 +1329,78 @@ function fitOblast(
             of coordinates
         ) {
 
-            walk(item);
+            walk(
+                item
+            );
 
         }
 
     }
 
 
-    walk(
-        geometry.coordinates
-    );
+    function feature(
+        item
+    ) {
+
+        if (
+            !item ||
+            !item.geometry
+        ) {
+            return;
+        }
+
+
+        walk(
+            item.geometry.coordinates
+        );
+
+    }
+
+
+    if (
+        data.type ===
+        "FeatureCollection"
+    ) {
+
+        for (
+            const item
+            of data.features
+        ) {
+
+            feature(
+                item
+            );
+
+        }
+
+    } else if (
+        data.type ===
+        "Feature"
+    ) {
+
+        feature(
+            data
+        );
+
+    } else if (
+        data.coordinates
+    ) {
+
+        walk(
+            data.coordinates
+        );
+
+    }
 
 
     if (
         bounds.isEmpty()
     ) {
 
-        fallbackView();
-
         return;
 
     }
 
-
-    /*
-     * Вписуємо ВСЮ область.
-     */
 
     map.fitBounds(
         bounds,
@@ -1205,16 +1409,11 @@ function fitOblast(
             padding: {
 
                 /*
-                 * Telegram header
-                 * + ONLINE RADAR
+                 * Враховуємо Telegram header.
                  */
 
                 top:
                     145,
-
-                /*
-                 * Нижня панель
-                 */
 
                 bottom:
                     125,
@@ -1227,17 +1426,13 @@ function fitOblast(
 
             },
 
-
             /*
-             * Не дозволяємо
-             * занадто сильно збільшити
-             * область.
-
+             * Стартова область
+             * не повинна бути надто близькою.
              */
 
             maxZoom:
-                8.75,
-
+                8.7,
 
             duration:
                 500
@@ -1249,66 +1444,12 @@ function fitOblast(
 
 
 /* =====================================================
-   FALLBACK VIEW
+   DISTRICT LINES
 ===================================================== */
 
-function fallbackView() {
-
-    /*
-     * Якщо OSM/Nominatim тимчасово
-     * недоступний, все одно показуємо
-     * Київщину приблизно правильно.
-     */
-
-    map.fitBounds(
-
-        [
-            [29.05, 49.18],
-            [32.15, 51.55]
-        ],
-
-        {
-
-            padding: {
-
-                top:
-                    145,
-
-                bottom:
-                    125,
-
-                left:
-                    22,
-
-                right:
-                    22
-
-            },
-
-            maxZoom:
-                8.65,
-
-            duration:
-                350
-
-        }
-
-    );
-
-}
-
-
-/* =====================================================
-   DISTRICT BOUNDARIES
-===================================================== */
-
-function addDistrictLines() {
-
-    /*
-     * admin_level=6
-     *
-     * Районний рівень.
-     */
+function addDistrictLines(
+    map
+) {
 
     map.addLayer({
 
@@ -1337,11 +1478,6 @@ function addDistrictLines() {
                 6
             ],
 
-            /*
-             * Київ не повинен бути
-             * районною межею області.
-             */
-
             [
                 "!=",
                 "name",
@@ -1359,10 +1495,7 @@ function addDistrictLines() {
         paint: {
 
             /*
-             * Другий колір.
-             *
-             * Значно спокійніший
-             * за зовнішній контур.
+             * Райони — інший, спокійніший колір.
              */
 
             "line-color":
@@ -1377,7 +1510,7 @@ function addDistrictLines() {
                 ["zoom"],
 
                 7.2,
-                0.30,
+                0.28,
 
                 8,
                 0.40,
@@ -1386,16 +1519,13 @@ function addDistrictLines() {
                 0.52,
 
                 10,
-                0.62,
+                0.63,
 
                 12,
                 0.78,
 
                 14,
-                1.0,
-
-                16,
-                1.15
+                1.0
 
             ],
 
@@ -1408,7 +1538,7 @@ function addDistrictLines() {
                 ["zoom"],
 
                 7.2,
-                0.22,
+                0.20,
 
                 8,
                 0.27,
@@ -1423,10 +1553,7 @@ function addDistrictLines() {
                 0.50,
 
                 14,
-                0.60,
-
-                16,
-                0.66
+                0.60
 
             ],
 
@@ -1448,18 +1575,20 @@ function addDistrictLines() {
    CITY LABELS
 ===================================================== */
 
-function addCityLabels() {
+function addCityLabels(
+    map
+) {
 
     /*
-     * -------------------------------------------------
-     * ОСНОВНІ МІСТА
-     * -------------------------------------------------
+     * Великі міста.
+     *
+     * ТІЛЬКИ УКРАЇНСЬКА НАЗВА.
      */
 
     map.addLayer({
 
         id:
-            "kyiv-main-city-labels",
+            "ukrainian-city-labels",
 
         type:
             "symbol",
@@ -1488,6 +1617,16 @@ function addCityLabels() {
                 "class",
                 "city",
                 "town"
+            ],
+
+            /*
+             * Вимагаємо name:uk,
+             * щоб не було fallback на English.
+             */
+
+            [
+                "has",
+                "name:uk"
             ]
 
         ],
@@ -1495,19 +1634,8 @@ function addCityLabels() {
         layout: {
 
             "text-field": [
-
-                "coalesce",
-
-                [
-                    "get",
-                    "name:uk"
-                ],
-
-                [
-                    "get",
-                    "name"
-                ]
-
+                "get",
+                "name:uk"
             ],
 
             "text-font": [
@@ -1523,9 +1651,9 @@ function addCityLabels() {
                 ["zoom"],
 
                 7.2,
-                8.0,
+                8,
 
-                8.0,
+                8,
                 8.7,
 
                 8.7,
@@ -1568,7 +1696,7 @@ function addCityLabels() {
                 "#050708",
 
             "text-halo-width":
-                2.0,
+                2,
 
             "text-halo-blur":
                 0.15
@@ -1579,15 +1707,15 @@ function addCityLabels() {
 
 
     /*
-     * -------------------------------------------------
-     * НЕВЕЛИКІ НАСЕЛЕНІ ПУНКТИ
-     * -------------------------------------------------
+     * Малі населені пункти.
+     *
+     * Теж тільки українська.
      */
 
     map.addLayer({
 
         id:
-            "kyiv-small-place-labels",
+            "ukrainian-small-place-labels",
 
         type:
             "symbol",
@@ -1616,6 +1744,11 @@ function addCityLabels() {
                 "class",
                 "village",
                 "hamlet"
+            ],
+
+            [
+                "has",
+                "name:uk"
             ]
 
         ],
@@ -1623,19 +1756,8 @@ function addCityLabels() {
         layout: {
 
             "text-field": [
-
-                "coalesce",
-
-                [
-                    "get",
-                    "name:uk"
-                ],
-
-                [
-                    "get",
-                    "name"
-                ]
-
+                "get",
+                "name:uk"
             ],
 
             "text-font": [
@@ -1654,7 +1776,7 @@ function addCityLabels() {
                 6.4,
 
                 10.5,
-                7.0,
+                7,
 
                 12,
                 7.8,
@@ -1722,12 +1844,19 @@ function addCityLabels() {
    WATER LABELS
 ===================================================== */
 
-function addWaterLabels() {
+function addWaterLabels(
+    map
+) {
+
+    /*
+     * Вода залишаємо українською,
+     * якщо name:uk існує.
+     */
 
     map.addLayer({
 
         id:
-            "kyiv-water-labels",
+            "ukrainian-water-labels",
 
         type:
             "symbol",
@@ -1744,26 +1873,15 @@ function addWaterLabels() {
         filter: [
 
             "has",
-            "name"
+            "name:uk"
 
         ],
 
         layout: {
 
             "text-field": [
-
-                "coalesce",
-
-                [
-                    "get",
-                    "name:uk"
-                ],
-
-                [
-                    "get",
-                    "name"
-                ]
-
+                "get",
+                "name:uk"
             ],
 
             "text-font": [
@@ -1822,48 +1940,13 @@ function addWaterLabels() {
 
 
 /* =====================================================
-   MAP ERROR HANDLER
+   START
 ===================================================== */
 
-map.on(
-    "error",
-    event => {
-
-        console.warn(
-            "MAP ERROR:",
-            event?.error || event
-        );
-
-    }
-);
-
-
-/* =====================================================
-   PAGE ERROR HANDLER
-===================================================== */
-
-window.addEventListener(
-    "error",
-    event => {
-
-        console.warn(
-            "PAGE ERROR:",
-            event.message
-        );
-
-    }
-);
-
-
-/* =====================================================
-   FINISH
-===================================================== */
-
-console.log(
-    "ONLINE RADAR INITIALIZED"
-);
+createMap();
 
 </script>
 
 </body>
+
 </html>
