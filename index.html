@@ -198,7 +198,14 @@ body {
 }
 
 
-.map-frame {
+/*
+   ФІКСОВАНА БАЗОВА КАРТА
+
+   base_map.jpg повинна лежати
+   поруч із index.html.
+*/
+
+.map-image {
 
     position: absolute;
 
@@ -207,57 +214,11 @@ body {
     width: 100%;
     height: 100%;
 
-    border: 0;
-
     display: block;
-}
 
+    object-fit: contain;
 
-/* =====================================================
-   NEPTUN INFO OVERLAY
-===================================================== */
-
-.neptun-overlay {
-
-    position: absolute;
-
-    top: 5px;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 360px;
-    max-width: calc(100% - 24px);
-
-    padding: 14px 18px;
-
-    background: #0a0c11;
-
-    border: 1px solid #292e37;
-
-    border-radius: 14px;
-
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.45);
-
-    text-align: center;
-
-    z-index: 10;
-
-    pointer-events: none;
-
-    font-size: 14px;
-    line-height: 1.4;
-
-    color: #d9dde3;
-}
-
-
-.neptun-overlay strong {
-
-    color: #ffffff;
-
-    font-weight: 700;
+    background: #05070b;
 }
 
 
@@ -658,33 +619,6 @@ body {
     }
 
 
-    /* =============================
-       NEPTUN OVERLAY
-    ============================= */
-
-    .neptun-overlay {
-
-        top: 5px;
-
-        width: 360px;
-
-        max-width:
-            calc(100% - 24px);
-
-        padding:
-            14px
-            18px;
-
-        font-size: 14px;
-
-        line-height: 1.4;
-    }
-
-
-    /* =============================
-       EVENTS
-    ============================= */
-
     .events-page {
 
         padding:
@@ -745,12 +679,6 @@ body {
     }
 
 
-    .event-top {
-
-        gap: 10px;
-    }
-
-
     .event-region {
 
         font-size: 28px;
@@ -794,10 +722,6 @@ body {
         font-size: 18px;
     }
 
-
-    /* =============================
-       INFO
-    ============================= */
 
     .info-page {
 
@@ -871,23 +795,6 @@ body {
         gap: 25px;
     }
 
-
-    .neptun-overlay {
-
-        top: 5px;
-
-        width: 360px;
-
-        max-width:
-            calc(100% - 20px);
-
-        padding:
-            13px
-            16px;
-
-        font-size: 13px;
-    }
-
 }
 
 </style>
@@ -936,23 +843,17 @@ body {
     <div class="map-wrapper">
 
 
-        <iframe
-            id="neptunMap"
-            class="map-frame"
-            src="https://neptun.in.ua/embed/map?lang=uk"
-            allowfullscreen>
-        </iframe>
+        <!--
+            ЗАМІСТЬ NEPTUN IFRAME
+            ТЕПЕР ВИКОРИСТОВУЄТЬСЯ
+            НАША ФІКСОВАНА КАРТА.
+        -->
 
-
-        <div class="neptun-overlay">
-
-            <strong>Дані: NEPTUN</strong><br>
-
-            Моніторинг повітряних тривог України.<br>
-
-            ⚠️ Не є офіційною системою оповіщення.
-
-        </div>
+        <img
+            id="baseMap"
+            class="map-image"
+            src="base_map.jpg"
+            alt="Карта Київської області">
 
 
     </div>
@@ -1048,16 +949,15 @@ body {
         <br><br>
 
 
-        Моніторинг повітряних тривог
-        України на основі відкритих
-        даних NEPTUN.
+        Фіксована карта Київської області
+        зберігається локально.
 
 
         <br><br>
 
 
-        Дані мають інформаційний характер
-        та не є офіційним попередженням.
+        Карта не залежить від стороннього
+        картографічного сервісу.
 
 
         <br><br>
@@ -1078,95 +978,6 @@ body {
 
 
 <script>
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-function showPage(page) {
-
-
-    const pages = {
-
-        map:
-            document.getElementById(
-                "mapPage"
-            ),
-
-        events:
-            document.getElementById(
-                "eventsPage"
-            ),
-
-        info:
-            document.getElementById(
-                "infoPage"
-            )
-
-    };
-
-
-    Object.values(pages).forEach(
-        element => {
-
-            element.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
-
-    pages[page].classList.add(
-        "active"
-    );
-
-
-    const buttons =
-        document.querySelectorAll(
-            ".nav-button"
-        );
-
-
-    buttons.forEach(
-        button => {
-
-            button.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
-
-    if (page === "map") {
-
-        buttons[0]
-            .classList
-            .add("active");
-
-    }
-
-
-    if (page === "events") {
-
-        buttons[1]
-            .classList
-            .add("active");
-
-    }
-
-
-    if (page === "info") {
-
-        buttons[2]
-            .classList
-            .add("active");
-
-    }
-
-}
-
 
 /* =====================================================
    API
@@ -1208,7 +1019,6 @@ try {
 
 function formatTime(date) {
 
-
     return new Intl.DateTimeFormat(
         "uk-UA",
         {
@@ -1227,7 +1037,6 @@ function formatTime(date) {
 
 
 function formatDate(date) {
-
 
     return new Intl.DateTimeFormat(
         "uk-UA",
@@ -1253,7 +1062,6 @@ function getDuration(
     start,
     end = null
 ) {
-
 
     const startTime =
         new Date(start).getTime();
@@ -1312,7 +1120,6 @@ function getDuration(
 
 function updateClock() {
 
-
     const element =
         document.getElementById(
             "updatedText"
@@ -1337,7 +1144,6 @@ function updateClock() {
 
 function normalizeAlerts(data) {
 
-
     const result = {};
 
 
@@ -1359,7 +1165,6 @@ function normalizeAlerts(data) {
 
     oblasts.forEach(
         alert => {
-
 
             if (!alert.key) return;
 
@@ -1389,7 +1194,6 @@ function normalizeAlerts(data) {
 
     raions.forEach(
         alert => {
-
 
             if (!alert.key) return;
 
@@ -1427,9 +1231,7 @@ function normalizeAlerts(data) {
 
 async function updateAlerts() {
 
-
     try {
-
 
         const response =
             await fetch(
@@ -1478,11 +1280,9 @@ async function updateAlerts() {
         ).forEach(
             id => {
 
-
                 if (
                     !alerts[id]
                 ) {
-
 
                     const old =
                         currentAlerts[id];
@@ -1535,10 +1335,6 @@ async function updateAlerts() {
             alerts;
 
 
-        /*
-         * Час успішного оновлення.
-         */
-
         updateClock();
 
 
@@ -1547,12 +1343,10 @@ async function updateAlerts() {
 
     } catch (error) {
 
-
         console.error(
-            "NEPTUN update error:",
+            "Alerts update error:",
             error
         );
-
 
     }
 
@@ -1564,7 +1358,6 @@ async function updateAlerts() {
 ===================================================== */
 
 function renderActiveEvents() {
-
 
     const container =
         document.getElementById(
@@ -1597,7 +1390,6 @@ function renderActiveEvents() {
         alerts.length === 0
     ) {
 
-
         container.innerHTML = `
 
             <div class="empty">
@@ -1618,7 +1410,6 @@ function renderActiveEvents() {
     alerts.forEach(
         alert => {
 
-
             const start =
                 new Date(
                     alert.since
@@ -1637,9 +1428,7 @@ function renderActiveEvents() {
 
             card.innerHTML = `
 
-
                 <div class="event-top">
-
 
                     <div class="event-region">
 
@@ -1659,9 +1448,7 @@ function renderActiveEvents() {
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="event-data">
@@ -1686,7 +1473,6 @@ function renderActiveEvents() {
                     </div>
 
 
-
                     <div class="data-item">
 
                         <div class="data-label">
@@ -1698,7 +1484,6 @@ function renderActiveEvents() {
                         </div>
 
                     </div>
-
 
 
                     <div class="data-item">
@@ -1723,7 +1508,6 @@ function renderActiveEvents() {
                 </div>
 
 
-
                 <div class="event-duration">
 
                     Тривалість:
@@ -1735,14 +1519,12 @@ function renderActiveEvents() {
 
                 </div>
 
-
             `;
 
 
             container.appendChild(
                 card
             );
-
 
         }
     );
@@ -1755,7 +1537,6 @@ function renderActiveEvents() {
 ===================================================== */
 
 function renderHistory() {
-
 
     const container =
         document.getElementById(
@@ -1776,10 +1557,8 @@ function renderHistory() {
         !history.length
     ) {
 
-
         title.style.display =
             "none";
-
 
         return;
 
@@ -1792,7 +1571,6 @@ function renderHistory() {
 
     history.forEach(
         event => {
-
 
             const start =
                 new Date(
@@ -1818,9 +1596,7 @@ function renderHistory() {
 
             card.innerHTML = `
 
-
                 <div class="event-top">
-
 
                     <div class="event-region">
 
@@ -1840,9 +1616,7 @@ function renderHistory() {
 
                     </div>
 
-
                 </div>
-
 
 
                 <div class="event-data">
@@ -1867,7 +1641,6 @@ function renderHistory() {
                     </div>
 
 
-
                     <div class="data-item">
 
                         <div class="data-label">
@@ -1885,7 +1658,6 @@ function renderHistory() {
                         </div>
 
                     </div>
-
 
 
                     <div class="data-item">
@@ -1910,7 +1682,6 @@ function renderHistory() {
                 </div>
 
 
-
                 <div class="event-duration">
 
                     Тривалість:
@@ -1923,14 +1694,12 @@ function renderHistory() {
 
                 </div>
 
-
             `;
 
 
             container.appendChild(
                 card
             );
-
 
         }
     );
@@ -1956,7 +1725,6 @@ function renderEvents() {
 ===================================================== */
 
 function escapeHtml(value) {
-
 
     return String(value)
 
@@ -2014,15 +1782,12 @@ document.addEventListener(
     "visibilitychange",
     () => {
 
-
         if (
             document.visibilityState ===
             "visible"
         ) {
 
-
             updateAlerts();
-
 
         }
 
@@ -2032,8 +1797,7 @@ document.addEventListener(
 
 /*
  * Оновлюємо тривалість активних
- * подій щохвилини навіть без нового
- * запиту API.
+ * подій щохвилини.
  */
 
 setInterval(
