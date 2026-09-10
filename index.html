@@ -2,1820 +2,806 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+/>
 
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1,
-               maximum-scale=1,
-               viewport-fit=cover">
+<title>ONLINE RADAR — Київщина</title>
 
-<title>ONLINE RADAR</title>
+<!-- Leaflet -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
-
-/* =====================================================
-   RESET
-===================================================== */
-
-* {
+  * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-}
+  }
 
-html {
-    margin: 0;
-    padding: 0;
+  html,
+  body {
     width: 100%;
     height: 100%;
-    background: #05070b;
-}
-
-body {
     margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
-    background: #05070b;
-    color: #f4f5f7;
-
+    overflow: hidden;
+    background: #050908;
     font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        Arial,
-        sans-serif;
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Arial,
+      sans-serif;
+  }
 
-    overflow-x: hidden;
-}
-
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-.top-header {
-
+  body {
     position: fixed;
+    inset: 0;
+  }
 
+  /* =========================
+     MAP
+  ========================= */
+
+  #map {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #07100d;
+  }
+
+  .leaflet-container {
+    background: #07100d;
+    font-family: inherit;
+  }
+
+  /*
+    Darken the normal OSM map.
+    Geography remains real, but visual style becomes
+    much closer to the dark radar interface.
+  */
+  .leaflet-tile {
+    filter:
+      brightness(0.43)
+      saturate(0.55)
+      contrast(1.15)
+      hue-rotate(8deg);
+  }
+
+  /* Slight atmospheric dark overlay */
+  #map::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 400;
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(0, 25, 18, 0.00) 30%,
+        rgba(0, 8, 6, 0.30) 100%
+      );
+  }
+
+  /* =========================
+     TOP HEADER
+  ========================= */
+
+  .top-bar {
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
+    z-index: 1000;
 
-    height: 82px;
+    height: calc(64px + env(safe-area-inset-top));
 
-    padding-top: env(safe-area-inset-top);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(5,7,11,.97);
-
-    border-bottom: 1px solid #171b21;
-
-    z-index: 100;
-
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
-
-
-.logo {
+    padding:
+      calc(12px + env(safe-area-inset-top))
+      16px
+      10px
+      16px;
 
     display: flex;
     align-items: center;
 
-    gap: 14px;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(3, 10, 8, 0.94),
+        rgba(3, 10, 8, 0.68),
+        rgba(3, 10, 8, 0)
+      );
 
-    font-size: 28px;
+    pointer-events: none;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #eef8f2;
+
+    font-size: 14px;
     font-weight: 700;
+    letter-spacing: 2px;
 
-    letter-spacing: 4px;
+    text-shadow:
+      0 1px 5px rgba(0, 0, 0, 0.9);
+  }
 
-    white-space: nowrap;
-}
-
-
-.online-dot {
-
-    width: 13px;
-    height: 13px;
-
-    flex-shrink: 0;
-
+  .status-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
 
-    background: #20e875;
+    background: #35e27f;
 
     box-shadow:
-        0 0 12px rgba(32,232,117,.8);
+      0 0 5px rgba(53, 226, 127, 0.8),
+      0 0 14px rgba(53, 226, 127, 0.45);
 
-    animation:
-        onlinePulse 1.7s infinite;
-}
+    animation: pulse 1.7s infinite ease-in-out;
+  }
 
-
-@keyframes onlinePulse {
-
+  @keyframes pulse {
     0% {
-        opacity: 1;
-        transform: scale(1);
+      transform: scale(0.85);
+      opacity: 0.55;
     }
 
     50% {
-        opacity: .45;
-        transform: scale(.82);
+      transform: scale(1.15);
+      opacity: 1;
     }
 
     100% {
-        opacity: 1;
-        transform: scale(1);
+      transform: scale(0.85);
+      opacity: 0.55;
     }
+  }
 
-}
+  /* =========================
+     BOTTOM STATUS
+  ========================= */
 
-
-/* =====================================================
-   MAIN
-===================================================== */
-
-.app {
-
-    width: 100%;
-
-    padding-top: 82px;
-
-    padding-bottom:
-        calc(104px + env(safe-area-inset-bottom));
-
-    min-height: 100vh;
-}
-
-
-/* =====================================================
-   PAGES
-===================================================== */
-
-.page {
-    display: none;
-
-    width: 100%;
-}
-
-.page.active {
-    display: block;
-}
-
-
-/* =====================================================
-   MAP
-===================================================== */
-
-.map-page {
-    width: 100%;
-}
-
-
-.map-wrapper {
-
-    position: relative;
-
-    width: 100%;
-
-    height:
-        calc(
-            100svh
-            - 82px
-            - 104px
-        );
-
-    min-height: 500px;
-
-    overflow: hidden;
-
-    background: #05070b;
-}
-
-
-/*
-   ФІКСОВАНА БАЗОВА КАРТА
-
-   base_map.jpg повинна лежати
-   поруч із index.html.
-*/
-
-.map-image {
-
+  .status-panel {
     position: absolute;
+    left: 13px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
 
-    inset: 0;
+    z-index: 1000;
 
-    width: 100%;
-    height: 100%;
+    padding: 8px 11px;
 
-    display: block;
-
-    object-fit: contain;
-
-    background: #05070b;
-}
-
-
-/* =====================================================
-   EVENTS PAGE
-===================================================== */
-
-.events-page {
-
-    padding:
-
-        34px
-        28px
-        40px;
-
-    min-height: calc(100svh - 82px);
-}
-
-
-.events-head {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 42px;
-}
-
-
-.events-title {
-
-    font-size: 48px;
-
-    font-weight: 700;
-
-    letter-spacing: -1px;
-
-    line-height: 1;
-}
-
-
-.updated {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    color: #858c98;
-
-    font-size: 18px;
-
-    white-space: nowrap;
-}
-
-
-.updated-dot {
-
-    width: 15px;
-    height: 15px;
-
-    border-radius: 50%;
-
-    background: #20e875;
-
-    box-shadow:
-        0 0 12px rgba(32,232,117,.7);
-}
-
-
-/* =====================================================
-   SECTION TITLE
-===================================================== */
-
-.section-title {
-
-    margin:
-
-        0
-        0
-        22px
-        8px;
-
-    color: #7e8693;
-
-    font-size: 20px;
-
-    font-weight: 700;
-
-    letter-spacing: 4px;
-}
-
-
-/* =====================================================
-   EVENT CARD
-===================================================== */
-
-.event-card {
-
-    position: relative;
-
-    width: 100%;
-
-    margin-bottom: 20px;
-
-    padding:
-
-        27px
-        25px
-        24px
-        37px;
+    border-left: 2px solid rgba(55, 224, 127, 0.8);
 
     background:
-        linear-gradient(
-            145deg,
-            #151920,
-            #0d1016
-        );
+      linear-gradient(
+        90deg,
+        rgba(3, 11, 8, 0.78),
+        rgba(3, 11, 8, 0.35)
+      );
 
-    border:
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 
-        1px solid
-        #282d35;
+    color: #dce9e2;
 
-    border-radius: 29px;
+    text-shadow: 0 1px 4px #000;
 
-    overflow: hidden;
-}
+    pointer-events: none;
+  }
 
-
-.event-card.active {
-
-    border-left:
-        7px solid
-        #ff444b;
-}
-
-
-.event-card.ended {
-
-    border-left:
-        7px solid
-        #26d978;
-}
-
-
-/* =====================================================
-   EVENT TOP
-===================================================== */
-
-.event-top {
-
+  .status-title {
     display: flex;
+    align-items: center;
+    gap: 7px;
 
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-
-.event-region {
-
-    min-width: 0;
-
-    font-size: 29px;
-
-    font-weight: 700;
-
-    line-height: 1.12;
-
-    word-break: normal;
-}
-
-
-.event-badge {
-
-    flex-shrink: 0;
-
-    padding:
-
-        10px
-        17px;
-
-    border-radius: 30px;
-
-    font-size: 16px;
-
+    font-size: 11px;
     font-weight: 800;
+    letter-spacing: 1.8px;
+  }
 
-    letter-spacing: 2px;
+  .status-title .mini-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #35e27f;
+    box-shadow: 0 0 7px #35e27f;
+  }
+
+  .clock {
+    margin-top: 3px;
+
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+
+    font-size: 10px;
+    letter-spacing: 0.7px;
+
+    color: rgba(220, 235, 226, 0.72);
+  }
+
+  /* =========================
+     LEAFLET UI
+  ========================= */
+
+  .leaflet-control-zoom {
+    margin-top: 75px !important;
+    margin-right: 9px !important;
+
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .leaflet-control-zoom a {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 30px !important;
+
+    margin-bottom: 4px;
+
+    border: 1px solid rgba(170, 210, 190, 0.16) !important;
+    border-radius: 5px !important;
+
+    background: rgba(5, 13, 11, 0.78) !important;
+    color: rgba(230, 245, 237, 0.82) !important;
+
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  .leaflet-control-attribution {
+    background: rgba(3, 8, 7, 0.65) !important;
+
+    color: rgba(205, 220, 212, 0.62) !important;
+
+    font-size: 8px !important;
+
+    padding: 2px 5px !important;
+  }
+
+  .leaflet-control-attribution a {
+    color: rgba(215, 230, 220, 0.8) !important;
+  }
+
+  /* =========================
+     MAP LABELS
+  ========================= */
+
+  .city-label {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    color: rgba(235, 244, 239, 0.86);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    text-shadow:
+      0 1px 2px #000,
+      0 0 5px #000;
 
     white-space: nowrap;
-}
+  }
 
+  .city-label.major {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
 
-.event-badge.alert {
+  .city-label::before {
+    display: none;
+  }
 
-    color: #ff696e;
+  /* =========================
+     REGION BORDER
+  ========================= */
 
-    background: #35171d;
-}
+  .region-border {
+    filter:
+      drop-shadow(0 0 3px rgba(125, 245, 177, 0.25));
+  }
 
+  /* =========================
+     MAP SCALE
+  ========================= */
 
-.event-badge.end {
-
-    color: #42df91;
-
-    background: #123024;
-}
-
-
-/* =====================================================
-   EVENT DATA
-===================================================== */
-
-.event-data {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 42px;
-
-    margin-top: 27px;
-
-    flex-wrap: wrap;
-}
-
-
-.data-item {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 7px;
-}
-
-
-.data-label {
-
-    color: #747c89;
-
-    font-size: 16px;
-
-    letter-spacing: 3px;
-
-    font-weight: 500;
-}
-
-
-.data-value {
-
-    color: #e0e3e8;
-
-    font-size: 24px;
-
-    line-height: 1.1;
-}
-
-
-.event-duration {
-
-    margin-top: 23px;
-
-    color: #7d8591;
-
-    font-size: 19px;
-}
-
-
-/* =====================================================
-   EMPTY
-===================================================== */
-
-.empty {
-
-    padding:
-
-        45px
-        20px;
-
-    text-align: center;
-
-    color: #727a87;
-
-    font-size: 18px;
-}
-
-
-/* =====================================================
-   INFO
-===================================================== */
-
-.info-page {
-
-    padding:
-
-        38px
-        28px
-        50px;
-}
-
-
-.info-title {
-
-    font-size: 46px;
-
-    font-weight: 700;
-
-    margin-bottom: 30px;
-}
-
-
-.info-card {
-
-    padding: 27px;
-
-    background: #101319;
+  .leaflet-control-scale-line {
+    background: rgba(3, 10, 8, 0.55) !important;
 
     border:
-        1px solid
-        #282d35;
+      1px solid rgba(220, 235, 226, 0.55) !important;
 
-    border-radius: 26px;
+    border-top: none !important;
 
-    color: #9fa6b1;
+    color: rgba(230, 240, 235, 0.72) !important;
 
-    font-size: 18px;
+    font-size: 8px !important;
+  }
 
-    line-height: 1.6;
-}
+  /* =========================
+     MOBILE
+  ========================= */
 
+  @media (max-width: 600px) {
 
-.info-card strong {
-
-    color: #f0f2f5;
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 600px) {
-
-
-    .top-header {
-
-        height: 78px;
+    .brand {
+      font-size: 13px;
+      letter-spacing: 1.7px;
     }
 
-
-    .app {
-
-        padding-top: 78px;
-
-        padding-bottom:
-            calc(
-                100px
-                + env(safe-area-inset-bottom)
-            );
+    .status-panel {
+      left: 10px;
+      bottom: calc(10px + env(safe-area-inset-bottom));
     }
 
-
-    .logo {
-
-        font-size: 25px;
-
-        letter-spacing: 4px;
+    .leaflet-control-zoom {
+      margin-top: 70px !important;
     }
-
-
-    .online-dot {
-
-        width: 13px;
-        height: 13px;
-    }
-
-
-    .map-wrapper {
-
-        height:
-            calc(
-                100svh
-                - 78px
-                - 100px
-            );
-
-        min-height: 470px;
-    }
-
-
-    .events-page {
-
-        padding:
-            32px
-            28px
-            40px;
-    }
-
-
-    .events-head {
-
-        align-items: center;
-
-        margin-bottom: 44px;
-    }
-
-
-    .events-title {
-
-        font-size: 43px;
-    }
-
-
-    .updated {
-
-        font-size: 15px;
-
-        gap: 8px;
-    }
-
-
-    .updated-dot {
-
-        width: 14px;
-        height: 14px;
-    }
-
-
-    .section-title {
-
-        font-size: 18px;
-
-        letter-spacing: 4px;
-
-        margin-left: 8px;
-    }
-
-
-    .event-card {
-
-        padding:
-            27px
-            22px
-            24px
-            30px;
-
-        border-radius: 28px;
-    }
-
-
-    .event-region {
-
-        font-size: 28px;
-    }
-
-
-    .event-badge {
-
-        padding:
-            9px
-            15px;
-
-        font-size: 15px;
-
-        letter-spacing: 2px;
-    }
-
-
-    .event-data {
-
-        gap: 30px;
-
-        margin-top: 28px;
-    }
-
-
-    .data-label {
-
-        font-size: 15px;
-    }
-
-
-    .data-value {
-
-        font-size: 23px;
-    }
-
-
-    .event-duration {
-
-        font-size: 18px;
-    }
-
-
-    .info-page {
-
-        padding:
-            35px
-            28px
-            50px;
-    }
-
-
-    .info-title {
-
-        font-size: 43px;
-    }
-
-}
-
-
-/* =====================================================
-   VERY SMALL PHONES
-===================================================== */
-
-@media (max-width: 390px) {
-
-
-    .logo {
-
-        font-size: 22px;
-
-        letter-spacing: 3px;
-    }
-
-
-    .events-title {
-
-        font-size: 39px;
-    }
-
-
-    .updated {
-
-        font-size: 12px;
-    }
-
-
-    .updated-dot {
-
-        width: 12px;
-        height: 12px;
-    }
-
-
-    .event-region {
-
-        font-size: 23px;
-    }
-
-
-    .event-badge {
-
-        font-size: 12px;
-
-        padding:
-            8px
-            12px;
-    }
-
-
-    .event-data {
-
-        gap: 25px;
-    }
-
-}
-
+  }
 </style>
 </head>
 
-
 <body>
 
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<header class="top-header">
-
-    <div class="logo">
-
-        <span class="online-dot"></span>
-
-        <span>
-            ONLINE RADAR
-        </span>
-
-    </div>
-
-</header>
-
-
-
-<!-- =====================================================
-     APP
-===================================================== -->
-
-<main class="app">
-
-
-<!-- =====================================================
-     MAP
-===================================================== -->
-
-<section
-    id="mapPage"
-    class="page active map-page">
-
-
-    <div class="map-wrapper">
-
-
-        <!--
-            ЗАМІСТЬ NEPTUN IFRAME
-            ТЕПЕР ВИКОРИСТОВУЄТЬСЯ
-            НАША ФІКСОВАНА КАРТА.
-        -->
-
-        <img
-            id="baseMap"
-            class="map-image"
-            src="base_map.jpg"
-            alt="Карта Київської області">
-
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     EVENTS
-===================================================== -->
-
-<section
-    id="eventsPage"
-    class="page events-page">
-
-
-    <div class="events-head">
-
-
-        <div class="events-title">
-            Події
-        </div>
-
-
-        <div class="updated">
-
-            <span class="updated-dot"></span>
-
-            <span id="updatedText">
-                ОНОВЛЕНО --:--
-            </span>
-
-        </div>
-
-
-    </div>
-
-
-
-    <div class="section-title">
-        АКТИВНІ ТРИВОГИ
-    </div>
-
-
-    <div id="activeEvents"></div>
-
-
-
-    <div
-        id="historyTitle"
-        class="section-title"
-        style="
-            display:none;
-            margin-top:44px;
-        ">
-
-        ІСТОРІЯ
-
-    </div>
-
-
-    <div id="historyEvents"></div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     INFO
-===================================================== -->
-
-<section
-    id="infoPage"
-    class="page info-page">
-
-
-    <div class="info-title">
-        Інфо
-    </div>
-
-
-    <div class="info-card">
-
-
-        <strong>
-            ONLINE RADAR
-        </strong>
-
-
-        <br><br>
-
-
-        Фіксована карта Київської області
-        зберігається локально.
-
-
-        <br><br>
-
-
-        Карта не залежить від стороннього
-        картографічного сервісу.
-
-
-        <br><br>
-
-
-        Інформація оновлюється
-        автоматично.
-
-
-    </div>
-
-
-</section>
-
-
-</main>
-
-
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- HEADER -->
+<div class="top-bar">
+  <div class="brand">
+    <span class="status-dot"></span>
+    <span>ONLINE RADAR</span>
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="status-panel">
+  <div class="status-title">
+    <span class="mini-dot"></span>
+    КИЇВСЬКА ОБЛАСТЬ
+  </div>
+
+  <div class="clock" id="clock">
+    --.--.---- · --:--:--
+  </div>
+</div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-
-/* =====================================================
-   API
-===================================================== */
-
-const API_URL =
-    "https://neptun.in.ua/api/v1/alerts";
+/* ==========================================================
+   ONLINE RADAR — KYIV OBLAST
+   Static geographic map / neutral interface
+========================================================== */
 
 
-const STORAGE_KEY =
-    "onlineRadarAlertHistory";
+/* ----------------------------------------------------------
+   1. KYIV OBLAST APPROXIMATE VIEW
+---------------------------------------------------------- */
+
+const kyivCenter = [50.45, 30.85];
 
 
-let currentAlerts = {};
+/* ----------------------------------------------------------
+   2. CREATE MAP
+---------------------------------------------------------- */
+
+const map = L.map("map", {
+  center: kyivCenter,
+
+  zoom: 8,
+
+  minZoom: 7,
+  maxZoom: 15,
+
+  zoomControl: true,
+
+  attributionControl: true,
+
+  // Touch / mobile
+  touchZoom: true,
+  dragging: true,
+
+  // Better mobile behaviour
+  tap: true,
+
+  // Prevent map from jumping outside Ukraine too far
+  maxBounds: [
+    [49.15, 28.15],
+    [52.15, 33.15]
+  ],
+
+  maxBoundsViscosity: 0.65
+});
 
 
-let history = [];
+/* ----------------------------------------------------------
+   3. OPENSTREETMAP BASEMAP
+---------------------------------------------------------- */
+
+L.tileLayer(
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+  }
+).addTo(map);
 
 
-try {
+/* ----------------------------------------------------------
+   4. SCALE
+---------------------------------------------------------- */
 
-    history =
-        JSON.parse(
-            localStorage.getItem(
-                STORAGE_KEY
-            )
-        ) || [];
-
-} catch (error) {
-
-    history = [];
-
-}
+L.control.scale({
+  imperial: false,
+  position: "bottomright"
+}).addTo(map);
 
 
-/* =====================================================
-   TIME
-===================================================== */
+/* ----------------------------------------------------------
+   5. KYIV CITY
+---------------------------------------------------------- */
 
-function formatTime(date) {
+/*
+  Kyiv is administratively separate from Kyiv Oblast.
+  We show it with a subtle neutral outline.
+*/
 
-    return new Intl.DateTimeFormat(
-        "uk-UA",
-        {
+const kyivCity = L.circle(
+  [50.4501, 30.5234],
+  {
+    radius: 9500,
 
-            hour: "2-digit",
+    color: "#b9d8c7",
 
-            minute: "2-digit",
+    weight: 1,
 
-            hour12: false
+    opacity: 0.55,
 
-        }
-    ).format(date);
+    fillColor: "#15231d",
 
-}
+    fillOpacity: 0.13,
 
-
-
-function formatDate(date) {
-
-    return new Intl.DateTimeFormat(
-        "uk-UA",
-        {
-
-            day: "2-digit",
-
-            month: "2-digit",
-
-            year: "numeric"
-
-        }
-    ).format(date);
-
-}
+    interactive: false
+  }
+).addTo(map);
 
 
-/* =====================================================
-   DURATION
-===================================================== */
+/* ----------------------------------------------------------
+   6. IMPORTANT CITIES
+---------------------------------------------------------- */
 
-function getDuration(
-    start,
-    end = null
-) {
+const cities = [
 
-    const startTime =
-        new Date(start).getTime();
+  // Kyiv
+  {
+    name: "Київ",
+    lat: 50.4501,
+    lon: 30.5234,
+    major: true
+  },
+
+  // Bila Tserkva
+  {
+    name: "Біла Церква",
+    lat: 49.7983,
+    lon: 30.1127,
+    major: true
+  },
+
+  // Uzin
+  {
+    name: "Узин",
+    lat: 49.8262,
+    lon: 30.4472
+  },
+
+  // Vasylkiv
+  {
+    name: "Васильків",
+    lat: 50.1797,
+    lon: 30.3156
+  },
+
+  // Fastiv
+  {
+    name: "Фастів",
+    lat: 50.0767,
+    lon: 29.9175,
+    major: true
+  },
+
+  // Obukhiv
+  {
+    name: "Обухів",
+    lat: 50.1069,
+    lon: 30.6286,
+    major: true
+  },
+
+  // Ukrainka
+  {
+    name: "Українка",
+    lat: 50.1439,
+    lon: 30.7467
+  },
+
+  // Trypillia
+  {
+    name: "Трипілля",
+    lat: 50.1187,
+    lon: 30.7825
+  },
+
+  // Rzhyshchiv
+  {
+    name: "Ржищів",
+    lat: 49.9686,
+    lon: 31.0456
+  },
+
+  // Kaharlyk
+  {
+    name: "Кагарлик",
+    lat: 49.8622,
+    lon: 30.8281
+  },
+
+  // Boryspil
+  {
+    name: "Бориспіль",
+    lat: 50.3527,
+    lon: 30.9550,
+    major: true
+  },
+
+  // Brovary
+  {
+    name: "Бровари",
+    lat: 50.5111,
+    lon: 30.7909,
+    major: true
+  },
+
+  // Vyshhorod
+  {
+    name: "Вишгород",
+    lat: 50.5848,
+    lon: 30.4898,
+    major: true
+  },
+
+  // Dymer
+  {
+    name: "Димер",
+    lat: 50.7864,
+    lon: 30.3039
+  },
+
+  // Ivankiv
+  {
+    name: "Іванків",
+    lat: 50.9386,
+    lon: 29.8947
+  },
+
+  // Yahotyn
+  {
+    name: "Яготин",
+    lat: 50.2567,
+    lon: 31.7794,
+    major: true
+  },
+
+  // Berezan
+  {
+    name: "Березань",
+    lat: 50.3142,
+    lon: 31.4706
+  },
+
+  // Irpin
+  {
+    name: "Ірпінь",
+    lat: 50.5218,
+    lon: 30.2506
+  },
+
+  // Bucha
+  {
+    name: "Буча",
+    lat: 50.5431,
+    lon: 30.2120
+  },
+
+  // Chornobyl
+  {
+    name: "Чорнобиль",
+    lat: 51.2763,
+    lon: 30.2219
+  },
+
+  // Pripyat
+  {
+    name: "Прип'ять",
+    lat: 51.4043,
+    lon: 30.0564
+  }
+];
 
 
-    const endTime =
-        end
-            ? new Date(end).getTime()
-            : Date.now();
+/* ----------------------------------------------------------
+   7. DRAW CITY LABELS
+---------------------------------------------------------- */
 
+cities.forEach(city => {
 
-    let minutes =
-        Math.max(
-            0,
-            Math.floor(
-                (
-                    endTime -
-                    startTime
-                ) / 60000
-            )
-        );
+  L.marker(
+    [city.lat, city.lon],
+    {
+      interactive: false,
 
-
-    if (minutes < 60) {
-
-        return `${minutes} хв`;
-
+      icon: L.divIcon({
+        className: "",
+        html: `
+          <div class="city-label ${city.major ? "major" : ""}">
+            ${city.name}
+          </div>
+        `,
+        iconSize: null,
+        iconAnchor: [-4, 8]
+      })
     }
+  ).addTo(map);
+
+});
 
 
-    const hours =
-        Math.floor(
-            minutes / 60
-        );
+/* ----------------------------------------------------------
+   8. IMPORTANT GEOGRAPHIC POINTS
+---------------------------------------------------------- */
+
+/*
+  Small neutral dots.
+  These are NOT operational markers.
+*/
+
+const geographicPoints = [
+
+  [50.4501, 30.5234],
+  [49.7983, 30.1127],
+  [50.3527, 30.9550],
+  [50.5111, 30.7909],
+  [50.5848, 30.4898],
+  [50.1069, 30.6286],
+  [50.0767, 29.9175],
+  [50.2567, 31.7794],
+  [49.9686, 31.0456],
+  [49.8622, 30.8281],
+  [49.8262, 30.4472]
+];
+
+geographicPoints.forEach(point => {
+
+  L.circleMarker(point, {
+    radius: 2.2,
+
+    color: "#d9e9df",
+
+    weight: 1,
+
+    opacity: 0.55,
+
+    fillColor: "#d9e9df",
+
+    fillOpacity: 0.55,
+
+    interactive: false
+  }).addTo(map);
+
+});
 
 
-    const mins =
-        minutes % 60;
-
-
-    if (mins === 0) {
-
-        return `${hours} год`;
-
-    }
-
-
-    return `${hours} год ${mins} хв`;
-
-}
-
-
-/* =====================================================
-   UPDATE TIME
-===================================================== */
+/* ----------------------------------------------------------
+   9. CLOCK
+---------------------------------------------------------- */
 
 function updateClock() {
 
-    const element =
-        document.getElementById(
-            "updatedText"
-        );
+  const now = new Date();
+
+  const day =
+    String(now.getDate()).padStart(2, "0");
+
+  const month =
+    String(now.getMonth() + 1).padStart(2, "0");
+
+  const year =
+    now.getFullYear();
+
+  const hours =
+    String(now.getHours()).padStart(2, "0");
+
+  const minutes =
+    String(now.getMinutes()).padStart(2, "0");
+
+  const seconds =
+    String(now.getSeconds()).padStart(2, "0");
+
+  document.getElementById("clock").textContent =
+    `${day}.${month}.${year} · ${hours}:${minutes}:${seconds}`;
+}
+
+updateClock();
+
+setInterval(updateClock, 1000);
 
 
-    if (!element) return;
+/* ----------------------------------------------------------
+   10. MOBILE RESIZE
+---------------------------------------------------------- */
+
+window.addEventListener("resize", () => {
+  map.invalidateSize();
+});
 
 
-    element.textContent =
-        "ОНОВЛЕНО " +
-        formatTime(
-            new Date()
-        );
+/* ----------------------------------------------------------
+   11. TELEGRAM MINI APP
+---------------------------------------------------------- */
 
+if (window.Telegram && Telegram.WebApp) {
+
+  Telegram.WebApp.ready();
+
+  Telegram.WebApp.expand();
+
+  /*
+    Keep Telegram interface dark.
+  */
+  try {
+    Telegram.WebApp.setHeaderColor("#050908");
+    Telegram.WebApp.setBackgroundColor("#050908");
+  } catch (e) {
+    // Older Telegram versions may not support these methods.
+  }
 }
 
 
-/* =====================================================
-   NORMALIZE
-===================================================== */
-
-function normalizeAlerts(data) {
-
-    const result = {};
-
-
-    const oblasts =
-        Array.isArray(
-            data.oblasts
-        )
-            ? data.oblasts
-            : [];
-
-
-    const raions =
-        Array.isArray(
-            data.raions
-        )
-            ? data.raions
-            : [];
-
-
-    oblasts.forEach(
-        alert => {
-
-            if (!alert.key) return;
-
-
-            const id =
-                "oblast_" +
-                alert.key;
-
-
-            result[id] = {
-
-                id: id,
-
-                name:
-                    alert.name ||
-                    alert.oblast ||
-                    alert.key,
-
-                since:
-                    alert.since
-
-            };
-
-        }
-    );
-
-
-    raions.forEach(
-        alert => {
-
-            if (!alert.key) return;
-
-
-            const id =
-                "raion_" +
-                alert.key;
-
-
-            result[id] = {
-
-                id: id,
-
-                name:
-                    alert.name ||
-                    alert.key,
-
-                since:
-                    alert.since
-
-            };
-
-        }
-    );
-
-
-    return result;
-
-}
-
-
-/* =====================================================
-   FETCH ALERTS
-===================================================== */
-
-async function updateAlerts() {
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL +
-                "?t=" +
-                Date.now(),
-                {
-
-                    cache:
-                        "no-store"
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "API error"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const alerts =
-            normalizeAlerts(
-                data
-            );
-
-
-        const now =
-            new Date()
-                .toISOString();
-
-
-        /*
-         * Визначаємо відбої.
-         */
-
-        Object.keys(
-            currentAlerts
-        ).forEach(
-            id => {
-
-                if (
-                    !alerts[id]
-                ) {
-
-                    const old =
-                        currentAlerts[id];
-
-
-                    history.unshift({
-
-                        id: id,
-
-                        name:
-                            old.name,
-
-                        start:
-                            old.since,
-
-                        end:
-                            now
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        /*
-         * Максимум 300 подій.
-         */
-
-        history =
-            history.slice(
-                0,
-                300
-            );
-
-
-        localStorage.setItem(
-
-            STORAGE_KEY,
-
-            JSON.stringify(
-                history
-            )
-
-        );
-
-
-        currentAlerts =
-            alerts;
-
-
-        updateClock();
-
-
-        renderEvents();
-
-
-    } catch (error) {
-
-        console.error(
-            "Alerts update error:",
-            error
-        );
-
+/* ----------------------------------------------------------
+   12. INITIAL MAP POSITION
+---------------------------------------------------------- */
+
+setTimeout(() => {
+
+  map.invalidateSize();
+
+  map.setView(
+    [50.45, 30.85],
+    8,
+    {
+      animate: false
     }
+  );
 
-}
-
-
-/* =====================================================
-   ACTIVE EVENTS
-===================================================== */
-
-function renderActiveEvents() {
-
-    const container =
-        document.getElementById(
-            "activeEvents"
-        );
-
-
-    container.innerHTML = "";
-
-
-    const alerts =
-        Object.values(
-            currentAlerts
-        );
-
-
-    alerts.sort(
-        (a, b) => {
-
-            return (
-                new Date(b.since) -
-                new Date(a.since)
-            );
-
-        }
-    );
-
-
-    if (
-        alerts.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty">
-
-                Наразі активних
-                тривог немає
-
-            </div>
-
-        `;
-
-
-        return;
-
-    }
-
-
-    alerts.forEach(
-        alert => {
-
-            const start =
-                new Date(
-                    alert.since
-                );
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "event-card active";
-
-
-            card.innerHTML = `
-
-                <div class="event-top">
-
-                    <div class="event-region">
-
-                        ${
-                            escapeHtml(
-                                alert.name
-                            )
-                        }
-
-                    </div>
-
-
-                    <div
-                        class="event-badge alert">
-
-                        ТРИВОГА!
-
-                    </div>
-
-                </div>
-
-
-                <div class="event-data">
-
-
-                    <div class="data-item">
-
-                        <div class="data-label">
-                            ПОЧАТОК
-                        </div>
-
-                        <div class="data-value">
-
-                            ${
-                                formatTime(
-                                    start
-                                )
-                            }
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="data-item">
-
-                        <div class="data-label">
-                            СТАТУС
-                        </div>
-
-                        <div class="data-value">
-                            триває
-                        </div>
-
-                    </div>
-
-
-                    <div class="data-item">
-
-                        <div class="data-label">
-                            ДАТА
-                        </div>
-
-                        <div class="data-value">
-
-                            ${
-                                formatDate(
-                                    start
-                                )
-                            }
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="event-duration">
-
-                    Тривалість:
-                    ${
-                        getDuration(
-                            start
-                        )
-                    }
-
-                </div>
-
-            `;
-
-
-            container.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   HISTORY
-===================================================== */
-
-function renderHistory() {
-
-    const container =
-        document.getElementById(
-            "historyEvents"
-        );
-
-
-    const title =
-        document.getElementById(
-            "historyTitle"
-        );
-
-
-    container.innerHTML = "";
-
-
-    if (
-        !history.length
-    ) {
-
-        title.style.display =
-            "none";
-
-        return;
-
-    }
-
-
-    title.style.display =
-        "block";
-
-
-    history.forEach(
-        event => {
-
-            const start =
-                new Date(
-                    event.start
-                );
-
-
-            const end =
-                new Date(
-                    event.end
-                );
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "event-card ended";
-
-
-            card.innerHTML = `
-
-                <div class="event-top">
-
-                    <div class="event-region">
-
-                        ${
-                            escapeHtml(
-                                event.name
-                            )
-                        }
-
-                    </div>
-
-
-                    <div
-                        class="event-badge end">
-
-                        ВІДБІЙ
-
-                    </div>
-
-                </div>
-
-
-                <div class="event-data">
-
-
-                    <div class="data-item">
-
-                        <div class="data-label">
-                            ПОЧАТОК
-                        </div>
-
-                        <div class="data-value">
-
-                            ${
-                                formatTime(
-                                    start
-                                )
-                            }
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="data-item">
-
-                        <div class="data-label">
-                            ВІДБІЙ
-                        </div>
-
-                        <div class="data-value">
-
-                            ${
-                                formatTime(
-                                    end
-                                )
-                            }
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="data-item">
-
-                        <div class="data-label">
-                            ДАТА
-                        </div>
-
-                        <div class="data-value">
-
-                            ${
-                                formatDate(
-                                    start
-                                )
-                            }
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="event-duration">
-
-                    Тривалість:
-                    ${
-                        getDuration(
-                            start,
-                            end
-                        )
-                    }
-
-                </div>
-
-            `;
-
-
-            container.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   RENDER
-===================================================== */
-
-function renderEvents() {
-
-    renderActiveEvents();
-
-    renderHistory();
-
-}
-
-
-/* =====================================================
-   ESCAPE
-===================================================== */
-
-function escapeHtml(value) {
-
-    return String(value)
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
-}
-
-
-/* =====================================================
-   INITIAL
-===================================================== */
-
-updateAlerts();
-
-
-/*
- * Оновлення кожні 10 секунд.
- */
-
-setInterval(
-    updateAlerts,
-    10000
-);
-
-
-/*
- * При поверненні у вкладку
- * одразу перевіряємо дані.
- */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if (
-            document.visibilityState ===
-            "visible"
-        ) {
-
-            updateAlerts();
-
-        }
-
-    }
-);
-
-
-/*
- * Оновлюємо тривалість активних
- * подій щохвилини.
- */
-
-setInterval(
-    () => {
-
-        if (
-            Object.keys(
-                currentAlerts
-            ).length
-        ) {
-
-            renderActiveEvents();
-
-        }
-
-    },
-    60000
-);
+}, 300);
 
 </script>
 
