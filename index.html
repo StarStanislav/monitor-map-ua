@@ -26,10 +26,14 @@
     body {
       margin: 0;
       padding: 0;
+
       width: 100%;
       height: 100%;
+
       overflow: hidden;
+
       background: #050707;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -45,11 +49,19 @@
       inset: 0;
     }
 
+
+    /* =========================================================
+       MAP
+    ========================================================= */
+
     #map {
       position: absolute;
+
       inset: 0;
+
       width: 100%;
       height: 100%;
+
       background: #070909;
     }
 
@@ -61,30 +73,48 @@
     .radar-badge {
 
       position: absolute;
+
       z-index: 20;
 
-      top: max(24px, env(safe-area-inset-top));
+      top:
+        max(
+          24px,
+          env(safe-area-inset-top)
+        );
+
       left: 22px;
 
       height: 58px;
+
       padding: 0 22px;
 
       display: flex;
+
       align-items: center;
+
       gap: 14px;
 
       border-radius: 28px;
 
-      background: rgba(5, 10, 10, 0.92);
+      background:
+        rgba(5, 10, 10, 0.92);
 
-      border: 1px solid rgba(100, 140, 135, 0.22);
+      border:
+        1px solid
+        rgba(100, 140, 135, 0.22);
 
       box-shadow:
-        0 8px 30px rgba(0,0,0,.35),
-        inset 0 0 18px rgba(80,255,190,.025);
+
+        0 8px 30px
+        rgba(0, 0, 0, 0.35),
+
+        inset 0 0 18px
+        rgba(80, 255, 190, 0.025);
 
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+
+      -webkit-backdrop-filter:
+        blur(12px);
 
       pointer-events: none;
     }
@@ -101,11 +131,16 @@
 
       border-radius: 50%;
 
-      background: #55f5a5;
+      background:
+        #55f5a5;
 
       box-shadow:
-        0 0 10px rgba(85,245,165,.9),
-        0 0 25px rgba(85,245,165,.55);
+
+        0 0 10px
+        rgba(85,245,165,.9),
+
+        0 0 25px
+        rgba(85,245,165,.55);
     }
 
 
@@ -114,30 +149,43 @@
       content: "";
 
       position: absolute;
+
       inset: -8px;
 
       border-radius: 50%;
 
-      border: 1px solid rgba(85,245,165,.28);
+      border:
+        1px solid
+        rgba(85,245,165,.28);
 
-      animation: pulse 2s infinite ease-out;
+      animation:
+        pulse 2s infinite ease-out;
     }
 
 
     @keyframes pulse {
 
       0% {
-        transform: scale(.65);
+
+        transform:
+          scale(.65);
+
         opacity: .8;
       }
 
       70% {
-        transform: scale(1.25);
+
+        transform:
+          scale(1.25);
+
         opacity: 0;
       }
 
       100% {
-        transform: scale(1.25);
+
+        transform:
+          scale(1.25);
+
         opacity: 0;
       }
     }
@@ -145,14 +193,20 @@
 
     .radar-title {
 
-      color: #f1f6f5;
+      color:
+        #f1f6f5;
 
-      font-size: 16px;
-      font-weight: 700;
+      font-size:
+        16px;
 
-      letter-spacing: 5px;
+      font-weight:
+        700;
 
-      white-space: nowrap;
+      letter-spacing:
+        5px;
+
+      white-space:
+        nowrap;
     }
 
 
@@ -163,50 +217,78 @@
     .info-panel {
 
       position: absolute;
+
       z-index: 20;
 
       left: 22px;
-      bottom: max(22px, env(safe-area-inset-bottom));
 
-      padding: 18px 24px 17px;
+      bottom:
+        max(
+          22px,
+          env(safe-area-inset-bottom)
+        );
 
-      min-width: 305px;
+      padding:
+        18px 24px 17px;
 
-      border-radius: 24px;
+      min-width:
+        305px;
 
-      background: rgba(5,9,9,.94);
+      border-radius:
+        24px;
 
-      border: 1px solid rgba(105,145,140,.20);
+      background:
+        rgba(5,9,9,.94);
+
+      border:
+        1px solid
+        rgba(105,145,140,.20);
 
       box-shadow:
-        0 10px 35px rgba(0,0,0,.4),
-        inset 0 0 20px rgba(100,255,200,.02);
 
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+        0 10px 35px
+        rgba(0,0,0,.4),
 
-      pointer-events: none;
+        inset 0 0 20px
+        rgba(100,255,200,.02);
+
+      backdrop-filter:
+        blur(12px);
+
+      -webkit-backdrop-filter:
+        blur(12px);
+
+      pointer-events:
+        none;
     }
 
 
     .region-name {
 
-      color: #e7eeee;
+      color:
+        #e7eeee;
 
-      font-size: 17px;
-      font-weight: 700;
+      font-size:
+        17px;
 
-      letter-spacing: 4px;
+      font-weight:
+        700;
 
-      margin-bottom: 8px;
+      letter-spacing:
+        4px;
+
+      margin-bottom:
+        8px;
     }
 
 
     .date-time {
 
-      color: #81908e;
+      color:
+        #81908e;
 
-      font-size: 14px;
+      font-size:
+        14px;
 
       font-family:
         ui-monospace,
@@ -216,7 +298,8 @@
         Consolas,
         monospace;
 
-      letter-spacing: 1px;
+      letter-spacing:
+        1px;
     }
 
 
@@ -227,37 +310,64 @@
     .info-button {
 
       position: absolute;
+
       z-index: 30;
 
       right: 22px;
-      bottom: max(22px, env(safe-area-inset-bottom));
+
+      bottom:
+        max(
+          22px,
+          env(safe-area-inset-bottom)
+        );
 
       width: 62px;
       height: 62px;
 
-      border-radius: 50%;
+      border-radius:
+        50%;
 
-      border: 1px solid rgba(140,155,153,.25);
+      border:
+        1px solid
+        rgba(140,155,153,.25);
 
-      background: rgba(8,12,12,.92);
+      background:
+        rgba(8,12,12,.92);
 
-      color: #c6cfce;
+      color:
+        #c6cfce;
 
-      font-family: Georgia, serif;
+      font-family:
+        Georgia, serif;
 
-      font-size: 38px;
-      font-weight: bold;
+      font-size:
+        38px;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-weight:
+        bold;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
 
       box-shadow:
-        0 8px 30px rgba(0,0,0,.45),
-        inset 0 0 15px rgba(255,255,255,.02);
 
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+        0 8px 30px
+        rgba(0,0,0,.45),
+
+        inset 0 0 15px
+        rgba(255,255,255,.02);
+
+      backdrop-filter:
+        blur(10px);
+
+      -webkit-backdrop-filter:
+        blur(10px);
     }
 
 
@@ -266,6 +376,7 @@
     ========================================================= */
 
     .maplibregl-ctrl-top-right {
+
       top: 20px;
       right: 18px;
     }
@@ -273,28 +384,39 @@
 
     .maplibregl-ctrl-group {
 
-      background: rgba(5,9,9,.85) !important;
+      background:
+        rgba(5,9,9,.85) !important;
 
       border:
         1px solid
         rgba(130,150,145,.20) !important;
 
-      border-radius: 14px !important;
+      border-radius:
+        14px !important;
 
-      overflow: hidden;
+      overflow:
+        hidden;
 
-      backdrop-filter: blur(10px);
+      backdrop-filter:
+        blur(10px);
     }
 
 
     .maplibregl-ctrl-group button {
-      background-color: transparent !important;
+
+      background-color:
+        transparent !important;
     }
 
 
-    .maplibregl-ctrl-group button span {
-      filter: invert(1);
-      opacity: .7;
+    .maplibregl-ctrl-group
+    button span {
+
+      filter:
+        invert(1);
+
+      opacity:
+        .7;
     }
 
 
@@ -312,7 +434,9 @@
 
 
     .maplibregl-ctrl-attrib a {
-      color: #7e928e !important;
+
+      color:
+        #7e928e !important;
     }
 
 
@@ -325,65 +449,94 @@
       .radar-badge {
 
         top:
-          max(18px,env(safe-area-inset-top));
+          max(
+            18px,
+            env(safe-area-inset-top)
+          );
 
-        left:22px;
+        left:
+          22px;
 
-        height:56px;
+        height:
+          56px;
 
-        padding:0 20px;
+        padding:
+          0 20px;
       }
 
 
       .radar-title {
 
-        font-size:15px;
+        font-size:
+          15px;
 
-        letter-spacing:4px;
+        letter-spacing:
+          4px;
       }
 
 
       .radar-dot {
 
-        width:19px;
-        height:19px;
+        width:
+          19px;
 
-        flex-basis:19px;
+        height:
+          19px;
+
+        flex-basis:
+          19px;
       }
 
 
       .info-panel {
 
-        left:22px;
+        left:
+          22px;
 
         bottom:
-          max(20px,env(safe-area-inset-bottom));
+          max(
+            20px,
+            env(safe-area-inset-bottom)
+          );
 
-        min-width:285px;
+        min-width:
+          285px;
 
-        padding:17px 21px;
+        padding:
+          17px 21px;
       }
 
 
       .region-name {
-        font-size:16px;
+
+        font-size:
+          16px;
       }
 
 
       .date-time {
-        font-size:13px;
+
+        font-size:
+          13px;
       }
 
 
       .info-button {
 
-        right:20px;
+        right:
+          20px;
 
         bottom:
-          max(20px,env(safe-area-inset-bottom));
+          max(
+            20px,
+            env(safe-area-inset-bottom)
+          );
 
-        width:60px;
-        height:60px;
+        width:
+          60px;
+
+        height:
+          60px;
       }
 
     }
@@ -427,11 +580,15 @@
     class="date-time"
     id="datetime"
   >
-    10.09.2026 · 23:20:00
+    10.09.2026 · 23:25:00
   </div>
 
 </div>
 
+
+<!-- =========================================================
+     INFO BUTTON
+========================================================= -->
 
 <button
   class="info-button"
@@ -441,14 +598,16 @@
 </button>
 
 
-<script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
+<script
+  src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"
+></script>
 
 
 <script>
 
 
 /* ============================================================
-   CONFIG
+   MAP CONFIGURATION
 ============================================================ */
 
 
@@ -457,7 +616,10 @@ const STYLE_URL =
 
 
 /*
-  Центр області.
+  Центр карти.
+
+  Це приблизно той самий
+  центр, який видно на твоєму скріні.
 */
 
 const INITIAL_CENTER =
@@ -465,25 +627,42 @@ const INITIAL_CENTER =
 
 
 /*
-  Початковий масштаб.
+  ============================================================
+  СТАРТОВИЙ МАСШТАБ
+  ============================================================
 
-  Трохи крупніше, ніж раніше.
+  Саме це ми зараз фіксуємо
+  як стандартний вигляд при відкритті.
+
+  6.8 = широкий вигляд області,
+  як на твоєму останньому скріні.
+
+  ВАЖЛИВО:
+
+  Це НЕ максимальний zoom.
+
+  Це лише стартовий zoom.
 */
 
 const INITIAL_ZOOM =
-  7.4;
+  6.8;
 
 
 /*
-  ВАЖЛИВО:
-
-  Було 18.
-
-  Тепер можна збільшувати набагато сильніше.
+  Мінімальний zoom.
 */
 
 const MIN_ZOOM =
   5;
+
+
+/*
+  Максимальний zoom.
+
+  Користувач може збільшувати
+  набагато сильніше, ніж стартовий
+  масштаб.
+*/
 
 const MAX_ZOOM =
   20;
@@ -511,13 +690,19 @@ function updateDateTime() {
   const day =
     String(
       now.getDate()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   const month =
     String(
-      now.getMonth()+1
-    ).padStart(2,"0");
+      now.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   const year =
@@ -527,23 +712,34 @@ function updateDateTime() {
   const hours =
     String(
       now.getHours()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   const minutes =
     String(
       now.getMinutes()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   const seconds =
     String(
       now.getSeconds()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   document
-    .getElementById("datetime")
+    .getElementById(
+      "datetime"
+    )
     .textContent =
     `${day}.${month}.${year} · ${hours}:${minutes}:${seconds}`;
 }
@@ -563,7 +759,9 @@ setInterval(
 ============================================================ */
 
 
-function prepareStyle(style) {
+function prepareStyle(
+  style
+) {
 
   if (
     !style ||
@@ -590,13 +788,6 @@ function prepareStyle(style) {
             layer.id || ""
           ).toLowerCase();
 
-
-        /*
-          Прибираємо стандартні назви
-          населених пунктів.
-
-          Потім додаємо власні українські.
-        */
 
         const isPlaceLayer =
 
@@ -692,6 +883,7 @@ async function createMap() {
 
     style =
       STYLE_URL;
+
   }
 
 
@@ -704,11 +896,24 @@ async function createMap() {
       style:
         style,
 
+
+      /*
+        ======================================================
+        САМЕ ТУТ ФІКСУЄМО ПОЧАТКОВИЙ ВИГЛЯД
+        ======================================================
+      */
+
       center:
         INITIAL_CENTER,
 
       zoom:
         INITIAL_ZOOM,
+
+
+      /*
+        Але збільшувати можна
+        аж до 20.
+      */
 
       minZoom:
         MIN_ZOOM,
@@ -716,8 +921,9 @@ async function createMap() {
       maxZoom:
         MAX_ZOOM,
 
+
       /*
-        Немає maxBounds.
+        НІЯКОГО maxBounds.
       */
 
       dragRotate:
@@ -737,11 +943,12 @@ async function createMap() {
 
       renderWorldCopies:
         false
+
     });
 
 
   /* ==========================================================
-     CONTROLS
+     NAVIGATION CONTROL
   ========================================================== */
 
   map.addControl(
@@ -765,7 +972,7 @@ async function createMap() {
 
 
   /* ==========================================================
-     LOAD
+     MAP LOAD
   ========================================================== */
 
   map.on(
@@ -796,6 +1003,7 @@ async function createMap() {
   ========================================================== */
 
   function hideDefaultPlaceLabels() {
+
 
     const layers =
       map.getStyle().layers || [];
@@ -926,6 +1134,7 @@ async function createMap() {
           "name:uk"
         ],
 
+
       layout: {
 
 
@@ -943,52 +1152,46 @@ async function createMap() {
 
 
         /*
-          ЗНАЧНО МЕНШІ ПІДПИСИ.
-
-          Раніше:
-
-          6 → 11
-          8 → 13
-          10 → 15
-          12 → 17
-
-          Тепер:
-
-          6 → 8
-          8 → 9
-          10 → 10
-          12 → 11
-          16 → 12
+          Маленькі, акуратні назви.
         */
 
         "text-size":
           [
+
             "interpolate",
 
             ["linear"],
 
             ["zoom"],
 
+
             5.5,
             8,
+
 
             7,
             8.5,
 
+
             9,
             9,
+
 
             11,
             10,
 
+
             13,
             11,
+
 
             16,
             12,
 
+
             20,
             13
+
           ],
 
 
@@ -1035,7 +1238,7 @@ async function createMap() {
 
 
   /* ==========================================================
-     WATER
+     WATER LABELS
   ========================================================== */
 
   function addWaterLabels() {
@@ -1074,6 +1277,7 @@ async function createMap() {
           "name:uk"
         ],
 
+
       layout: {
 
         "text-field":
@@ -1082,26 +1286,32 @@ async function createMap() {
             "name:uk"
           ],
 
+
         "text-font":
           [
             "Noto Sans Regular"
           ],
 
+
         "text-size":
           10,
+
 
         "text-allow-overlap":
           false
 
       },
 
+
       paint: {
 
         "text-color":
           "#657674",
 
+
         "text-halo-color":
           "rgba(4,7,7,.8)",
+
 
         "text-halo-width":
           1
@@ -1164,6 +1374,7 @@ async function createMap() {
       minzoom:
         6,
 
+
       filter:
         [
 
@@ -1184,11 +1395,13 @@ async function createMap() {
 
         ],
 
+
       paint: {
 
         "line-color":
           "rgba(130,155,149,.38)",
 
+
         "line-width":
           [
 
@@ -1198,590 +1411,27 @@ async function createMap() {
 
             ["zoom"],
 
+
             6,
             .45,
+
 
             9,
             .7,
 
+
             12,
             .9,
 
+
             16,
             1
 
           ],
+
 
         "line-opacity":
           .58
-
-      }
-
-    });
-
-  }
-
-
-  /* ==========================================================
-     BARBED WIRE ICON
-  ========================================================== */
-
-  function createBarbedWireIcon() {
-
-
-    const canvas =
-      document.createElement(
-        "canvas"
-      );
-
-
-    canvas.width =
-      64;
-
-    canvas.height =
-      32;
-
-
-    const ctx =
-      canvas.getContext(
-        "2d"
-      );
-
-
-    ctx.clearRect(
-      0,
-      0,
-      64,
-      32
-    );
-
-
-    ctx.strokeStyle =
-      "#6f817b";
-
-    ctx.fillStyle =
-      "#6f817b";
-
-    ctx.lineWidth =
-      1.5;
-
-    ctx.lineCap =
-      "round";
-
-
-    /*
-      Дві лінії дроту.
-    */
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-      0,
-      12
-    );
-
-    ctx.lineTo(
-      64,
-      12
-    );
-
-    ctx.stroke();
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-      0,
-      20
-    );
-
-    ctx.lineTo(
-      64,
-      20
-    );
-
-    ctx.stroke();
-
-
-    /*
-      Колючки.
-    */
-
-    const xPositions =
-      [
-        8,
-        24,
-        40,
-        56
-      ];
-
-
-    xPositions.forEach(
-      x => {
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          x - 5,
-          7
-        );
-
-        ctx.lineTo(
-          x + 5,
-          17
-        );
-
-        ctx.moveTo(
-          x - 5,
-          17
-        );
-
-        ctx.lineTo(
-          x + 5,
-          7
-        );
-
-        ctx.stroke();
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          x - 5,
-          15
-        );
-
-        ctx.lineTo(
-          x + 5,
-          25
-        );
-
-        ctx.moveTo(
-          x - 5,
-          25
-        );
-
-        ctx.lineTo(
-          x + 5,
-          15
-        );
-
-        ctx.stroke();
-
-      }
-    );
-
-
-    return canvas;
-  }
-
-
-  /* ==========================================================
-     BARBED WIRE ALONG NORTHERN BORDER
-  ========================================================== */
-
-  function addBarbedWireLayer(
-    geojson
-  ) {
-
-
-    if (
-      map.getSource(
-        "belarus-border-wire"
-      )
-    ) {
-
-      return;
-    }
-
-
-    /*
-      Збираємо північні сегменти
-      контуру області.
-    */
-
-    const segments =
-      [];
-
-
-    function processRing(
-      ring
-    ) {
-
-
-      let current =
-        [];
-
-
-      for (
-        let i = 0;
-        i < ring.length - 1;
-        i++
-      ) {
-
-
-        const a =
-          ring[i];
-
-
-        const b =
-          ring[i + 1];
-
-
-        /*
-          Північна частина області.
-
-          Використовуємо тільки
-          високі широти.
-        */
-
-        const north =
-          a[1] >= 51.05 &&
-          b[1] >= 51.05;
-
-
-        if (north) {
-
-
-          if (
-            current.length === 0
-          ) {
-
-            current.push(a);
-
-          }
-
-
-          current.push(b);
-
-
-        } else {
-
-
-          if (
-            current.length >= 2
-          ) {
-
-            segments.push(
-              current
-            );
-
-          }
-
-
-          current =
-            [];
-
-        }
-
-      }
-
-
-      if (
-        current.length >= 2
-      ) {
-
-        segments.push(
-          current
-        );
-
-      }
-
-    }
-
-
-    function processGeometry(
-      geometry
-    ) {
-
-
-      if (!geometry) {
-        return;
-      }
-
-
-      if (
-        geometry.type ===
-        "Polygon"
-      ) {
-
-        geometry.coordinates
-          .forEach(
-            processRing
-          );
-
-      }
-
-
-      if (
-        geometry.type ===
-        "MultiPolygon"
-      ) {
-
-        geometry.coordinates
-          .forEach(
-            polygon => {
-
-              polygon.forEach(
-                processRing
-              );
-
-            }
-          );
-
-      }
-
-    }
-
-
-    if (
-      geojson.type ===
-      "FeatureCollection"
-    ) {
-
-      geojson.features.forEach(
-        feature => {
-
-          processGeometry(
-            feature.geometry
-          );
-
-        }
-      );
-
-    } else {
-
-      processGeometry(
-        geojson
-      );
-
-    }
-
-
-    if (
-      segments.length === 0
-    ) {
-
-      console.warn(
-        "Northern border not found"
-      );
-
-      return;
-    }
-
-
-    const wireGeoJSON = {
-
-      type:
-        "Feature",
-
-      geometry: {
-
-        type:
-          "MultiLineString",
-
-        coordinates:
-          segments
-
-      },
-
-      properties: {}
-
-    };
-
-
-    map.addSource(
-
-      "belarus-border-wire",
-
-      {
-
-        type:
-          "geojson",
-
-        data:
-          wireGeoJSON
-
-      }
-
-    );
-
-
-    /* ========================================================
-       GLOW
-    ======================================================== */
-
-    map.addLayer({
-
-      id:
-        "belarus-border-glow",
-
-      type:
-        "line",
-
-      source:
-        "belarus-border-wire",
-
-      layout: {
-
-        "line-cap":
-          "round",
-
-        "line-join":
-          "round"
-
-      },
-
-      paint: {
-
-        "line-color":
-          "#52e8b0",
-
-        "line-width":
-          4,
-
-        "line-opacity":
-          .10,
-
-        "line-blur":
-          4
-
-      }
-
-    });
-
-
-    /* ========================================================
-       BASE WIRE
-    ======================================================== */
-
-    map.addLayer({
-
-      id:
-        "belarus-border-base",
-
-      type:
-        "line",
-
-      source:
-        "belarus-border-wire",
-
-      layout: {
-
-        "line-cap":
-          "round",
-
-        "line-join":
-          "round"
-
-      },
-
-      paint: {
-
-        "line-color":
-          "#61736e",
-
-        "line-width":
-          1.4,
-
-        "line-opacity":
-          .85
-
-      }
-
-    });
-
-
-    /*
-      Реєструємо іконку.
-    */
-
-    const icon =
-      createBarbedWireIcon();
-
-
-    map.addImage(
-
-      "barbed-wire-icon",
-
-      icon,
-
-      {
-        pixelRatio: 2
-      }
-
-    );
-
-
-    /* ========================================================
-       SYMBOLS ALONG BORDER
-    ======================================================== */
-
-    map.addLayer({
-
-      id:
-        "belarus-border-thorns",
-
-      type:
-        "symbol",
-
-      source:
-        "belarus-border-wire",
-
-      minzoom:
-        6,
-
-      layout: {
-
-        "symbol-placement":
-          "line",
-
-        "symbol-spacing":
-          48,
-
-        "icon-image":
-          "barbed-wire-icon",
-
-        "icon-size":
-          [
-
-            "interpolate",
-
-            ["linear"],
-
-            ["zoom"],
-
-            6,
-            .45,
-
-            8,
-            .55,
-
-            10,
-            .65,
-
-            13,
-            .75,
-
-            16,
-            .85,
-
-            20,
-            1
-
-          ],
-
-        "icon-allow-overlap":
-          true,
-
-        "icon-ignore-placement":
-          true,
-
-        "icon-rotation-alignment":
-          "map",
-
-        "icon-pitch-alignment":
-          "map"
 
       }
 
@@ -1895,22 +1545,28 @@ async function createMap() {
 
               ["zoom"],
 
+
               5,
               3,
+
 
               7,
               4,
 
+
               10,
               5,
+
 
               15,
               6
 
             ],
 
+
           "line-opacity":
             .12,
+
 
           "line-blur":
             4
@@ -1940,6 +1596,7 @@ async function createMap() {
           "line-color":
             "#52e8b0",
 
+
           "line-width":
             [
 
@@ -1949,22 +1606,28 @@ async function createMap() {
 
               ["zoom"],
 
+
               5,
               1.1,
+
 
               7,
               1.5,
 
+
               10,
               1.9,
 
+
               15,
               2.4,
+
 
               20,
               3
 
             ],
+
 
           "line-opacity":
             .95
@@ -1972,15 +1635,6 @@ async function createMap() {
         }
 
       });
-
-
-      /*
-        Декоративна колючка.
-      */
-
-      addBarbedWireLayer(
-        geojson
-      );
 
 
     }
@@ -1998,7 +1652,7 @@ async function createMap() {
 
 
   /* ==========================================================
-     INFO
+     INFO BUTTON
   ========================================================== */
 
   document
@@ -2010,9 +1664,13 @@ async function createMap() {
       () => {
 
         alert(
+
           "ONLINE RADAR\n\n" +
+
           "Карта Київської області\n\n" +
-          "Масштабування доступне до 20 рівня."
+
+          "Масштабування доступне до 20."
+
         );
 
       }
@@ -2020,7 +1678,7 @@ async function createMap() {
 
 
   /* ==========================================================
-     GESTURES
+     TOUCH
   ========================================================== */
 
   map.touchZoomRotate.enable();
@@ -2041,7 +1699,9 @@ async function createMap() {
     () => {
 
       if (map) {
+
         map.resize();
+
       }
 
     }
