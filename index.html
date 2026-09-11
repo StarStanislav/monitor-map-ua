@@ -2,10 +2,9 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   >
 
   <title>ONLINE RADAR</title>
@@ -13,12 +12,11 @@
   <link
     href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css"
     rel="stylesheet"
-  >
+  />
 
   <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
 
   <style>
-
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -31,98 +29,83 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #071012;
+      background: #05090b;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+    body {
+      position: fixed;
+      inset: 0;
     }
 
     #map {
-      position: fixed;
+      position: absolute;
       inset: 0;
-
       width: 100%;
       height: 100%;
-
-      background: #071012;
+      background: #05090b;
     }
 
-
-    /* ============================================================
-       BOTTOM STATUS
-    ============================================================ */
-
-    .bottom-status {
-
+    /* Нижній статус */
+    #status {
       position: fixed;
-
       left: 50%;
-      bottom: 12px;
-
+      bottom: calc(12px + env(safe-area-inset-bottom));
       transform: translateX(-50%);
 
-      z-index: 20;
+      z-index: 1000;
 
       display: flex;
       align-items: center;
-
+      justify-content: center;
       gap: 7px;
 
       padding: 7px 11px;
 
+      border: 1px solid rgba(120, 150, 155, 0.22);
       border-radius: 999px;
 
-      background:
-        rgba(5, 14, 16, 0.78);
+      background: rgba(5, 10, 12, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
 
-      border:
-        1px solid
-        rgba(90, 170, 175, 0.18);
-
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-
-      color:
-        rgba(220, 238, 239, 0.88);
-
+      color: #d5dedf;
       font-size: 10px;
-
-      font-weight: 600;
-
-      letter-spacing: 0.4px;
-
+      line-height: 1;
+      letter-spacing: 0.45px;
       white-space: nowrap;
 
       pointer-events: none;
+      user-select: none;
     }
 
-
-    .status-dot {
-
+    #online-dot {
       width: 6px;
       height: 6px;
-
       border-radius: 50%;
-
-      background: #21ff79;
-
+      background: #00ff66;
       box-shadow:
-        0 0 5px rgba(33, 255, 121, 0.9),
-        0 0 11px rgba(33, 255, 121, 0.55);
+        0 0 4px rgba(0, 255, 102, 0.9),
+        0 0 9px rgba(0, 255, 102, 0.45);
 
-      animation:
-        pulse 1.8s infinite;
-
-      flex-shrink: 0;
+      animation: pulse 1.7s infinite ease-in-out;
+      flex: 0 0 auto;
     }
 
+    #online-text {
+      color: #00ff66;
+      font-weight: 700;
+      letter-spacing: 0.65px;
+    }
+
+    #datetime {
+      color: #b9c5c7;
+      font-variant-numeric: tabular-nums;
+    }
 
     @keyframes pulse {
-
-      0% {
+      0%,
+      100% {
         opacity: 1;
         transform: scale(1);
       }
@@ -131,1366 +114,1034 @@
         opacity: 0.45;
         transform: scale(0.78);
       }
-
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
     }
 
-
-    .status-title {
-      color: #d9eeee;
-    }
-
-
-    .status-separator {
-
-      width: 1px;
-      height: 10px;
-
-      background:
-        rgba(150, 190, 193, 0.25);
-    }
-
-
-    .status-time {
-
-      color:
-        rgba(187, 211, 213, 0.72);
-
-      font-variant-numeric:
-        tabular-nums;
-    }
-
-
-    /* ============================================================
-       MAPLIBRE UI
-    ============================================================ */
-
-    .maplibregl-ctrl-top-right {
+    /* Прибираємо зайві елементи керування */
+    .maplibregl-ctrl-top-left,
+    .maplibregl-ctrl-top-right,
+    .maplibregl-ctrl-bottom-left {
       display: none !important;
+    }
+
+    .maplibregl-ctrl-bottom-right {
+      opacity: 0.25;
+      transform: scale(0.72);
+      transform-origin: bottom right;
     }
 
     .maplibregl-ctrl-attrib {
-      display: none !important;
+      background: rgba(0, 0, 0, 0.2) !important;
+      color: #899496 !important;
     }
 
-    .maplibregl-ctrl-logo {
-      display: none !important;
+    .maplibregl-ctrl-attrib a {
+      color: #899496 !important;
     }
 
-    .maplibregl-canvas {
+    /* Не показуємо стандартний курсор */
+    #map canvas {
       outline: none;
     }
-
   </style>
 </head>
-
 
 <body>
 
   <div id="map"></div>
 
-
-  <div class="bottom-status">
-
-    <span class="status-dot"></span>
-
-    <span class="status-title">
-      ONLINE RADAR
-    </span>
-
-    <span class="status-separator"></span>
-
-    <span
-      class="status-time"
-      id="statusTime"
-    >
-      --.--.---- · --:--:--
-    </span>
-
+  <div id="status">
+    <span id="online-dot"></span>
+    <span id="online-text">ONLINE RADAR</span>
+    <span>|</span>
+    <span id="datetime">--.--.---- · --:--:--</span>
   </div>
 
-
   <script>
-
-    /* ============================================================
-       MAP SETTINGS
-    ============================================================ */
+    /* =========================================================
+       CONFIG
+    ========================================================= */
 
     const MAP_STYLE =
       "https://tiles.openfreemap.org/styles/dark";
 
-
     const KYIV_VIEW_BOUNDS = [
-
       [28.55, 48.82],
-
       [32.72, 51.78]
-
     ];
-
 
     const MAP_MAX_BOUNDS = [
-
       [28.25, 48.55],
-
       [33.15, 52.05]
-
     ];
 
 
-    /* ============================================================
+    /* =========================================================
        MAP
-    ============================================================ */
+    ========================================================= */
 
     const map = new maplibregl.Map({
-
       container: "map",
 
       style: MAP_STYLE,
 
-      center: [
-        30.95,
-        50.75
-      ],
+      center: [30.95, 50.75],
 
       zoom: 5.7,
 
       minZoom: 5.7,
-
       maxZoom: 16,
 
       maxBounds: MAP_MAX_BOUNDS,
 
       dragRotate: false,
-
       pitchWithRotate: false,
-
       touchPitch: false,
 
       cooperativeGestures: false,
 
       attributionControl: true
-
     });
 
 
-    /* ============================================================
+    /* =========================================================
        CLOCK
-    ============================================================ */
+    ========================================================= */
 
     function updateClock() {
-
       const now = new Date();
 
+      const dd = String(now.getDate()).padStart(2, "0");
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const yyyy = now.getFullYear();
 
-      const day =
-        String(
-          now.getDate()
-        ).padStart(2, "0");
+      const hh = String(now.getHours()).padStart(2, "0");
+      const min = String(now.getMinutes()).padStart(2, "0");
+      const sec = String(now.getSeconds()).padStart(2, "0");
 
-
-      const month =
-        String(
-          now.getMonth() + 1
-        ).padStart(2, "0");
-
-
-      const year =
-        now.getFullYear();
-
-
-      const hours =
-        String(
-          now.getHours()
-        ).padStart(2, "0");
-
-
-      const minutes =
-        String(
-          now.getMinutes()
-        ).padStart(2, "0");
-
-
-      const seconds =
-        String(
-          now.getSeconds()
-        ).padStart(2, "0");
-
-
-      document
-        .getElementById("statusTime")
-        .textContent =
-        `${day}.${month}.${year} · ${hours}:${minutes}:${seconds}`;
-
+      document.getElementById("datetime").textContent =
+        `${dd}.${mm}.${yyyy} · ${hh}:${min}:${sec}`;
     }
 
-
     updateClock();
-
-    setInterval(
-      updateClock,
-      1000
-    );
+    setInterval(updateClock, 1000);
 
 
-    /* ============================================================
+    /* =========================================================
        MAP LOAD
-    ============================================================ */
+    ========================================================= */
 
-    map.on("load", () => {
+    map.on("load", async () => {
 
-
+      /*
+       * Початкове кадрування Київської області.
+       */
       map.fitBounds(
-
         KYIV_VIEW_BOUNDS,
-
         {
-
           padding: {
-
             top: 40,
-
             bottom: 95,
-
             left: 18,
-
             right: 18
-
           },
 
           maxZoom: 6.15,
 
           duration: 0
-
         }
-
       );
 
 
-      const initialZoom =
-        map.getZoom();
+      /*
+       * Після першого fitBounds забороняємо
+       * віддаляти карту далі початкового масштабу.
+       */
+      const initialZoom = map.getZoom();
+
+      map.setMinZoom(initialZoom);
 
 
-      map.setMinZoom(
-        initialZoom
-      );
-
-
+      /*
+       * Забороняємо обертання карти.
+       */
       map.dragRotate.disable();
-
       map.touchZoomRotate.disableRotation();
 
 
-      buildCustomMapLayers();
+      /*
+       * Будуємо наші додаткові шари.
+       */
+      await buildCustomMapLayers();
 
 
-      /* ==========================================================
-         BELARUS BORDER
-      ========================================================== */
-
-      addBelarusBorder();
-
+      /*
+       * Окремо додаємо кордон Білорусі.
+       */
+      await addBelarusBorder();
     });
 
 
-    /* ============================================================
+    /* =========================================================
        CUSTOM MAP LAYERS
-    ============================================================ */
+    ========================================================= */
 
-    function buildCustomMapLayers() {
+    async function buildCustomMapLayers() {
 
+      const styleLayers = map.getStyle().layers || [];
 
-      /* ==========================================================
-         EXISTING CITY LABELS
-      ========================================================== */
+      let firstSymbolLayerId = null;
 
-      const styleLayers =
-        map.getStyle().layers || [];
+      const placeSymbolLayers = [];
 
 
-      const symbolLayers = [];
-
-
-      for (
-        const layer of styleLayers
-      ) {
+      /*
+       * Знаходимо перший текстовий layer.
+       */
+      for (const layer of styleLayers) {
 
         if (
           layer.type === "symbol" &&
           layer["source-layer"] === "place"
         ) {
 
-          symbolLayers.push(
-            layer.id
-          );
+          if (!firstSymbolLayerId) {
+            firstSymbolLayerId = layer.id;
+          }
 
-
-          try {
-
-            map.setLayoutProperty(
-
-              layer.id,
-
-              "visibility",
-
-              "visible"
-
-            );
-
-          } catch (e) {}
-
-
-          try {
-
-            map.setLayoutProperty(
-
-              layer.id,
-
-              "text-field",
-
-              [
-
-                "coalesce",
-
-                [
-                  "get",
-                  "name:uk"
-                ],
-
-                [
-                  "get",
-                  "name"
-                ]
-
-              ]
-
-            );
-
-          } catch (e) {}
-
+          placeSymbolLayers.push(layer.id);
         }
-
       }
-
-
-      /* ==========================================================
-         KYIV OBLAST DISTRICTS
-      ========================================================== */
-
-      if (
-        !map.getLayer(
-          "kyiv-districts"
-        )
-      ) {
-
-        map.addLayer({
-
-          id:
-            "kyiv-districts",
-
-          type:
-            "line",
-
-          source:
-            "openmaptiles",
-
-          "source-layer":
-            "boundary",
-
-          minzoom:
-            5.4,
-
-          filter: [
-
-            "all",
-
-            [
-
-              "==",
-
-              [
-
-                "to-string",
-
-                [
-                  "get",
-                  "admin_level"
-                ]
-
-              ],
-
-              "6"
-
-            ]
-
-          ],
-
-          paint: {
-
-            "line-color":
-              "#52686b",
-
-            "line-opacity": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              5.4,
-              0.24,
-
-              8,
-              0.32,
-
-              12,
-              0.42
-
-            ],
-
-            "line-width": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              5.4,
-              0.65,
-
-              10,
-              1.05,
-
-              14,
-              1.5
-
-            ],
-
-            "line-dasharray":
-              [2, 2]
-
-          }
-
-        });
-
-      }
-
-
-      /* ==========================================================
-         WATER LABELS
-      ========================================================== */
-
-      if (
-        !map.getLayer(
-          "water-labels-ukrainian"
-        )
-      ) {
-
-        map.addLayer({
-
-          id:
-            "water-labels-ukrainian",
-
-          type:
-            "symbol",
-
-          source:
-            "openmaptiles",
-
-          "source-layer":
-            "water",
-
-          minzoom:
-            7,
-
-          layout: {
-
-            "text-field": [
-
-              "coalesce",
-
-              [
-                "get",
-                "name:uk"
-              ],
-
-              [
-                "get",
-                "name"
-              ]
-
-            ],
-
-            "text-font":
-              [
-                "Noto Sans Italic"
-              ],
-
-            "text-size": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              7,
-              9,
-
-              12,
-              11,
-
-              16,
-              13
-
-            ]
-
-          },
-
-          paint: {
-
-            "text-color":
-              "#63898f",
-
-            "text-halo-color":
-              "rgba(4,10,12,0.7)",
-
-            "text-halo-width":
-              1
-
-          }
-
-        });
-
-      }
-
-
-      /* ==========================================================
-         EXACT KYIV OBLAST BORDER
-         
-         OSM RELATION 71248
-      ========================================================== */
-
-      const KYIV_OBLAST_GEOJSON =
-
-        "https://nominatim.openstreetmap.org/lookup" +
-
-        "?osm_ids=R71248" +
-
-        "&format=geojson" +
-
-        "&polygon_geojson=1";
-
-
-      fetch(
-        KYIV_OBLAST_GEOJSON
-      )
-
-      .then(
-        response => {
-
-          if (
-            !response.ok
-          ) {
-
-            throw new Error(
-              "Kyiv Oblast geometry request failed"
-            );
-
-          }
-
-          return response.json();
-
-        }
-      )
-
-      .then(
-        data => {
-
-
-          if (
-            !map.getSource(
-              "kyiv-oblast-exact"
-            )
-          ) {
-
-            map.addSource(
-
-              "kyiv-oblast-exact",
-
-              {
-
-                type:
-                  "geojson",
-
-                data:
-                  data
-
-              }
-
-            );
-
-          }
-
-
-          let firstSymbolId =
-            undefined;
-
-
-          const allLayers =
-            map.getStyle().layers || [];
-
-
-          for (
-            const layer of allLayers
-          ) {
-
-            if (
-              layer.type === "symbol"
-            ) {
-
-              firstSymbolId =
-                layer.id;
-
-              break;
-
-            }
-
-          }
-
-
-          /* ------------------------------------------------------
-             FILL
-          ------------------------------------------------------ */
-
-          if (
-            !map.getLayer(
-              "kyiv-oblast-fill"
-            )
-          ) {
-
-            map.addLayer(
-
-              {
-
-                id:
-                  "kyiv-oblast-fill",
-
-                type:
-                  "fill",
-
-                source:
-                  "kyiv-oblast-exact",
-
-                paint: {
-
-                  "fill-color":
-                    "#00eaff",
-
-                  "fill-opacity":
-                    0.018
-
-                }
-
-              },
-
-              firstSymbolId
-
-            );
-
-          }
-
-
-          /* ------------------------------------------------------
-             GLOW
-          ------------------------------------------------------ */
-
-          if (
-            !map.getLayer(
-              "kyiv-oblast-glow"
-            )
-          ) {
-
-            map.addLayer(
-
-              {
-
-                id:
-                  "kyiv-oblast-glow",
-
-                type:
-                  "line",
-
-                source:
-                  "kyiv-oblast-exact",
-
-                paint: {
-
-                  "line-color":
-                    "#00eaff",
-
-                  "line-opacity":
-                    0.28,
-
-                  "line-width": [
-
-                    "interpolate",
-
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.4,
-                    5,
-
-                    7,
-                    7,
-
-                    10,
-                    10,
-
-                    14,
-                    14
-
-                  ],
-
-                  "line-blur":
-                    5
-
-                }
-
-              },
-
-              firstSymbolId
-
-            );
-
-          }
-
-
-          /* ------------------------------------------------------
-             MAIN BORDER
-          ------------------------------------------------------ */
-
-          if (
-            !map.getLayer(
-              "kyiv-oblast-border"
-            )
-          ) {
-
-            map.addLayer(
-
-              {
-
-                id:
-                  "kyiv-oblast-border",
-
-                type:
-                  "line",
-
-                source:
-                  "kyiv-oblast-exact",
-
-                paint: {
-
-                  "line-color":
-                    "#00eaff",
-
-                  "line-opacity":
-                    0.92,
-
-                  "line-width": [
-
-                    "interpolate",
-
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.4,
-                    1.5,
-
-                    7,
-                    2,
-
-                    10,
-                    2.6,
-
-                    14,
-                    3.5
-
-                  ],
-
-                  "line-blur":
-                    0.15
-
-                }
-
-              },
-
-              firstSymbolId
-
-            );
-
-          }
-
-
-          /* ------------------------------------------------------
-             CITY LABELS TO TOP
-          ------------------------------------------------------ */
-
-          for (
-            const id of symbolLayers
-          ) {
-
-            if (
-              map.getLayer(id)
-            ) {
-
-              try {
-
-                map.moveLayer(
-                  id
-                );
-
-              } catch (e) {}
-
-            }
-
-          }
-
-        }
-
-      )
-
-      .catch(
-        error => {
-
-          console.warn(
-            "Kyiv Oblast boundary:",
-            error
-          );
-
-        }
-      );
-
-    }
-
-
-    /* ============================================================
-       BELARUS BORDER
-       
-       RED BARBED-WIRE STYLE
-    ============================================================ */
-
-    async function addBelarusBorder() {
 
 
       /*
-       * We deliberately use a simple geographic bounding box
-       * covering the Ukraine-Belarus border.
-       *
-       * This avoids relying on country-relation properties that
-       * may differ between OSM extracts.
+       * Українські назви населених пунктів.
        */
+      for (const layerId of placeSymbolLayers) {
 
-      const OVERPASS_QUERY = `
+        try {
 
-        [out:json][timeout:30];
+          map.setLayoutProperty(
+            layerId,
+            "visibility",
+            "visible"
+          );
 
-        way
-          ["boundary"="administrative"]
-          ["admin_level"="2"]
-          (50.45,27.5,52.55,32.8);
+          map.setLayoutProperty(
+            layerId,
+            "text-field",
+            [
+              "coalesce",
+              ["get", "name:uk"],
+              ["get", "name"]
+            ]
+          );
 
-        out geom;
+        } catch (e) {
+          console.warn(
+            "Не вдалося змінити place layer:",
+            layerId,
+            e
+          );
+        }
+      }
 
-      `;
 
+      /* =======================================================
+         DISTRICTS
+      ======================================================= */
+
+      if (!map.getLayer("kyiv-districts")) {
+
+        map.addLayer(
+          {
+            id: "kyiv-districts",
+
+            type: "line",
+
+            source: "openmaptiles",
+
+            "source-layer": "boundary",
+
+            minzoom: 5.4,
+
+            filter: [
+              "==",
+              ["get", "admin_level"],
+              6
+            ],
+
+            paint: {
+
+              "line-color": "#52686b",
+
+              "line-opacity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+
+                5.4,
+                0.24,
+
+                12,
+                0.42
+              ],
+
+              "line-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+
+                5.4,
+                0.65,
+
+                14,
+                1.5
+              ],
+
+              "line-dasharray": [
+                2,
+                2
+              ]
+            }
+          },
+
+          firstSymbolLayerId || undefined
+        );
+      }
+
+
+      /* =======================================================
+         WATER LABELS
+      ======================================================= */
+
+      if (!map.getLayer("water-labels-ukrainian")) {
+
+        map.addLayer(
+          {
+            id: "water-labels-ukrainian",
+
+            type: "symbol",
+
+            source: "openmaptiles",
+
+            "source-layer": "water",
+
+            minzoom: 7,
+
+            layout: {
+
+              "text-field": [
+                "coalesce",
+                ["get", "name:uk"],
+                ["get", "name"]
+              ],
+
+              "text-font": [
+                "Noto Sans Italic"
+              ],
+
+              "text-size": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+
+                7,
+                9,
+
+                12,
+                11,
+
+                16,
+                13
+              ]
+            },
+
+            paint: {
+
+              "text-color": "#63898f",
+
+              "text-halo-color": "#071012",
+
+              "text-halo-width": 1
+            }
+          }
+        );
+      }
+
+
+      /* =======================================================
+         EXACT KYIV OBLAST GEOMETRY
+      ======================================================= */
 
       try {
 
-
-        const response =
-          await fetch(
-
-            "https://overpass-api.de/api/interpreter",
-
-            {
-
-              method:
-                "POST",
-
-              headers: {
-
-                "Content-Type":
-                  "application/x-www-form-urlencoded"
-
-              },
-
-              body:
-                "data=" +
-                encodeURIComponent(
-                  OVERPASS_QUERY
-                )
-
+        const response = await fetch(
+          "https://nominatim.openstreetmap.org/lookup?osm_ids=R71248&format=geojson&polygon_geojson=1",
+          {
+            headers: {
+              "Accept": "application/json"
             }
+          }
+        );
 
+        if (!response.ok) {
+          throw new Error(
+            `Nominatim HTTP ${response.status}`
           );
+        }
+
+        const data = await response.json();
 
 
         if (
-          !response.ok
+          !data ||
+          !data.features ||
+          !data.features.length
         ) {
-
           throw new Error(
-            "Overpass request failed"
+            "Геометрію Київської області не знайдено"
           );
-
         }
 
 
-        const data =
-          await response.json();
+        /*
+         * Source
+         */
+        if (!map.getSource("kyiv-oblast-exact")) {
 
+          map.addSource(
+            "kyiv-oblast-exact",
+            {
+              type: "geojson",
+              data: data
+            }
+          );
+        }
+
+
+        /* =====================================================
+           SUBTLE FILL
+        ===================================================== */
+
+        if (!map.getLayer("kyiv-oblast-fill")) {
+
+          map.addLayer(
+            {
+              id: "kyiv-oblast-fill",
+
+              type: "fill",
+
+              source: "kyiv-oblast-exact",
+
+              paint: {
+
+                "fill-color": "#00eaff",
+
+                "fill-opacity": 0.018
+              }
+            },
+
+            firstSymbolLayerId || undefined
+          );
+        }
+
+
+        /* =====================================================
+           GLOW
+        ===================================================== */
+
+        if (!map.getLayer("kyiv-oblast-glow")) {
+
+          map.addLayer(
+            {
+              id: "kyiv-oblast-glow",
+
+              type: "line",
+
+              source: "kyiv-oblast-exact",
+
+              paint: {
+
+                "line-color": "#00eaff",
+
+                "line-opacity": 0.28,
+
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+
+                  5,
+                  5,
+
+                  14,
+                  9
+                ],
+
+                "line-blur": 5
+              }
+            },
+
+            firstSymbolLayerId || undefined
+          );
+        }
+
+
+        /* =====================================================
+           MAIN KYIV OBLAST BORDER
+        ===================================================== */
+
+        if (!map.getLayer("kyiv-oblast-border")) {
+
+          map.addLayer(
+            {
+              id: "kyiv-oblast-border",
+
+              type: "line",
+
+              source: "kyiv-oblast-exact",
+
+              paint: {
+
+                "line-color": "#00eaff",
+
+                "line-opacity": 0.92,
+
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+
+                  5,
+                  1.5,
+
+                  10,
+                  2.4,
+
+                  14,
+                  3.5
+                ],
+
+                "line-blur": 0.15
+              }
+            },
+
+            firstSymbolLayerId || undefined
+          );
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "Не вдалося отримати точну межу Київської області:",
+          error
+        );
+      }
+
+
+      /*
+       * Повертаємо назви поверх наших ліній.
+       */
+      for (const layerId of placeSymbolLayers) {
+
+        try {
+          map.moveLayer(layerId);
+        } catch (e) {}
+      }
+    }
+
+
+    /* =========================================================
+       BELARUS BORDER
+       =========================================================
+
+       ВАЖЛИВО:
+
+       Belarus relation = 59065
+       Ukraine relation = 60199
+
+       Ми НЕ шукаємо:
+       way["boundary"="administrative"]
+
+       бо міжнародний кордон у OSM формується
+       через relation, членами якої є border ways.
+
+       Тут отримуємо ТІЛЬКИ ті way, які одночасно
+       входять у relation Білорусі та relation України.
+
+    ========================================================= */
+
+    async function addBelarusBorder() {
+
+      try {
+
+        /*
+         * Беремо саме спільні way двох держав.
+         *
+         * BBOX:
+         * south = 50.45
+         * west  = 28.00
+         * north = 52.55
+         * east  = 32.80
+         *
+         * Цього достатньо для частини кордону,
+         * яка потрапляє в область нашої карти.
+         */
+
+        const query = `
+          [out:json][timeout:30];
+
+          rel(59065)->.belarus;
+          rel(60199)->.ukraine;
+
+          way(r.belarus)(r.ukraine)(50.45,28.00,52.55,32.80);
+
+          out geom;
+        `;
+
+
+        const response = await fetch(
+          "https://overpass-api.de/api/interpreter",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/x-www-form-urlencoded;charset=UTF-8",
+
+              "Accept":
+                "application/json"
+            },
+
+            body:
+              "data=" +
+              encodeURIComponent(query)
+          }
+        );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            `Overpass HTTP ${response.status}`
+          );
+        }
+
+
+        const result = await response.json();
+
+
+        if (
+          !result ||
+          !result.elements ||
+          !result.elements.length
+        ) {
+
+          throw new Error(
+            "Overpass не повернув спільні border ways"
+          );
+        }
+
+
+        /*
+         * Перетворюємо OSM ways у GeoJSON.
+         */
 
         const features = [];
 
 
-        for (
-          const element of
-          data.elements || []
-        ) {
-
+        for (const element of result.elements) {
 
           if (
+            element.type !== "way" ||
             !element.geometry ||
             element.geometry.length < 2
           ) {
-
             continue;
-
           }
 
 
           const coordinates =
             element.geometry.map(
-
               point => [
-
                 point.lon,
                 point.lat
-
               ]
-
             );
 
 
-          features.push({
+          features.push(
+            {
+              type: "Feature",
 
-            type:
-              "Feature",
+              properties: {},
 
-            properties:
-              {},
-
-            geometry: {
-
-              type:
-                "LineString",
-
-              coordinates:
+              geometry: {
+                type: "LineString",
                 coordinates
-
+              }
             }
-
-          });
-
+          );
         }
 
 
-        if (
-          features.length === 0
-        ) {
+        if (!features.length) {
 
           throw new Error(
-            "Belarus border geometry not found"
+            "Коректних геометрій кордону немає"
           );
-
         }
 
 
         const geojson = {
-
-          type:
-            "FeatureCollection",
-
-          features:
-            features
-
+          type: "FeatureCollection",
+          features
         };
 
 
-        /* ========================================================
+        /* =====================================================
            SOURCE
-           
-           lineMetrics:true is important for line-pattern.
-        ======================================================== */
+        ===================================================== */
 
-        map.addSource(
+        if (!map.getSource("belarus-border")) {
 
-          "belarus-border",
-
-          {
-
-            type:
-              "geojson",
-
-            data:
-              geojson,
-
-            lineMetrics:
-              true
-
-          }
-
-        );
-
-
-        /* ========================================================
-           RED GLOW
-        ======================================================== */
-
-        map.addLayer({
-
-          id:
-            "belarus-border-glow",
-
-          type:
-            "line",
-
-          source:
+          map.addSource(
             "belarus-border",
+            {
+              type: "geojson",
 
-          paint: {
+              data: geojson,
 
-            "line-color":
-              "#ff304f",
+              /*
+               * Потрібно для line-pattern.
+               */
+              lineMetrics: true
+            }
+          );
 
-            "line-opacity":
-              0.22,
+        } else {
 
-            "line-width": [
+          map
+            .getSource("belarus-border")
+            .setData(geojson);
+        }
 
-              "interpolate",
 
-              ["linear"],
+        /*
+         * Знаходимо перший symbol layer,
+         * щоб червоний кордон був поверх карти,
+         * але під назвами міст.
+         */
 
-              ["zoom"],
+        const styleLayers =
+          map.getStyle().layers || [];
 
-              5.4,
-              5,
+        let firstSymbolLayerId = null;
 
-              7,
-              6,
 
-              10,
-              8,
+        for (const layer of styleLayers) {
 
-              14,
-              10
+          if (layer.type === "symbol") {
 
-            ],
-
-            "line-blur":
-              4
-
+            firstSymbolLayerId = layer.id;
+            break;
           }
+        }
 
-        });
 
-
-        /* ========================================================
+        /* =====================================================
            DARK RED BASE
-        ======================================================== */
+        ===================================================== */
 
-        map.addLayer({
+        if (!map.getLayer("belarus-border-base")) {
 
-          id:
-            "belarus-border-base",
+          map.addLayer(
+            {
+              id: "belarus-border-base",
 
-          type:
-            "line",
+              type: "line",
 
-          source:
-            "belarus-border",
+              source: "belarus-border",
 
-          paint: {
+              layout: {
+                "line-cap": "round",
+                "line-join": "round"
+              },
 
-            "line-color":
-              "#7d182b",
+              paint: {
 
-            "line-opacity":
-              0.95,
+                "line-color": "#8f1830",
 
-            "line-width": [
+                "line-opacity": 0.85,
 
-              "interpolate",
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
 
-              ["linear"],
+                  5,
+                  1.3,
 
-              ["zoom"],
+                  10,
+                  2,
 
-              5.4,
-              2,
+                  15,
+                  3
+                ],
 
-              7,
-              2.3,
+                "line-dasharray": [
+                  1.2,
+                  1.8
+                ]
+              }
+            },
 
-              10,
-              2.8,
-
-              14,
-              3.2
-
-            ]
-
-          }
-
-        });
+            firstSymbolLayerId || undefined
+          );
+        }
 
 
-        /* ========================================================
-           CREATE BARBED-WIRE PATTERN
-        ======================================================== */
+        /* =====================================================
+           RED GLOW
+        ===================================================== */
 
-        if (
-          !map.hasImage(
-            "red-barbed-wire"
-          )
-        ) {
+        if (!map.getLayer("belarus-border-glow")) {
 
+          map.addLayer(
+            {
+              id: "belarus-border-glow",
+
+              type: "line",
+
+              source: "belarus-border",
+
+              layout: {
+                "line-cap": "round",
+                "line-join": "round"
+              },
+
+              paint: {
+
+                "line-color": "#ff304f",
+
+                "line-opacity": 0.28,
+
+                "line-width": [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+
+                  5,
+                  4,
+
+                  10,
+                  6,
+
+                  15,
+                  8
+                ],
+
+                "line-blur": 4
+              }
+            },
+
+            firstSymbolLayerId || undefined
+          );
+        }
+
+
+        /* =====================================================
+           BARBED WIRE PATTERN
+        ===================================================== */
+
+        /*
+         * Створюємо маленький тайловий патерн:
+         *
+         * ──╲╱──╲╱──
+         *
+         * Основний дріт + маленькі "колючки".
+         */
+
+        if (!map.hasImage("red-barbed-wire")) {
+
+          const width = 32;
+          const height = 16;
 
           const canvas =
-            document.createElement(
-              "canvas"
-            );
+            document.createElement("canvas");
 
-
-          canvas.width =
-            48;
-
-          canvas.height =
-            20;
-
+          canvas.width = width;
+          canvas.height = height;
 
           const ctx =
-            canvas.getContext(
-              "2d"
-            );
+            canvas.getContext("2d");
 
 
           ctx.clearRect(
             0,
             0,
-            48,
-            20
+            width,
+            height
           );
 
 
-          /* ------------------------------------------------------
-             MAIN WIRE
-          ------------------------------------------------------ */
+          /*
+           * Основний дріт.
+           */
 
-          ctx.strokeStyle =
-            "#ff304f";
-
-          ctx.lineWidth =
-            1.4;
+          ctx.strokeStyle = "#ff304f";
+          ctx.lineWidth = 1.35;
 
           ctx.beginPath();
 
-          ctx.moveTo(
-            0,
-            10
-          );
-
-          ctx.lineTo(
-            48,
-            10
-          );
+          ctx.moveTo(0, 8);
+          ctx.lineTo(32, 8);
 
           ctx.stroke();
 
 
-          /* ------------------------------------------------------
-             BARBS
-          ------------------------------------------------------ */
+          /*
+           * Колючки.
+           */
 
-          ctx.strokeStyle =
-            "#ff5268";
+          ctx.strokeStyle = "#ff5369";
+          ctx.lineWidth = 1.15;
 
-          ctx.lineWidth =
-            1.2;
+          const barbPositions = [
+            6,
+            16,
+            26
+          ];
 
 
-          for (
-            let x = 7;
-            x < 48;
-            x += 16
-          ) {
-
+          for (const x of barbPositions) {
 
             ctx.beginPath();
 
             ctx.moveTo(
-              x - 4,
+              x - 3,
               4
             );
 
             ctx.lineTo(
-              x + 4,
-              16
+              x + 3,
+              12
             );
-
-            ctx.stroke();
-
-
-            ctx.beginPath();
 
             ctx.moveTo(
-              x - 4,
-              16
+              x - 3,
+              12
             );
 
             ctx.lineTo(
-              x + 4,
+              x + 3,
               4
             );
 
             ctx.stroke();
-
           }
-
-
-          const imageData =
-            ctx.getImageData(
-
-              0,
-              0,
-              48,
-              20
-
-            );
 
 
           map.addImage(
-
             "red-barbed-wire",
-
             {
-
-              width:
-                48,
-
-              height:
-                20,
-
-              data:
-                imageData.data
-
+              width,
+              height,
+              data: ctx.getImageData(
+                0,
+                0,
+                width,
+                height
+              ).data
             }
-
           );
-
         }
 
 
-        /* ========================================================
-           BARBED WIRE
-        ======================================================== */
+        /* =====================================================
+           BARBED WIRE MAIN LAYER
+        ===================================================== */
 
-        map.addLayer({
+        if (!map.getLayer("belarus-barbed-wire")) {
 
-          id:
-            "belarus-border-wire",
+          map.addLayer(
+            {
+              id: "belarus-barbed-wire",
 
-          type:
-            "line",
+              type: "line",
 
-          source:
-            "belarus-border",
+              source: "belarus-border",
 
-          paint: {
+              layout: {
+                "line-cap": "butt",
+                "line-join": "round"
+              },
 
-            "line-pattern":
-              "red-barbed-wire",
+              paint: {
 
-            "line-opacity":
-              0.9
+                "line-pattern":
+                  "red-barbed-wire",
 
-          }
+                "line-opacity": 0.96
+              }
+            },
 
-        });
+            firstSymbolLayerId || undefined
+          );
+        }
 
 
-        /* ========================================================
-           KEEP ALL SYMBOL LABELS ABOVE
-        ======================================================== */
+        /*
+         * Ще раз піднімаємо всі place labels,
+         * щоб назви населених пунктів були поверх кордону.
+         */
 
-        const layers =
+        const finalLayers =
           map.getStyle().layers || [];
 
-
-        for (
-          const layer of layers
-        ) {
+        for (const layer of finalLayers) {
 
           if (
-            layer.type === "symbol"
+            layer.type === "symbol" &&
+            layer["source-layer"] === "place"
           ) {
 
             try {
-
-              map.moveLayer(
-                layer.id
-              );
-
+              map.moveLayer(layer.id);
             } catch (e) {}
-
           }
-
         }
 
 
-      } catch (error) {
-
-        console.warn(
-          "Belarus border:",
-          error
+        console.log(
+          "🇧🇾 Червоний кордон Білорусі додано:",
+          features.length,
+          "segments"
         );
 
-      }
+      } catch (error) {
 
+        console.error(
+          "❌ Помилка Belarus border:",
+          error
+        );
+      }
     }
 
 
-    /* ============================================================
-       ROTATION OFF
-    ============================================================ */
+    /* =========================================================
+       MAP ERROR LOG
+    ========================================================= */
 
-    map.on("load", () => {
+    map.on("error", event => {
 
-      map.dragRotate.disable();
+      if (event && event.error) {
 
-      map.touchZoomRotate.disableRotation();
-
+        console.warn(
+          "MapLibre:",
+          event.error
+        );
+      }
     });
 
   </script>
