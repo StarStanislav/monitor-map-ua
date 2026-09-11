@@ -2,6 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
@@ -15,6 +16,11 @@
   />
 
   <style>
+
+    /* =========================================================
+       ОСНОВА
+       ========================================================= */
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -22,12 +28,13 @@
 
     html,
     body {
-      margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
+      margin: 0;
+      padding: 0;
       overflow: hidden;
       background: #050708;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -44,205 +51,151 @@
       color: #eaf4f6;
     }
 
+
+    /* =========================================================
+       КАРТА
+       
+       НЕ ЗМІНЮЄМО ЇЇ ВИГЛЯД.
+       ========================================================= */
+
     #map {
       position: absolute;
       inset: 0;
+
       width: 100%;
       height: 100%;
+
       background: #050708;
     }
 
-    /* ----------------------------------------------------
-       TOP STATUS
-    ---------------------------------------------------- */
 
-    .top-status {
+    /* =========================================================
+       ЄДИНИЙ МАЛЕНЬКИЙ СТАТУС ВНИЗУ
+       ========================================================= */
+
+    .bottom-status {
       position: absolute;
-      z-index: 20;
 
-      top: calc(env(safe-area-inset-top, 0px) + 28px);
+      z-index: 30;
+
       left: 50%;
-      transform: translateX(-50%);
 
-      height: 88px;
-      min-width: 360px;
-      max-width: calc(100% - 72px);
-
-      display: flex;
-      align-items: center;
-
-      padding: 0 30px 0 26px;
-
-      border: 1px solid rgba(44, 240, 186, 0.23);
-      border-radius: 48px;
-
-      background:
-        linear-gradient(
-          90deg,
-          rgba(2, 17, 17, 0.97),
-          rgba(2, 13, 14, 0.92)
+      bottom:
+        calc(
+          env(safe-area-inset-bottom, 0px) + 14px
         );
 
-      box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.45),
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        inset 0 0 35px rgba(0, 255, 190, 0.025);
-
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-
-      pointer-events: none;
-    }
-
-    .status-light {
-      width: 42px;
-      height: 42px;
-      flex: 0 0 42px;
-
-      margin-right: 28px;
-
-      border-radius: 50%;
-
-      background: #47f3ae;
-
-      box-shadow:
-        0 0 0 7px rgba(71, 243, 174, 0.08),
-        0 0 20px rgba(71, 243, 174, 0.65),
-        0 0 42px rgba(71, 243, 174, 0.25);
-
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .status-text {
-      font-size: 25px;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0.31em;
-      white-space: nowrap;
-      color: #f2f8f8;
-    }
-
-    @keyframes pulse {
-      0%,
-      100% {
-        transform: scale(0.94);
-        box-shadow:
-          0 0 0 7px rgba(71, 243, 174, 0.06),
-          0 0 18px rgba(71, 243, 174, 0.55),
-          0 0 35px rgba(71, 243, 174, 0.2);
-      }
-
-      50% {
-        transform: scale(1);
-        box-shadow:
-          0 0 0 10px rgba(71, 243, 174, 0.09),
-          0 0 27px rgba(71, 243, 174, 0.75),
-          0 0 55px rgba(71, 243, 174, 0.3);
-      }
-    }
-
-    /* ----------------------------------------------------
-       ZOOM
-    ---------------------------------------------------- */
-
-    .zoom-control {
-      position: absolute;
-      z-index: 20;
-
-      top: calc(env(safe-area-inset-top, 0px) + 114px);
-      right: 25px;
-
-      width: 68px;
-
-      border-radius: 34px;
-      overflow: hidden;
-
-      border: 1px solid rgba(120, 210, 220, 0.14);
-
-      background: rgba(5, 10, 11, 0.82);
-
-      box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.42),
-        inset 0 0 20px rgba(255, 255, 255, 0.015);
-
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-
-    .zoom-button {
-      width: 100%;
-      height: 65px;
+      transform: translateX(-50%);
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
-      color: rgba(230, 240, 242, 0.75);
+      height: 34px;
 
-      font-size: 38px;
-      font-weight: 300;
-      line-height: 1;
+      padding: 0 14px;
 
-      cursor: pointer;
-      user-select: none;
-    }
+      border-radius: 18px;
 
-    .zoom-button:active {
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .zoom-divider {
-      height: 1px;
-      background: rgba(220, 240, 242, 0.18);
-    }
-
-    /* ----------------------------------------------------
-       BOTTOM INFO
-    ---------------------------------------------------- */
-
-    .bottom-panel {
-      position: absolute;
-      z-index: 20;
-
-      left: 28px;
-      right: 78px;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 25px);
-
-      min-height: 126px;
-
-      padding: 25px 31px 21px;
-
-      border-radius: 30px;
-
-      border: 1px solid rgba(44, 240, 186, 0.17);
+      border: 1px solid rgba(65, 225, 192, 0.13);
 
       background:
-        linear-gradient(
-          135deg,
-          rgba(3, 16, 16, 0.96),
-          rgba(2, 10, 11, 0.92)
-        );
+        rgba(3, 11, 12, 0.68);
 
       box-shadow:
-        0 14px 45px rgba(0, 0, 0, 0.55),
-        inset 0 0 35px rgba(0, 255, 190, 0.018);
+        0 5px 22px rgba(0, 0, 0, 0.32);
 
-      backdrop-filter: blur(13px);
-      -webkit-backdrop-filter: blur(13px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
 
       pointer-events: none;
-    }
 
-    .region-title {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 0.28em;
-      color: #edf5f5;
       white-space: nowrap;
     }
 
+
+    /* =========================================================
+       МАЛЕНЬКА ЗЕЛЕНА ТОЧКА
+       ========================================================= */
+
+    .online-dot {
+      width: 6px;
+      height: 6px;
+
+      flex: 0 0 6px;
+
+      margin-right: 7px;
+
+      border-radius: 50%;
+
+      background: #48efad;
+
+      box-shadow:
+        0 0 6px rgba(72, 239, 173, 0.85),
+        0 0 12px rgba(72, 239, 173, 0.3);
+
+      animation:
+        smallPulse 2s ease-in-out infinite;
+    }
+
+
+    @keyframes smallPulse {
+
+      0%,
+      100% {
+        opacity: 0.72;
+        transform: scale(0.9);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+    }
+
+
+    /* =========================================================
+       ONLINE RADAR
+       ========================================================= */
+
+    .online-label {
+
+      font-size: 9px;
+
+      font-weight: 700;
+
+      letter-spacing: 0.16em;
+
+      color:
+        rgba(239, 248, 248, 0.88);
+    }
+
+
+    /* =========================================================
+       РОЗДІЛЮВАЧ
+       ========================================================= */
+
+    .status-separator {
+
+      width: 1px;
+
+      height: 12px;
+
+      margin:
+        0 9px;
+
+      background:
+        rgba(210, 230, 232, 0.16);
+    }
+
+
+    /* =========================================================
+       ДАТА / ЧАС
+       ========================================================= */
+
     .datetime {
-      margin-top: 12px;
 
       font-family:
         "SFMono-Regular",
@@ -251,261 +204,277 @@
         Consolas,
         monospace;
 
-      font-size: 18px;
-      letter-spacing: 0.17em;
-      color: rgba(194, 214, 216, 0.67);
+      font-size: 9px;
+
+      letter-spacing: 0.045em;
+
+      color:
+        rgba(193, 213, 215, 0.62);
     }
 
-    .info-button {
-      position: absolute;
-      right: -48px;
-      bottom: -1px;
 
-      width: 84px;
-      height: 84px;
+    /* =========================================================
+       MAPLIBRE UI
+       
+       + / - НЕ ПОКАЗУЄМО
+       ========================================================= */
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-
-      border: 1px solid rgba(205, 225, 228, 0.18);
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(20, 31, 33, 0.98),
-          rgba(5, 10, 11, 0.96)
-        );
-
-      color: #dce8e9;
-
-      font-family: Georgia, serif;
-      font-size: 48px;
-      font-weight: 700;
-
-      box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.5);
+    .maplibregl-ctrl-top-right {
+      display: none !important;
     }
 
-    /* ----------------------------------------------------
-       MAPLibre CLEANUP
-    ---------------------------------------------------- */
+
+    /* =========================================================
+       БІЛИЙ КРУЖЕЧОК "i" MAPLIBRE
+       
+       ПОВНІСТЮ ПРИБИРАЄМО
+       ========================================================= */
 
     .maplibregl-ctrl-attrib {
-      opacity: 0.35 !important;
-      font-size: 8px !important;
-      background: rgba(0, 0, 0, 0.28) !important;
+      display: none !important;
     }
+
 
     .maplibregl-ctrl-logo {
       display: none !important;
     }
 
-    /* ----------------------------------------------------
+
+    /* =========================================================
        MOBILE
-    ---------------------------------------------------- */
+       ========================================================= */
 
     @media (max-width: 600px) {
-      .top-status {
-        top: calc(env(safe-area-inset-top, 0px) + 20px);
-        left: 24px;
-        transform: none;
 
-        min-width: 0;
-        width: auto;
-        max-width: calc(100% - 110px);
+      .bottom-status {
 
-        height: 70px;
+        bottom:
+          calc(
+            env(safe-area-inset-bottom, 0px) + 13px
+          );
 
-        padding: 0 23px 0 20px;
+        height: 33px;
+
+        padding:
+          0 13px;
+
+        border-radius: 17px;
       }
 
-      .status-light {
-        width: 31px;
-        height: 31px;
-        flex-basis: 31px;
-        margin-right: 19px;
+
+      .online-dot {
+
+        width: 6px;
+        height: 6px;
+
+        flex-basis: 6px;
+
+        margin-right: 7px;
       }
 
-      .status-text {
-        font-size: 17px;
-        letter-spacing: 0.22em;
+
+      .online-label {
+
+        font-size: 8.5px;
+
+        letter-spacing: 0.145em;
       }
 
-      .zoom-control {
-        top: calc(env(safe-area-inset-top, 0px) + 105px);
-        right: 18px;
-        width: 58px;
+
+      .status-separator {
+
+        height: 11px;
+
+        margin:
+          0 8px;
       }
 
-      .zoom-button {
-        height: 58px;
-        font-size: 32px;
-      }
-
-      .bottom-panel {
-        left: 18px;
-        right: 61px;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
-
-        min-height: 103px;
-
-        padding: 21px 22px 18px;
-
-        border-radius: 25px;
-      }
-
-      .region-title {
-        font-size: 20px;
-        letter-spacing: 0.19em;
-      }
 
       .datetime {
-        margin-top: 8px;
-        font-size: 13px;
-        letter-spacing: 0.11em;
+
+        font-size: 8.5px;
+
+        letter-spacing: 0.035em;
       }
 
-      .info-button {
-        right: -40px;
-        width: 70px;
-        height: 70px;
-        font-size: 40px;
-      }
     }
+
   </style>
 </head>
 
+
 <body>
+
+
+  <!-- =======================================================
+       КАРТА
+       
+       НІЧОГО НЕ НАКЛАДАЄМО НА НЕЇ ЗВЕРХУ.
+       ======================================================== -->
 
   <div id="map"></div>
 
-  <!-- TOP STATUS -->
-  <div class="top-status">
-    <div class="status-light"></div>
-    <div class="status-text">ONLINE RADAR</div>
+
+  <!-- =======================================================
+       ЄДИНИЙ СТАТУС
+       ======================================================== -->
+
+  <div class="bottom-status">
+
+    <div class="online-dot"></div>
+
+    <div class="online-label">
+      ONLINE RADAR
+    </div>
+
+    <div class="status-separator"></div>
+
+    <div
+      class="datetime"
+      id="datetime"
+    ></div>
+
   </div>
 
-  <!-- ZOOM -->
-  <div class="zoom-control">
-    <div class="zoom-button" id="zoomIn">+</div>
-    <div class="zoom-divider"></div>
-    <div class="zoom-button" id="zoomOut">−</div>
-  </div>
 
-  <!-- BOTTOM INFO -->
-  <div class="bottom-panel">
-    <div class="region-title">КИЇВСЬКА ОБЛАСТЬ</div>
-    <div class="datetime" id="datetime"></div>
-
-    <div class="info-button">i</div>
-  </div>
+  <!-- =======================================================
+       MAPLIBRE
+       ======================================================== -->
 
   <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
 
-  <script>
-    /*
-      ============================================================
-      ONLINE RADAR
-      STATIC GEOGRAPHIC MAP
-      ============================================================
 
-      Основна ідея:
-      - OpenFreeMap Dark як базова карта
-      - реальні OSM place-об'єкти
-      - українські назви
-      - без ручних "крапок" міст
-      - реальна адміністративна межа Київської області
-      - поступова поява населених пунктів при zoom
-    */
+  <script>
+
+    /* =========================================================
+       MAP STYLE
+       ========================================================= */
 
     const MAP_STYLE =
       "https://tiles.openfreemap.org/styles/dark";
 
-    /*
-      Стартова рамка.
-      Тримаємо Київську область майже повністю
-      у вертикальному екрані.
-    */
+
+    /* =========================================================
+       INITIAL VIEW
+       ========================================================= */
+
     const KYIV_VIEW_BOUNDS = [
       [28.55, 48.82],
       [32.72, 51.78]
     ];
 
-    /*
-      Межі переміщення.
-      Не даємо користувачу від'їхати дуже далеко
-      в інші області.
-    */
+
+    /* =========================================================
+       MAXIMUM PAN AREA
+       ========================================================= */
+
     const MAP_MAX_BOUNDS = [
       [28.25, 48.55],
       [33.15, 52.05]
     ];
 
-    const map = new maplibregl.Map({
-      container: "map",
-      style: MAP_STYLE,
 
-      attributionControl: true,
+    /* =========================================================
+       MAP
+       
+       КАРТА НЕ ЗМІНЕНА.
+       ========================================================= */
 
-      center: [30.95, 50.75],
-      zoom: 5.7,
+    const map =
+      new maplibregl.Map({
 
-      minZoom: 5.7,
-      maxZoom: 16,
+        container: "map",
 
-      maxBounds: MAP_MAX_BOUNDS,
+        style: MAP_STYLE,
 
-      dragRotate: false,
-      pitchWithRotate: false,
-      touchPitch: false,
+        attributionControl: true,
 
-      cooperativeGestures: false
-    });
+        center: [
+          30.95,
+          50.75
+        ],
 
-    /* ----------------------------------------------------------
-       FIT INITIAL VIEW
-    ---------------------------------------------------------- */
+        zoom: 5.7,
+
+        minZoom: 5.7,
+
+        maxZoom: 16,
+
+        maxBounds: MAP_MAX_BOUNDS,
+
+        dragRotate: false,
+
+        pitchWithRotate: false,
+
+        touchPitch: false,
+
+        cooperativeGestures: false
+
+      });
+
+
+    /* =========================================================
+       MAP LOAD
+       ========================================================= */
 
     map.on("load", () => {
 
-      map.fitBounds(KYIV_VIEW_BOUNDS, {
-        padding: {
-          top: 115,
-          bottom: 170,
-          left: 18,
-          right: 65
-        },
-        maxZoom: 6.15,
-        duration: 0
-      });
+      map.fitBounds(
+        KYIV_VIEW_BOUNDS,
+        {
 
-      /*
-        Після fitBounds фіксуємо стартовий zoom як мінімальний.
-        Таким чином користувач може збільшувати карту,
-        але не може від'їхати далі стартового масштабу.
-      */
-      const initialZoom = map.getZoom();
+          padding: {
+
+            top: 40,
+
+            bottom: 95,
+
+            left: 18,
+
+            right: 18
+
+          },
+
+          maxZoom: 6.15,
+
+          duration: 0
+
+        }
+      );
+
+
+      const initialZoom =
+        map.getZoom();
+
       map.setMinZoom(initialZoom);
 
+
       buildCustomMapLayers();
+
+
+      map.dragRotate.disable();
+
+      map.touchZoomRotate.disableRotation();
+
     });
 
-    /* ----------------------------------------------------------
+
+    /* =========================================================
        CUSTOM MAP LAYERS
-    ---------------------------------------------------------- */
+       
+       ЦЕЙ БЛОК НЕ ЧІПАЄМО.
+       ========================================================= */
 
     function buildCustomMapLayers() {
 
-      /*
-        --------------------------------------------------------
-        1. ХОВАЄМО СТАНДАРТНІ АНГЛІЙСЬКІ PLACE LABELS
-        --------------------------------------------------------
-      */
 
-      const allLayers = map.getStyle().layers || [];
+      /* -------------------------------------------------------
+         HIDE DEFAULT PLACE LABELS
+      ------------------------------------------------------- */
+
+      const allLayers =
+        map.getStyle().layers || [];
+
 
       allLayers.forEach(layer => {
 
@@ -514,353 +483,668 @@
           layer["source-layer"] === "place" &&
           layer.type === "symbol"
         ) {
+
           try {
+
             map.setLayoutProperty(
               layer.id,
               "visibility",
               "none"
             );
+
           } catch (e) {}
+
         }
+
       });
 
 
-      /*
-        --------------------------------------------------------
-        2. ВИДІЛЕННЯ КИЇВСЬКОЇ ОБЛАСТІ
-        --------------------------------------------------------
+      /* -------------------------------------------------------
+         KYIV OBLAST FILL
+      ------------------------------------------------------- */
 
-        Беремо адміністративний boundary прямо з того самого
-        OSM/OpenMapTiles vector source.
-
-        admin_level 4 = область України.
-
-        Не малюємо прямокутник.
-        Не використовуємо приблизну форму.
-        Беремо реальну адміністративну геометрію.
-      */
-
-      if (!map.getLayer("kyiv-oblast-glow")) {
+      if (
+        !map.getLayer(
+          "kyiv-oblast-fill"
+        )
+      ) {
 
         map.addLayer({
-          id: "kyiv-oblast-fill",
-          type: "fill",
-          source: "openmaptiles",
-          "source-layer": "boundary",
 
-          minzoom: 3,
+          id:
+            "kyiv-oblast-fill",
+
+          type:
+            "fill",
+
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "boundary",
+
+          minzoom:
+            3,
 
           filter: [
+
             "all",
-            ["==", "admin_level", 4],
+
+            [
+              "==",
+              "admin_level",
+              4
+            ],
+
             [
               "any",
-              ["==", "name:uk", "Київська область"],
-              ["==", "name", "Kyiv Oblast"],
-              ["==", "name", "Київська область"]
+
+              [
+                "==",
+                "name:uk",
+                "Київська область"
+              ],
+
+              [
+                "==",
+                "name",
+                "Kyiv Oblast"
+              ],
+
+              [
+                "==",
+                "name",
+                "Київська область"
+              ]
+
             ]
+
           ],
 
           paint: {
-            "fill-color": "#0a4f57",
+
+            "fill-color":
+              "#0a4f57",
+
             "fill-opacity": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              4, 0.055,
-              7, 0.075,
-              12, 0.045
+
+              4,
+              0.055,
+
+              7,
+              0.075,
+
+              12,
+              0.045
+
             ]
+
           }
+
         });
 
-        /*
-          Широкий дуже прозорий glow.
-        */
+      }
+
+
+      /* -------------------------------------------------------
+         KYIV OBLAST GLOW
+      ------------------------------------------------------- */
+
+      if (
+        !map.getLayer(
+          "kyiv-oblast-glow"
+        )
+      ) {
 
         map.addLayer({
-          id: "kyiv-oblast-glow",
-          type: "line",
-          source: "openmaptiles",
-          "source-layer": "boundary",
 
-          minzoom: 3,
+          id:
+            "kyiv-oblast-glow",
+
+          type:
+            "line",
+
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "boundary",
+
+          minzoom:
+            3,
 
           filter: [
+
             "all",
-            ["==", "admin_level", 4],
+
+            [
+              "==",
+              "admin_level",
+              4
+            ],
+
             [
               "any",
-              ["==", "name:uk", "Київська область"],
-              ["==", "name", "Kyiv Oblast"],
-              ["==", "name", "Київська область"]
+
+              [
+                "==",
+                "name:uk",
+                "Київська область"
+              ],
+
+              [
+                "==",
+                "name",
+                "Kyiv Oblast"
+              ],
+
+              [
+                "==",
+                "name",
+                "Київська область"
+              ]
+
             ]
+
           ],
 
           paint: {
-            "line-color": "#24d8e8",
-            "line-opacity": 0.18,
+
+            "line-color":
+              "#24d8e8",
+
+            "line-opacity":
+              0.18,
 
             "line-blur": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              4, 5,
-              8, 7,
-              14, 9
+
+              4,
+              5,
+
+              8,
+              7,
+
+              14,
+              9
+
             ],
 
             "line-width": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              4, 2,
-              8, 4,
-              14, 7
+
+              4,
+              2,
+
+              8,
+              4,
+
+              14,
+              7
+
             ]
+
           }
+
         });
 
-        /*
-          Основний контур.
-        */
+      }
+
+
+      /* -------------------------------------------------------
+         KYIV OBLAST MAIN OUTLINE
+      ------------------------------------------------------- */
+
+      if (
+        !map.getLayer(
+          "kyiv-oblast-outline"
+        )
+      ) {
 
         map.addLayer({
-          id: "kyiv-oblast-outline",
-          type: "line",
-          source: "openmaptiles",
-          "source-layer": "boundary",
 
-          minzoom: 3,
+          id:
+            "kyiv-oblast-outline",
+
+          type:
+            "line",
+
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "boundary",
+
+          minzoom:
+            3,
 
           filter: [
+
             "all",
-            ["==", "admin_level", 4],
+
+            [
+              "==",
+              "admin_level",
+              4
+            ],
+
             [
               "any",
-              ["==", "name:uk", "Київська область"],
-              ["==", "name", "Kyiv Oblast"],
-              ["==", "name", "Київська область"]
+
+              [
+                "==",
+                "name:uk",
+                "Київська область"
+              ],
+
+              [
+                "==",
+                "name",
+                "Kyiv Oblast"
+              ],
+
+              [
+                "==",
+                "name",
+                "Київська область"
+              ]
+
             ]
+
           ],
 
           paint: {
-            "line-color": "#4de7f2",
+
+            "line-color":
+              "#4de7f2",
 
             "line-opacity": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              4, 0.75,
-              8, 0.9,
-              14, 0.95
+
+              4,
+              0.75,
+
+              8,
+              0.9,
+
+              14,
+              0.95
+
             ],
 
             "line-width": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              4, 1.5,
-              7, 2.1,
-              11, 2.8,
-              15, 3.5
+
+              4,
+              1.5,
+
+              7,
+              2.1,
+
+              11,
+              2.8,
+
+              15,
+              3.5
+
             ],
 
-            "line-blur": 0.15
+            "line-blur":
+              0.15
+
           }
+
         });
+
       }
 
 
-      /*
-        --------------------------------------------------------
-        3. МЕЖІ РАЙОНІВ
-        --------------------------------------------------------
+      /* -------------------------------------------------------
+         DISTRICT BOUNDARIES
+      ------------------------------------------------------- */
 
-        Набагато слабші за межу області.
-      */
-
-      if (!map.getLayer("kyiv-districts")) {
+      if (
+        !map.getLayer(
+          "kyiv-districts"
+        )
+      ) {
 
         map.addLayer({
-          id: "kyiv-districts",
-          type: "line",
-          source: "openmaptiles",
-          "source-layer": "boundary",
 
-          minzoom: 5.4,
+          id:
+            "kyiv-districts",
+
+          type:
+            "line",
+
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "boundary",
+
+          minzoom:
+            5.4,
 
           filter: [
+
             "all",
-            ["==", "admin_level", 6]
+
+            [
+              "==",
+              "admin_level",
+              6
+            ]
+
           ],
 
           paint: {
-            "line-color": "#52686b",
+
+            "line-color":
+              "#52686b",
 
             "line-opacity": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              5.4, 0.24,
-              8, 0.32,
-              12, 0.42
+
+              5.4,
+              0.24,
+
+              8,
+              0.32,
+
+              12,
+              0.42
+
             ],
 
             "line-width": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              5.4, 0.65,
-              10, 1.05,
-              14, 1.5
+
+              5.4,
+              0.65,
+
+              10,
+              1.05,
+
+              14,
+              1.5
+
             ],
 
-            "line-dasharray": [2, 2]
+            "line-dasharray":
+              [2, 2]
+
           }
+
         });
+
       }
 
 
-      /*
-        --------------------------------------------------------
-        4. УКРАЇНСЬКІ НАЗВИ МІСТ / СЕЛИЩ
-        --------------------------------------------------------
+      /* -------------------------------------------------------
+         MAIN UKRAINIAN SETTLEMENT LABELS
+      ------------------------------------------------------- */
 
-        Один source.
-        Один набір логіки.
-
-        Ніяких вручну створених точок.
-      */
-
-      if (!map.getLayer("settlements-ukrainian")) {
+      if (
+        !map.getLayer(
+          "settlements-ukrainian"
+        )
+      ) {
 
         map.addLayer({
-          id: "settlements-ukrainian",
 
-          type: "symbol",
+          id:
+            "settlements-ukrainian",
 
-          source: "openmaptiles",
-          "source-layer": "place",
+          type:
+            "symbol",
 
-          minzoom: 5.0,
-          maxzoom: 16,
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "place",
+
+          minzoom:
+            5.0,
+
+          maxzoom:
+            16,
 
           layout: {
 
-            "symbol-placement": "point",
+            "symbol-placement":
+              "point",
 
             "symbol-sort-key": [
+
               "coalesce",
-              ["to-number", ["get", "rank"]],
+
+              [
+                "to-number",
+                [
+                  "get",
+                  "rank"
+                ]
+              ],
+
               99
+
             ],
 
             "text-field": [
+
               "coalesce",
-              ["get", "name:uk"],
-              ["get", "name"]
+
+              [
+                "get",
+                "name:uk"
+              ],
+
+              [
+                "get",
+                "name"
+              ]
+
             ],
 
             "text-font": [
               "Noto Sans Regular"
             ],
 
-            "text-anchor": "top",
+            "text-anchor":
+              "top",
 
             "text-offset": [
               0,
               0.72
             ],
 
-            "text-allow-overlap": false,
-            "text-ignore-placement": false,
+            "text-allow-overlap":
+              false,
 
-            "text-padding": 2,
+            "text-ignore-placement":
+              false,
 
-            "text-max-width": 9,
+            "text-padding":
+              2,
+
+            "text-max-width":
+              9,
 
             "text-size": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
 
-              /*
-                Стартовий масштаб.
-                Великі міста видно одразу.
-              */
+
               5.0,
+
               [
+
                 "match",
+
                 ["get", "class"],
 
-                "city", 15,
-                "town", 13,
-                "village", 10,
+                "city",
+                15,
+
+                "town",
+                13,
+
+                "village",
+                10,
 
                 9
+
               ],
+
 
               6.2,
+
               [
+
                 "match",
+
                 ["get", "class"],
 
-                "city", 17,
-                "town", 14,
-                "village", 10.5,
+                "city",
+                17,
+
+                "town",
+                14,
+
+                "village",
+                10.5,
 
                 9
+
               ],
 
-              /*
-                Ближче — більше.
-              */
+
               9.0,
+
               [
+
                 "match",
+
                 ["get", "class"],
 
-                "city", 20,
-                "town", 16,
-                "village", 12,
-                "hamlet", 10,
+                "city",
+                20,
+
+                "town",
+                16,
+
+                "village",
+                12,
+
+                "hamlet",
+                10,
 
                 9
+
               ],
+
 
               13.0,
+
               [
+
                 "match",
+
                 ["get", "class"],
 
-                "city", 22,
-                "town", 18,
-                "village", 14,
-                "hamlet", 11,
+                "city",
+                22,
+
+                "town",
+                18,
+
+                "village",
+                14,
+
+                "hamlet",
+                11,
 
                 10
+
               ],
 
+
               16.0,
+
               [
+
                 "match",
+
                 ["get", "class"],
 
-                "city", 24,
-                "town", 20,
-                "village", 16,
-                "hamlet", 12,
+                "city",
+                24,
+
+                "town",
+                20,
+
+                "village",
+                16,
+
+                "hamlet",
+                12,
 
                 10
+
               ]
+
             ]
+
           },
 
           paint: {
 
             "text-color": [
+
               "match",
+
               ["get", "class"],
 
               "city",
@@ -876,151 +1160,247 @@
               "#b9ccce",
 
               "#c9dcde"
+
             ],
 
-            "text-halo-color": "#050708",
+            "text-halo-color":
+              "#050708",
 
             "text-halo-width": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              5, 2.2,
-              10, 2.5,
-              16, 3
+
+              5,
+              2.2,
+
+              10,
+              2.5,
+
+              16,
+              3
+
             ],
 
-            "text-halo-blur": 0.15
+            "text-halo-blur":
+              0.15
+
           },
 
           filter: [
+
             "in",
+
             "class",
 
             "city",
+
             "town",
+
             "village",
+
             "hamlet",
+
             "suburb",
+
             "neighbourhood",
+
             "isolated_dwelling"
+
           ]
+
         });
+
       }
 
 
-      /*
-        --------------------------------------------------------
-        5. ДРУГИЙ ШАР ДЛЯ ДРІБНИХ НАСЕЛЕНИХ ПУНКТІВ
-        --------------------------------------------------------
+      /* -------------------------------------------------------
+         SMALL SETTLEMENTS
+      ------------------------------------------------------- */
 
-        Він НЕ показується на старті.
-        З'являється при збільшенні.
-
-        Таким чином карта не перетворюється на кашу.
-      */
-
-      if (!map.getLayer("small-settlements-ukrainian")) {
+      if (
+        !map.getLayer(
+          "small-settlements-ukrainian"
+        )
+      ) {
 
         map.addLayer({
-          id: "small-settlements-ukrainian",
 
-          type: "symbol",
+          id:
+            "small-settlements-ukrainian",
 
-          source: "openmaptiles",
-          "source-layer": "place",
+          type:
+            "symbol",
 
-          minzoom: 9.0,
-          maxzoom: 16,
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "place",
+
+          minzoom:
+            9.0,
+
+          maxzoom:
+            16,
 
           layout: {
 
-            "symbol-placement": "point",
+            "symbol-placement":
+              "point",
 
             "symbol-sort-key": [
+
               "coalesce",
-              ["to-number", ["get", "rank"]],
+
+              [
+                "to-number",
+                [
+                  "get",
+                  "rank"
+                ]
+              ],
+
               100
+
             ],
 
             "text-field": [
+
               "coalesce",
-              ["get", "name:uk"],
-              ["get", "name"]
+
+              [
+                "get",
+                "name:uk"
+              ],
+
+              [
+                "get",
+                "name"
+              ]
+
             ],
 
             "text-font": [
               "Noto Sans Regular"
             ],
 
-            "text-anchor": "top",
+            "text-anchor":
+              "top",
 
             "text-offset": [
               0,
               0.65
             ],
 
-            "text-padding": 1,
+            "text-padding":
+              1,
 
-            "text-max-width": 8,
+            "text-max-width":
+              8,
 
             "text-size": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
 
-              9, 9,
-              12, 11,
-              16, 14
+              9,
+              9,
+
+              12,
+              11,
+
+              16,
+              14
+
             ]
+
           },
 
           paint: {
 
-            "text-color": "#aebfc1",
+            "text-color":
+              "#aebfc1",
 
-            "text-halo-color": "#050708",
+            "text-halo-color":
+              "#050708",
 
-            "text-halo-width": 2,
+            "text-halo-width":
+              2,
 
-            "text-halo-blur": 0.2
+            "text-halo-blur":
+              0.2
+
           },
 
           filter: [
+
             "in",
+
             "class",
 
             "hamlet",
+
             "isolated_dwelling",
+
             "neighbourhood"
+
           ]
+
         });
+
       }
 
 
-      /*
-        --------------------------------------------------------
-        6. НАЗВИ ВЕЛИКИХ ВОДНИХ ОБ'ЄКТІВ
-        --------------------------------------------------------
-      */
+      /* -------------------------------------------------------
+         WATER LABELS
+      ------------------------------------------------------- */
 
-      if (!map.getLayer("water-labels-ukrainian")) {
+      if (
+        !map.getLayer(
+          "water-labels-ukrainian"
+        )
+      ) {
 
         map.addLayer({
-          id: "water-labels-ukrainian",
 
-          type: "symbol",
+          id:
+            "water-labels-ukrainian",
 
-          source: "openmaptiles",
-          "source-layer": "water",
+          type:
+            "symbol",
 
-          minzoom: 7,
+          source:
+            "openmaptiles",
+
+          "source-layer":
+            "water",
+
+          minzoom:
+            7,
 
           layout: {
 
             "text-field": [
+
               "coalesce",
-              ["get", "name:uk"],
-              ["get", "name"]
+
+              [
+                "get",
+                "name:uk"
+              ],
+
+              [
+                "get",
+                "name"
+              ]
+
             ],
 
             "text-font": [
@@ -1028,93 +1408,117 @@
             ],
 
             "text-size": [
+
               "interpolate",
+
               ["linear"],
+
               ["zoom"],
-              7, 10,
-              11, 14,
-              15, 18
+
+              7,
+              10,
+
+              11,
+              14,
+
+              15,
+              18
+
             ],
 
-            "text-max-width": 8
+            "text-max-width":
+              8
+
           },
 
           paint: {
 
-            "text-color": "rgba(110, 170, 180, 0.65)",
+            "text-color":
+              "rgba(110, 170, 180, 0.65)",
 
-            "text-halo-color": "rgba(3, 8, 10, 0.9)",
+            "text-halo-color":
+              "rgba(3, 8, 10, 0.9)",
 
-            "text-halo-width": 1.5
+            "text-halo-width":
+              1.5
+
           }
+
         });
+
       }
 
     }
 
 
-    /* ----------------------------------------------------------
-       ZOOM BUTTONS
-    ---------------------------------------------------------- */
-
-    document
-      .getElementById("zoomIn")
-      .addEventListener("click", () => {
-        map.zoomIn({
-          duration: 280
-        });
-      });
-
-    document
-      .getElementById("zoomOut")
-      .addEventListener("click", () => {
-        map.zoomOut({
-          duration: 280
-        });
-      });
-
-
-    /* ----------------------------------------------------------
-       LIVE DATE / TIME
-    ---------------------------------------------------------- */
+    /* =========================================================
+       DATE / TIME
+       ========================================================= */
 
     function updateDateTime() {
 
-      const now = new Date();
+      const now =
+        new Date();
+
 
       const date =
-        String(now.getDate()).padStart(2, "0") +
-        "." +
-        String(now.getMonth() + 1).padStart(2, "0") +
-        "." +
+
+        String(
+          now.getDate()
+        ).padStart(2, "0")
+
+        + "."
+
+        +
+
+        String(
+          now.getMonth() + 1
+        ).padStart(2, "0")
+
+        + "."
+
+        +
+
         now.getFullYear();
 
-      const time =
-        String(now.getHours()).padStart(2, "0") +
-        ":" +
-        String(now.getMinutes()).padStart(2, "0") +
-        ":" +
-        String(now.getSeconds()).padStart(2, "0");
 
-      document.getElementById("datetime").textContent =
-        `${date}  ·  ${time}`;
+      const time =
+
+        String(
+          now.getHours()
+        ).padStart(2, "0")
+
+        + ":"
+
+        +
+
+        String(
+          now.getMinutes()
+        ).padStart(2, "0")
+
+        + ":"
+
+        +
+
+        String(
+          now.getSeconds()
+        ).padStart(2, "0");
+
+
+      document
+        .getElementById("datetime")
+        .textContent =
+          `${date} · ${time}`;
     }
+
 
     updateDateTime();
 
-    setInterval(updateDateTime, 1000);
 
-
-    /* ----------------------------------------------------------
-       PREVENT ROTATION ON TOUCH
-    ---------------------------------------------------------- */
-
-    map.on("load", () => {
-
-      map.dragRotate.disable();
-      map.touchZoomRotate.disableRotation();
-
-    });
+    setInterval(
+      updateDateTime,
+      1000
+    );
 
   </script>
 
