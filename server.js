@@ -35,6 +35,269 @@ const geocodeCache =
 
 
 // ============================================================
+// STATIC TEST GAZETTEER
+//
+// IMPORTANT:
+// Known test locations are resolved locally first.
+// Nominatim is used only as fallback.
+//
+// Coordinates are WGS84:
+// lat = latitude
+// lon = longitude
+// ============================================================
+
+const STATIC_PLACES = {
+
+  // ----------------------------------------------------------
+  // KYIV
+  // ----------------------------------------------------------
+
+  "київ": {
+    name: "Київ",
+    lat: 50.4501,
+    lon: 30.5234
+  },
+
+  "арсенальна": {
+    name: "Арсенальна",
+    lat: 50.4446,
+    lon: 30.5486
+  },
+
+  "печерськ": {
+    name: "Печерськ",
+    lat: 50.4269,
+    lon: 30.5367
+  },
+
+  "теремки": {
+    name: "Теремки",
+    lat: 50.3677,
+    lon: 30.4528
+  },
+
+  "позняки": {
+    name: "Позняки",
+    lat: 50.4147,
+    lon: 30.6332
+  },
+
+  "осокорки": {
+    name: "Осокорки",
+    lat: 50.4056,
+    lon: 30.6155
+  },
+
+  "оболонь": {
+    name: "Оболонь",
+    lat: 50.5114,
+    lon: 30.4982
+  },
+
+  "троєщина": {
+    name: "Троєщина",
+    lat: 50.5104,
+    lon: 30.6165
+  },
+
+  "виноградар": {
+    name: "Виноградар",
+    lat: 50.5057,
+    lon: 30.4242
+  },
+
+  "солом'янка": {
+    name: "Солом'янка",
+    lat: 50.4300,
+    lon: 30.4720
+  },
+
+  "голосіїв": {
+    name: "Голосіїв",
+    lat: 50.3920,
+    lon: 30.5080
+  },
+
+  "лівий берег": {
+    name: "Лівий берег",
+    lat: 50.4450,
+    lon: 30.6200
+  },
+
+
+  // ----------------------------------------------------------
+  // BILA TSERKVA AREA
+  // ----------------------------------------------------------
+
+  "біла церква": {
+    name: "Біла Церква",
+    lat: 49.7968,
+    lon: 30.1153
+  },
+
+  "трушки": {
+    name: "Трушки",
+    lat: 49.7450,
+    lon: 30.1950
+  },
+
+  "узин": {
+    name: "Узин",
+    lat: 49.8269,
+    lon: 30.4147
+  },
+
+  "гребінки": {
+    name: "Гребінки",
+    lat: 50.1078,
+    lon: 30.1820
+  },
+
+  "сквира": {
+    name: "Сквира",
+    lat: 49.7322,
+    lon: 29.6657
+  },
+
+  "володарка": {
+    name: "Володарка",
+    lat: 49.5248,
+    lon: 29.9187
+  },
+
+  "ставище": {
+    name: "Ставище",
+    lat: 49.3928,
+    lon: 30.1904
+  },
+
+  "тетіїв": {
+    name: "Тетіїв",
+    lat: 49.3755,
+    lon: 29.6644
+  },
+
+  "ржищів": {
+    name: "Ржищів",
+    lat: 49.9670,
+    lon: 31.0465
+  },
+
+  "кагарлик": {
+    name: "Кагарлик",
+    lat: 49.8623,
+    lon: 30.8235
+  },
+
+
+  // ----------------------------------------------------------
+  // FASTIV / SOUTH-WEST
+  // ----------------------------------------------------------
+
+  "васильків": {
+    name: "Васильків",
+    lat: 50.1780,
+    lon: 30.3160
+  },
+
+  "фастів": {
+    name: "Фастів",
+    lat: 50.0769,
+    lon: 29.9177
+  },
+
+  "обухів": {
+    name: "Обухів",
+    lat: 50.1068,
+    lon: 30.6254
+  },
+
+  "українка": {
+    name: "Українка",
+    lat: 50.1437,
+    lon: 30.7464
+  },
+
+  "трипілля": {
+    name: "Трипілля",
+    lat: 50.1188,
+    lon: 30.7790
+  },
+
+  "козин": {
+    name: "Козин",
+    lat: 50.2066,
+    lon: 30.6416
+  },
+
+
+  // ----------------------------------------------------------
+  // KYIV EAST
+  // ----------------------------------------------------------
+
+  "бориспіль": {
+    name: "Бориспіль",
+    lat: 50.3527,
+    lon: 30.9550
+  },
+
+  "бровари": {
+    name: "Бровари",
+    lat: 50.5111,
+    lon: 30.7903
+  },
+
+  "березань": {
+    name: "Березань",
+    lat: 50.3157,
+    lon: 31.4700
+  },
+
+  "яготин": {
+    name: "Яготин",
+    lat: 50.2567,
+    lon: 31.7776
+  },
+
+  "переяслав": {
+    name: "Переяслав",
+    lat: 50.0764,
+    lon: 31.4494
+  },
+
+
+  // ----------------------------------------------------------
+  // NORTH
+  // ----------------------------------------------------------
+
+  "вишгород": {
+    name: "Вишгород",
+    lat: 50.5848,
+    lon: 30.4898
+  },
+
+  "димер": {
+    name: "Димер",
+    lat: 50.7870,
+    lon: 30.3010
+  },
+
+  "іванків": {
+    name: "Іванків",
+    lat: 50.9387,
+    lon: 29.8940
+  },
+
+  "славутич": {
+    name: "Славутич",
+    lat: 51.5220,
+    lon: 30.7500
+  }
+
+};
+
+
+// ============================================================
 // BASIC
 // ============================================================
 
@@ -48,10 +311,11 @@ app.get("/", (req, res) => {
       "online",
 
     version:
-      "6.0.0",
+      "6.1.0",
 
     testChannel:
       `@${TEST_CHANNEL_USERNAME}`
+
   });
 
 });
@@ -62,6 +326,7 @@ app.get("/health", (req, res) => {
   cleanupExpiredEvents();
 
   res.json({
+
     ok:
       true,
 
@@ -70,6 +335,7 @@ app.get("/health", (req, res) => {
 
     events:
       events.size
+
   });
 
 });
@@ -84,10 +350,12 @@ app.get("/events", (req, res) => {
   cleanupExpiredEvents();
 
   res.json({
+
     events:
       Array.from(
         events.values()
       )
+
   });
 
 });
@@ -98,17 +366,20 @@ app.post("/events", (req, res) => {
   const body =
     req.body || {};
 
+
   if (
     typeof body.lat !== "number" ||
     typeof body.lon !== "number"
   ) {
 
     return res.status(400).json({
+
       ok:
         false,
 
       error:
         "lat and lon must be numbers"
+
     });
 
   }
@@ -168,10 +439,12 @@ app.post("/events", (req, res) => {
 
 
   res.json({
+
     ok:
       true,
 
     event
+
   });
 
 });
@@ -195,10 +468,12 @@ app.delete(
 
 
     res.json({
+
       ok:
         true,
 
       deleted
+
     });
 
   }
@@ -218,11 +493,13 @@ app.post(
     broadcastState();
 
     res.json({
+
       ok:
         true,
 
       events:
         []
+
     });
 
   }
@@ -239,6 +516,12 @@ app.get(
 
     const now =
       Date.now();
+
+
+    const place =
+      STATIC_PLACES[
+        "біла церква"
+      ];
 
 
     const event = {
@@ -259,13 +542,13 @@ app.get(
         "",
 
       place:
-        "Біла Церква",
+        place.name,
 
       lat:
-        49.7968,
+        place.lat,
 
       lon:
-        30.1153,
+        place.lon,
 
       createdAt:
         now,
@@ -290,10 +573,12 @@ app.get(
 
 
     res.json({
+
       ok:
         true,
 
       event
+
     });
 
   }
@@ -333,7 +618,6 @@ function normalizeText(text) {
 // DELETE:
 //
 // 1 -
-//
 // ============================================================
 
 function parseMessage(text) {
@@ -350,8 +634,6 @@ function parseMessage(text) {
   let deletePoint =
     false;
 
-
-  // DELETE
 
   const deleteMatch =
     value.match(
@@ -374,18 +656,18 @@ function parseMessage(text) {
 
 
     return {
+
       id,
 
       text:
         "",
 
       deletePoint
+
     };
 
   }
 
-
-  // NUMBER + LOCATION
 
   const match =
     value.match(
@@ -480,7 +762,7 @@ function deletePoint(pointId) {
 
 
 // ============================================================
-// CLEAN LOCATION
+// CLEAN LOCATION TEXT
 // ============================================================
 
 function cleanLocationText(text) {
@@ -488,10 +770,6 @@ function cleanLocationText(text) {
   let value =
     normalizeText(text);
 
-
-  /*
-   * Remove common service words.
-   */
 
   value =
     value.replace(
@@ -553,14 +831,10 @@ function getAliasVariants(text) {
 
     if (
       value &&
-      !aliases.includes(
-        value
-      )
+      !aliases.includes(value)
     ) {
 
-      aliases.push(
-        value
-      );
+      aliases.push(value);
 
     }
 
@@ -570,9 +844,7 @@ function getAliasVariants(text) {
   add(normalized);
 
 
-  // ==========================================================
   // УКРАЇНКА
-  // ==========================================================
 
   if (
     normalized === "українку" ||
@@ -581,16 +853,12 @@ function getAliasVariants(text) {
     normalized === "українкою"
   ) {
 
-    add(
-      "українка"
-    );
+    add("українка");
 
   }
 
 
-  // ==========================================================
   // БІЛА ЦЕРКВА
-  // ==========================================================
 
   if (
     normalized === "білу церкву" ||
@@ -599,16 +867,12 @@ function getAliasVariants(text) {
     normalized === "білою церквою"
   ) {
 
-    add(
-      "біла церква"
-    );
+    add("біла церква");
 
   }
 
 
-  // ==========================================================
   // БРОВАРИ
-  // ==========================================================
 
   if (
     normalized === "броварів" ||
@@ -616,16 +880,12 @@ function getAliasVariants(text) {
     normalized === "броварами"
   ) {
 
-    add(
-      "бровари"
-    );
+    add("бровари");
 
   }
 
 
-  // ==========================================================
   // ЯГОТИН
-  // ==========================================================
 
   if (
     normalized === "яготина" ||
@@ -633,16 +893,12 @@ function getAliasVariants(text) {
     normalized === "яготином"
   ) {
 
-    add(
-      "яготин"
-    );
+    add("яготин");
 
   }
 
 
-  // ==========================================================
   // СКВИРА
-  // ==========================================================
 
   if (
     normalized === "сквиру" ||
@@ -650,16 +906,12 @@ function getAliasVariants(text) {
     normalized === "сквирою"
   ) {
 
-    add(
-      "сквира"
-    );
+    add("сквира");
 
   }
 
 
-  // ==========================================================
   // ТРУШКИ
-  // ==========================================================
 
   if (
     normalized === "трушок" ||
@@ -667,16 +919,12 @@ function getAliasVariants(text) {
     normalized === "трушками"
   ) {
 
-    add(
-      "трушки"
-    );
+    add("трушки");
 
   }
 
 
-  // ==========================================================
   // ВАСИЛЬКІВ
-  // ==========================================================
 
   if (
     normalized === "василькова" ||
@@ -684,16 +932,12 @@ function getAliasVariants(text) {
     normalized === "васильковом"
   ) {
 
-    add(
-      "васильків"
-    );
+    add("васильків");
 
   }
 
 
-  // ==========================================================
   // ОБУХІВ
-  // ==========================================================
 
   if (
     normalized === "обухова" ||
@@ -701,16 +945,12 @@ function getAliasVariants(text) {
     normalized === "обуховом"
   ) {
 
-    add(
-      "обухів"
-    );
+    add("обухів");
 
   }
 
 
-  // ==========================================================
   // ФАСТІВ
-  // ==========================================================
 
   if (
     normalized === "фастова" ||
@@ -718,16 +958,12 @@ function getAliasVariants(text) {
     normalized === "фастовом"
   ) {
 
-    add(
-      "фастів"
-    );
+    add("фастів");
 
   }
 
 
-  // ==========================================================
   // ПЕРЕЯСЛАВ
-  // ==========================================================
 
   if (
     normalized === "переяслава" ||
@@ -735,9 +971,85 @@ function getAliasVariants(text) {
     normalized === "переяславом"
   ) {
 
-    add(
-      "переяслав"
-    );
+    add("переяслав");
+
+  }
+
+
+  // УЗИН
+
+  if (
+    normalized === "узина" ||
+    normalized === "узині" ||
+    normalized === "узином"
+  ) {
+
+    add("узин");
+
+  }
+
+
+  // КАГАРЛИК
+
+  if (
+    normalized === "кагарлика" ||
+    normalized === "кагарлику" ||
+    normalized === "кагарликом"
+  ) {
+
+    add("кагарлик");
+
+  }
+
+
+  // РЖИЩІВ
+
+  if (
+    normalized === "ржищова" ||
+    normalized === "ржищеві" ||
+    normalized === "ржищевом"
+  ) {
+
+    add("ржищів");
+
+  }
+
+
+  // БОРИСПІЛЬ
+
+  if (
+    normalized === "борисполя" ||
+    normalized === "борисполі" ||
+    normalized === "борисполем"
+  ) {
+
+    add("бориспіль");
+
+  }
+
+
+  // ВИШГОРОД
+
+  if (
+    normalized === "вишгорода" ||
+    normalized === "вишгороді" ||
+    normalized === "вишгородом"
+  ) {
+
+    add("вишгород");
+
+  }
+
+
+  // СЛАВУТИЧ
+
+  if (
+    normalized === "славутича" ||
+    normalized === "славутичі" ||
+    normalized === "славутичем"
+  ) {
+
+    add("славутич");
 
   }
 
@@ -751,9 +1063,7 @@ function getAliasVariants(text) {
 // KYIV INTERNAL LOCATION ALIASES
 // ============================================================
 
-function getKyivLocationAliases(
-  text
-) {
+function getKyivLocationAliases(text) {
 
   const value =
     normalizeText(text);
@@ -771,14 +1081,194 @@ function getKyivLocationAliases(
 
     if (
       value &&
-      !aliases.includes(
-        value
-      )
+      !aliases.includes(value)
     ) {
 
-      aliases.push(
-        value
-      );
+      aliases.push(value);
+
+    }
+
+  }
+
+
+  if (
+    value.includes("арсеналь")
+  ) {
+
+    add("арсенальна");
+
+  }
+
+
+  if (
+    value.includes("теремк")
+  ) {
+
+    add("теремки");
+
+  }
+
+
+  if (
+    value.includes("печерськ")
+  ) {
+
+    add("печерськ");
+
+  }
+
+
+  if (
+    value.includes("позняк")
+  ) {
+
+    add("позняки");
+
+  }
+
+
+  if (
+    value.includes("осокорк")
+  ) {
+
+    add("осокорки");
+
+  }
+
+
+  if (
+    value.includes("оболон")
+  ) {
+
+    add("оболонь");
+
+  }
+
+
+  if (
+    value.includes("лівий берег")
+  ) {
+
+    add("лівий берег");
+
+  }
+
+
+  if (
+    value.includes("виноградар")
+  ) {
+
+    add("виноградар");
+
+  }
+
+
+  if (
+    value.includes("троєщин")
+  ) {
+
+    add("троєщина");
+
+  }
+
+
+  if (
+    value.includes("солом")
+  ) {
+
+    add("солом'янка");
+
+  }
+
+
+  if (
+    value.includes("голосіїв")
+  ) {
+
+    add("голосіїв");
+
+  }
+
+
+  return aliases;
+
+}
+
+
+// ============================================================
+// STATIC PLACE LOOKUP
+// ============================================================
+
+function findStaticPlace(text) {
+
+  const normalized =
+    normalizeText(
+      text
+    );
+
+
+  const cleaned =
+    cleanLocationText(
+      normalized
+    );
+
+
+  const aliases =
+    getAliasVariants(
+      cleaned
+    );
+
+
+  const kyivAliases =
+    getKyivLocationAliases(
+      cleaned
+    );
+
+
+  const candidates = [
+    ...kyivAliases,
+    ...aliases,
+    cleaned,
+    normalized
+  ];
+
+
+  for (
+    const candidate
+    of candidates
+  ) {
+
+    if (
+      STATIC_PLACES[candidate]
+    ) {
+
+      const place =
+        STATIC_PLACES[
+          candidate
+        ];
+
+
+      return {
+
+        name:
+          place.name,
+
+        lat:
+          place.lat,
+
+        lon:
+          place.lon,
+
+        displayName:
+          `${place.name}, Україна`,
+
+        osmType:
+          "static",
+
+        osmId:
+          null
+
+      };
 
     }
 
@@ -786,212 +1276,89 @@ function getKyivLocationAliases(
 
 
   /*
-   * Арсенальна
+   * Special handling for
+   * "Київ Арсенальна",
+   * "Київ Печерськ", etc.
    */
 
   if (
-    value.includes(
-      "арсеналь"
-    )
+    normalized.includes("арсеналь")
   ) {
 
-    add(
-      "Арсенальна Київ"
-    );
-
-    add(
-      "Арсенальна, Київ"
-    );
-
-    add(
-      "Арсенальна станція метро Київ"
-    );
+    return STATIC_PLACES[
+      "арсенальна"
+    ];
 
   }
 
 
-  /*
-   * Теремки
-   */
-
   if (
-    value.includes(
-      "теремк"
-    )
+    normalized.includes("печерськ")
   ) {
 
-    add(
-      "Теремки Київ"
-    );
-
-    add(
-      "Теремки, Київ"
-    );
-
-  }
-
-
-  /*
-   * Печерськ
-   */
-
-  if (
-    value.includes(
+    return STATIC_PLACES[
       "печерськ"
-    ) ||
-    value.includes(
-      "печерськ"
-    )
-  ) {
-
-    add(
-      "Печерськ Київ"
-    );
-
-    add(
-      "Печерськ, Київ"
-    );
+    ];
 
   }
 
-
-  /*
-   * Позняки
-   */
 
   if (
-    value.includes(
-      "позняк"
-    )
+    normalized.includes("теремк")
   ) {
 
-    add(
-      "Позняки Київ"
-    );
+    return STATIC_PLACES[
+      "теремки"
+    ];
 
   }
 
-
-  /*
-   * Осокорки
-   */
 
   if (
-    value.includes(
-      "осокорк"
-    )
+    normalized.includes("позняк")
   ) {
 
-    add(
-      "Осокорки Київ"
-    );
+    return STATIC_PLACES[
+      "позняки"
+    ];
 
   }
 
-
-  /*
-   * Оболонь
-   */
 
   if (
-    value.includes(
-      "оболон"
-    )
+    normalized.includes("осокорк")
   ) {
 
-    add(
-      "Оболонь Київ"
-    );
+    return STATIC_PLACES[
+      "осокорки"
+    ];
 
   }
 
-
-  /*
-   * Лівий берег
-   */
 
   if (
-    value.includes(
-      "лівий берег"
-    )
+    normalized.includes("оболон")
   ) {
 
-    add(
-      "Лівий берег Київ"
-    );
+    return STATIC_PLACES[
+      "оболонь"
+    ];
 
   }
 
-
-  /*
-   * Виноградар
-   */
 
   if (
-    value.includes(
-      "виноградар"
-    )
+    normalized.includes("троєщин")
   ) {
 
-    add(
-      "Виноградар Київ"
-    );
+    return STATIC_PLACES[
+      "троєщина"
+    ];
 
   }
 
 
-  /*
-   * Троєщина
-   */
-
-  if (
-    value.includes(
-      "троєщин"
-    )
-  ) {
-
-    add(
-      "Троєщина Київ"
-    );
-
-  }
-
-
-  /*
-   * Солом'янка
-   */
-
-  if (
-    value.includes(
-      "солом"
-    )
-  ) {
-
-    add(
-      "Солом'янка Київ"
-    );
-
-  }
-
-
-  /*
-   * Голосіїв
-   */
-
-  if (
-    value.includes(
-      "голосіїв"
-    )
-  ) {
-
-    add(
-      "Голосіїв Київ"
-    );
-
-  }
-
-
-  return aliases;
+  return null;
 
 }
 
@@ -1024,23 +1391,15 @@ function buildVariants(text) {
 
     if (
       value &&
-      !variants.includes(
-        value
-      )
+      !variants.includes(value)
     ) {
 
-      variants.push(
-        value
-      );
+      variants.push(value);
 
     }
 
   }
 
-
-  /*
-   * Kyiv internal aliases first.
-   */
 
   const kyivAliases =
     getKyivLocationAliases(
@@ -1058,10 +1417,6 @@ function buildVariants(text) {
   }
 
 
-  /*
-   * Normal aliases.
-   */
-
   const aliases =
     getAliasVariants(
       cleaned
@@ -1078,27 +1433,13 @@ function buildVariants(text) {
   }
 
 
-  /*
-   * Original and cleaned.
-   */
+  add(cleaned);
 
-  add(
-    cleaned
-  );
+  add(original);
 
-  add(
-    original
-  );
-
-
-  /*
-   * Shorter variants.
-   */
 
   const words =
-    cleaned.split(
-      " "
-    );
+    cleaned.split(" ");
 
 
   for (
@@ -1132,9 +1473,7 @@ function buildVariants(text) {
 // IS KYIV LOCATION QUERY
 // ============================================================
 
-function isKyivLocationQuery(
-  query
-) {
+function isKyivLocationQuery(query) {
 
   const value =
     normalizeText(
@@ -1145,17 +1484,11 @@ function isKyivLocationQuery(
   return (
     value === "київ" ||
 
-    value.startsWith(
-      "київ "
-    ) ||
+    value.startsWith("київ ") ||
 
-    value.includes(
-      " київ "
-    ) ||
+    value.includes(" київ ") ||
 
-    value.endsWith(
-      " київ"
-    )
+    value.endsWith(" київ")
   );
 
 }
@@ -1165,9 +1498,7 @@ function isKyivLocationQuery(
 // NOMINATIM SEARCH
 // ============================================================
 
-async function searchNominatim(
-  query
-) {
+async function searchNominatim(query) {
 
   const kyivQuery =
     isKyivLocationQuery(
@@ -1182,19 +1513,10 @@ async function searchNominatim(
     kyivQuery
   ) {
 
-    /*
-     * Search specifically inside Kyiv.
-     */
-
     searchText =
       `${query}, Київ, Україна`;
 
   } else {
-
-    /*
-     * Search specifically inside
-     * Kyiv Oblast.
-     */
 
     searchText =
       `${query}, Київська область, Україна`;
@@ -1221,7 +1543,7 @@ async function searchNominatim(
         headers: {
 
           "User-Agent":
-            "ONLINE-RADAR-Test/6.0"
+            "ONLINE-RADAR-Test/6.1"
 
         }
 
@@ -1249,9 +1571,7 @@ async function searchNominatim(
 // IS KYIV
 // ============================================================
 
-function isKyiv(
-  result
-) {
+function isKyiv(result) {
 
   const address =
     result.address ||
@@ -1312,15 +1632,8 @@ function isKyiv(
 
 
   if (
-    display.includes(
-      "київ"
-    )
+    display.includes("київ")
   ) {
-
-    /*
-     * Do not treat Kyiv Oblast
-     * as Kyiv city.
-     */
 
     if (
       display.includes(
@@ -1340,9 +1653,7 @@ function isKyiv(
 
   if (
     cityDistrict &&
-    display.includes(
-      "київ"
-    )
+    display.includes("київ")
   ) {
 
     return true;
@@ -1352,9 +1663,7 @@ function isKyiv(
 
   if (
     suburb &&
-    display.includes(
-      "київ"
-    )
+    display.includes("київ")
   ) {
 
     return true;
@@ -1371,9 +1680,7 @@ function isKyiv(
 // KYIV OBLAST
 // ============================================================
 
-function isKyivOblast(
-  result
-) {
+function isKyivOblast(result) {
 
   const address =
     result.address ||
@@ -1406,8 +1713,7 @@ function isKyivOblast(
 
 
   if (
-    state ===
-    "київська"
+    state === "київська"
   ) {
 
     return true;
@@ -1435,9 +1741,7 @@ function isKyivOblast(
 // SETTLEMENT
 // ============================================================
 
-function isSettlement(
-  result
-) {
+function isSettlement(result) {
 
   const type =
     String(
@@ -1535,18 +1839,6 @@ function hasRequestedKyivLocation(
     );
 
 
-  /*
-   * Remove "київ" from the query.
-   *
-   * Example:
-   *
-   * київ арсенальна
-   *
-   * becomes:
-   *
-   * арсенальна
-   */
-
   const requested =
     normalizedQuery
       .replace(
@@ -1560,11 +1852,6 @@ function hasRequestedKyivLocation(
       .trim();
 
 
-  /*
-   * If there is no specific part,
-   * normal Kyiv query is accepted.
-   */
-
   if (
     !requested
   ) {
@@ -1573,10 +1860,6 @@ function hasRequestedKyivLocation(
 
   }
 
-
-  /*
-   * Build all searchable names.
-   */
 
   const searchable =
     [
@@ -1589,12 +1872,6 @@ function hasRequestedKyivLocation(
       .filter(Boolean)
       .join(" ");
 
-
-  /*
-   * Every word of the requested
-   * location should appear in the
-   * result.
-   */
 
   const requestedWords =
     requested
@@ -1619,11 +1896,6 @@ function hasRequestedKyivLocation(
 
   }
 
-
-  /*
-   * Special handling for common
-   * Ukrainian endings.
-   */
 
   for (
     const word
@@ -1684,10 +1956,6 @@ function isAcceptedKyivResult(
   }
 
 
-  /*
-   * For plain "Київ" accept Kyiv.
-   */
-
   if (
     normalizeText(query) ===
     "київ"
@@ -1697,12 +1965,6 @@ function isAcceptedKyivResult(
 
   }
 
-
-  /*
-   * For "Київ Арсенальна",
-   * "Київ Теремки", etc.,
-   * require actual location match.
-   */
 
   return hasRequestedKyivLocation(
     query,
@@ -1727,10 +1989,6 @@ function isAcceptedResult(
     );
 
 
-  /*
-   * KYIV
-   */
-
   if (
     kyivQuery
   ) {
@@ -1743,14 +2001,8 @@ function isAcceptedResult(
   }
 
 
-  /*
-   * KYIV OBLAST
-   */
-
   if (
-    !isKyivOblast(
-      result
-    )
+    !isKyivOblast(result)
   ) {
 
     return false;
@@ -1759,9 +2011,7 @@ function isAcceptedResult(
 
 
   if (
-    !isSettlement(
-      result
-    )
+    !isSettlement(result)
   ) {
 
     return false;
@@ -1778,9 +2028,7 @@ function isAcceptedResult(
 // PLACE NAME
 // ============================================================
 
-function getPlaceName(
-  result
-) {
+function getPlaceName(result) {
 
   const address =
     result.address ||
@@ -1829,9 +2077,61 @@ function getPlaceName(
 // FIND PLACE
 // ============================================================
 
-async function findPlace(
-  text
-) {
+async function findPlace(text) {
+
+  // ----------------------------------------------------------
+  // FIRST: STATIC GAZETTEER
+  // ----------------------------------------------------------
+
+  const staticPlace =
+    findStaticPlace(
+      text
+    );
+
+
+  if (
+    staticPlace
+  ) {
+
+    console.log(
+      "================================"
+    );
+
+
+    console.log(
+      "STATIC MATCH:",
+      text
+    );
+
+
+    console.log(
+      `Place: ${staticPlace.name}`
+    );
+
+
+    console.log(
+      `Coordinates: ${staticPlace.lat}, ${staticPlace.lon}`
+    );
+
+
+    console.log(
+      "Source: STATIC GAZETTEER"
+    );
+
+
+    console.log(
+      "================================"
+    );
+
+
+    return staticPlace;
+
+  }
+
+
+  // ----------------------------------------------------------
+  // FALLBACK: NOMINATIM
+  // ----------------------------------------------------------
 
   const variants =
     buildVariants(
@@ -1854,18 +2154,6 @@ async function findPlace(
     "Search variants:",
     variants
   );
-
-
-  /*
-   * IMPORTANT:
-   *
-   * We don't immediately accept
-   * the first Nominatim result.
-   *
-   * For Kyiv internal locations,
-   * we require the requested name
-   * to actually occur in the result.
-   */
 
 
   for (
@@ -1966,12 +2254,8 @@ async function findPlace(
 
 
         if (
-          !Number.isFinite(
-            lat
-          ) ||
-          !Number.isFinite(
-            lon
-          )
+          !Number.isFinite(lat) ||
+          !Number.isFinite(lon)
         ) {
 
           continue;
@@ -2014,10 +2298,6 @@ async function findPlace(
         }
 
 
-        /*
-         * Cache successful match.
-         */
-
         geocodeCache.set(
           cacheKey,
           place
@@ -2045,6 +2325,11 @@ async function findPlace(
 
 
         console.log(
+          "Source: NOMINATIM"
+        );
+
+
+        console.log(
           "--------------------------------"
         );
 
@@ -2053,12 +2338,6 @@ async function findPlace(
 
       }
 
-
-      /*
-       * Don't permanently cache
-       * a failed short variant too
-       * aggressively.
-       */
 
       if (
         variant.length >= 5
@@ -2200,6 +2479,14 @@ async function createOrMovePoint(
 
 
   console.log(
+    "Source:",
+    place.osmType === "static"
+      ? "STATIC GAZETTEER"
+      : "NOMINATIM"
+  );
+
+
+  console.log(
     "================================"
   );
 
@@ -2267,10 +2554,6 @@ app.post(
           )
           .toLowerCase();
 
-
-      /*
-       * ONLY @radaronlinetest
-       */
 
       if (
         username !==
@@ -2358,11 +2641,9 @@ app.post(
       );
 
 
-      /*
-       * DELETE
-       *
-       * 1 -
-       */
+      // --------------------------------------------------------
+      // DELETE
+      // --------------------------------------------------------
 
       if (
         parsed.deletePoint
@@ -2531,8 +2812,10 @@ async function setupTelegramWebhook() {
             "POST",
 
           headers: {
+
             "Content-Type":
               "application/json"
+
           },
 
           body:
@@ -2768,7 +3051,7 @@ server.listen(
 
 
     console.log(
-      "ONLINE RADAR backend v6.0.0"
+      "ONLINE RADAR backend v6.1.0"
     );
 
 
@@ -2779,6 +3062,21 @@ server.listen(
 
     console.log(
       `Test channel: @${TEST_CHANNEL_USERNAME}`
+    );
+
+
+    console.log(
+      "Static gazetteer: ENABLED"
+    );
+
+
+    console.log(
+      "Static coordinates priority: ENABLED"
+    );
+
+
+    console.log(
+      "Nominatim fallback: ENABLED"
     );
 
 
