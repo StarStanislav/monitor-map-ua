@@ -197,32 +197,6 @@
       outline: none;
     }
 
-
-    /* =========================================================
-       TEST EVENTS
-       =========================================================
-
-       Точки більше НЕ є HTML / DOM Marker.
-
-       Вони малюються самим MapLibre через GeoJSON source.
-
-       Це означає:
-
-       координата = реальна геометрія карти;
-
-       zoom / pan / fractional zoom не впливають
-       на точність її прив'язки.
-
-    ========================================================= */
-
-
-    /* =========================================================
-       CLOCK
-    ========================================================= */
-
-    /* нічого додаткового */
-
-
   </style>
 </head>
 
@@ -293,18 +267,6 @@
       [33.15, 52.05]
 
     ];
-
-
-    /* =========================================================
-       TEST MARKER ZOOM
-    ========================================================= */
-
-    const MARKER_MIN_ZOOM =
-      5.7;
-
-
-    const MARKER_MAX_ZOOM =
-      13;
 
 
     /* =========================================================
@@ -553,25 +515,7 @@
 
 
     /* =========================================================
-       TEST EVENTS STATE
-    =========================================================
-
-       Тут зберігаємо поточні тестові події.
-
-       key = ID події.
-
-       Наприклад:
-
-       1 -> Біла Церква
-       2 -> Яготин
-       3 -> Сквира
-
-       Якщо backend надіслав:
-
-       1 -> Узин
-
-       координата ID 1 просто оновлюється.
-
+       TEST EVENTS
     ========================================================= */
 
     const eventFeatures =
@@ -598,14 +542,10 @@
 
 
     /* =========================================================
-       SETUP TEST EVENT LAYERS
+       TEST EVENT LAYERS
     ========================================================= */
 
     function setupTestEventLayers() {
-
-      /*
-       * Source створюється один раз.
-       */
 
       if (
         !map.getSource(
@@ -633,7 +573,7 @@
 
 
       /* =======================================================
-         GLOW
+         LARGE SOFT GLOW
       ======================================================= */
 
       if (
@@ -642,68 +582,41 @@
         )
       ) {
 
-        map.addLayer(
+        map.addLayer({
 
-          {
+          id:
+            "test-events-glow",
 
-            id:
-              "test-events-glow",
+          type:
+            "circle",
 
-            type:
-              "circle",
+          source:
+            "test-events",
 
-            source:
-              "test-events",
+          paint:
+            {
 
-            paint:
-              {
+              "circle-color":
+                "#ff304f",
 
-                "circle-color":
-                  "#ff304f",
+              "circle-opacity":
+                0.28,
 
-                "circle-opacity":
-                  0.38,
+              "circle-blur":
+                1,
 
-                "circle-blur":
-                  1,
+              "circle-radius":
+                6
 
-                "circle-radius":
-                  [
+            }
 
-                    "interpolate",
-
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.7,
-                    4,
-
-                    7,
-                    4.8,
-
-                    9,
-                    5.8,
-
-                    12,
-                    7,
-
-                    16,
-                    10
-
-                  ]
-
-              }
-
-          }
-
-        );
+        });
 
       }
 
 
       /* =======================================================
-         OUTER RING
+         PULSE RING
       ======================================================= */
 
       if (
@@ -712,91 +625,47 @@
         )
       ) {
 
-        map.addLayer(
+        map.addLayer({
 
-          {
+          id:
+            "test-events-ring",
 
-            id:
-              "test-events-ring",
+          type:
+            "circle",
 
-            type:
-              "circle",
+          source:
+            "test-events",
 
-            source:
-              "test-events",
+          paint:
+            {
 
-            paint:
-              {
+              "circle-color":
+                "#ff304f",
 
-                "circle-color":
-                  "#ff304f",
+              "circle-opacity":
+                0.05,
 
-                "circle-opacity":
-                  0.12,
+              "circle-stroke-color":
+                "#ff5369",
 
-                "circle-stroke-color":
-                  "#ff5369",
+              "circle-stroke-opacity":
+                0.82,
 
-                "circle-stroke-opacity":
-                  0.78,
+              "circle-stroke-width":
+                0.9,
 
-                "circle-stroke-width":
-                  [
+              "circle-radius":
+                3.2
 
-                    "interpolate",
+            }
 
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.7,
-                    0.7,
-
-                    8,
-                    0.9,
-
-                    12,
-                    1.1,
-
-                    16,
-                    1.3
-
-                  ],
-
-                "circle-radius":
-                  [
-
-                    "interpolate",
-
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.7,
-                    2.1,
-
-                    8,
-                    2.5,
-
-                    12,
-                    3.4,
-
-                    16,
-                    4.5
-
-                  ]
-
-              }
-
-          }
-
-        );
+        });
 
       }
 
 
       /* =======================================================
-         MAIN RED DOT
+         MAIN RED CORE
       ======================================================= */
 
       if (
@@ -805,81 +674,51 @@
         )
       ) {
 
-        map.addLayer(
+        map.addLayer({
 
-          {
+          id:
+            "test-events-core",
 
-            id:
-              "test-events-core",
+          type:
+            "circle",
 
-            type:
-              "circle",
+          source:
+            "test-events",
 
-            source:
-              "test-events",
+          paint:
+            {
 
-            paint:
-              {
+              "circle-color":
+                "#ff304f",
 
-                "circle-color":
-                  "#ff304f",
+              "circle-opacity":
+                1,
 
-                "circle-opacity":
-                  1,
+              "circle-stroke-color":
+                "#ffdfe3",
 
-                "circle-stroke-color":
-                  "#ffdfe3",
+              "circle-stroke-width":
+                0.8,
 
-                "circle-stroke-width":
-                  0.7,
+              "circle-stroke-opacity":
+                0.94,
 
-                "circle-stroke-opacity":
-                  0.92,
+              "circle-radius":
+                1.65,
 
-                "circle-radius":
-                  [
+              "circle-blur":
+                0
 
-                    "interpolate",
+            }
 
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.7,
-                    1.15,
-
-                    8,
-                    1.4,
-
-                    10,
-                    1.65,
-
-                    12,
-                    1.9,
-
-                    16,
-                    2.65
-
-                  ],
-
-                "circle-blur":
-                  0
-
-              }
-
-          }
-
-        );
+        });
 
       }
 
 
-      /*
-       * Маленьке світле ядро.
-       *
-       * Окремий шар дає той самий
-       * ефект красивої точки.
-       */
+      /* =======================================================
+         WHITE CORE
+      ======================================================= */
 
       if (
         !map.getLayer(
@@ -887,56 +726,32 @@
         )
       ) {
 
-        map.addLayer(
+        map.addLayer({
 
-          {
+          id:
+            "test-events-core-light",
 
-            id:
-              "test-events-core-light",
+          type:
+            "circle",
 
-            type:
-              "circle",
+          source:
+            "test-events",
 
-            source:
-              "test-events",
+          paint:
+            {
 
-            paint:
-              {
+              "circle-color":
+                "#fff4f5",
 
-                "circle-color":
-                  "#fff4f5",
+              "circle-opacity":
+                0.96,
 
-                "circle-opacity":
-                  0.95,
+              "circle-radius":
+                0.62
 
-                "circle-radius":
-                  [
+            }
 
-                    "interpolate",
-
-                    ["linear"],
-
-                    ["zoom"],
-
-                    5.7,
-                    0.42,
-
-                    8,
-                    0.5,
-
-                    12,
-                    0.7,
-
-                    16,
-                    1.0
-
-                  ]
-
-              }
-
-          }
-
-        );
+        });
 
       }
 
@@ -944,7 +759,7 @@
 
 
     /* =========================================================
-       UPDATE GEOJSON SOURCE
+       UPDATE SOURCE
     ========================================================= */
 
     function updateEventSource() {
@@ -962,19 +777,15 @@
       }
 
 
-      const features =
-        Array.from(
-          eventFeatures.values()
-        );
-
-
       source.setData({
 
         type:
           "FeatureCollection",
 
         features:
-          features
+          Array.from(
+            eventFeatures.values()
+          )
 
       });
 
@@ -982,7 +793,7 @@
 
 
     /* =========================================================
-       CREATE / UPDATE FEATURE
+       CREATE EVENT FEATURE
     ========================================================= */
 
     function createEventFeature(
@@ -1040,12 +851,6 @@
         );
 
 
-      /*
-       * Ніякого DOM marker.
-
-       * Точка є звичайним GeoJSON Point.
-       */
-
       eventFeatures.set(
 
         id,
@@ -1065,7 +870,8 @@
                 id,
 
               type:
-                event.type || "test"
+                event.type ||
+                "test"
 
             },
 
@@ -1094,21 +900,15 @@
 
 
     /* =========================================================
-       REMOVE ONE EVENT
+       REMOVE EVENT
     ========================================================= */
 
     function removeEventMarker(
       id
     ) {
 
-      const key =
-        String(
-          id
-        );
-
-
       eventFeatures.delete(
-        key
+        String(id)
       );
 
 
@@ -1118,13 +918,12 @@
 
 
     /* =========================================================
-       REMOVE ALL EVENTS
+       REMOVE ALL
     ========================================================= */
 
     function removeAllEventMarkers() {
 
       eventFeatures.clear();
-
 
       updateEventSource();
 
@@ -1185,22 +984,6 @@
         );
 
 
-        /*
-         * Якщо ID вже існує —
-         * координати замінюються.
-
-         * Тобто:
-
-         * 1 Біла Церква
-         *
-         * потім
-         *
-         * 1 Узин
-         *
-         * = та сама точка №1
-         * переміщується на Узин.
-         */
-
         createEventFeature(
           event
         );
@@ -1208,20 +991,13 @@
       }
 
 
-      /*
-       * Видаляємо точки,
-       * яких backend більше не повертає.
-       */
-
       for (
         const id
         of eventFeatures.keys()
       ) {
 
         if (
-          !currentIds.has(
-            id
-          )
+          !currentIds.has(id)
         ) {
 
           eventFeatures.delete(
@@ -1239,17 +1015,30 @@
 
 
     /* =========================================================
-       TEST POINT PULSE
+       BEAUTIFUL TEST POINT ANIMATION
     =========================================================
 
-       GeoJSON точки не використовують CSS animation,
-       тому легкий pulse робимо через paint opacity.
+       ВАЖЛИВО:
 
-       Координата при цьому взагалі не змінюється.
+       Геометрія точки НЕ змінюється.
+
+       Ми змінюємо тільки:
+
+       - radius glow
+       - opacity glow
+       - radius ring
+       - opacity ring
+       - дуже легкий radius core
+
+       Тому точка нікуди не рухається під час анімації.
 
     ========================================================= */
 
-    let pulseLastUpdate =
+    let animationFrame =
+      null;
+
+
+    let lastPaintUpdate =
       0;
 
 
@@ -1258,50 +1047,116 @@
     ) {
 
       /*
-       * Не змінюємо стиль 60 разів/секунду.
+       * Частота оновлення.
        *
-       * Оновлення приблизно 12 разів/секунду
-       * достатньо для плавного glow.
+       * 50 ms ≈ 20 FPS.
+       *
+       * Для glow цього більш ніж достатньо
+       * і не створює зайвого навантаження
+       * на телефон.
        */
 
       if (
         timestamp -
-        pulseLastUpdate >
-        80
+        lastPaintUpdate >=
+        50
       ) {
 
-        pulseLastUpdate =
+        lastPaintUpdate =
           timestamp;
 
 
-        if (
-
+        const glowLayer =
           map.getLayer(
             "test-events-glow"
-          ) &&
+          );
 
+
+        const ringLayer =
+          map.getLayer(
+            "test-events-ring"
+          );
+
+
+        const coreLayer =
           map.getLayer(
             "test-events-core"
-          )
+          );
 
+
+        if (
+          glowLayer &&
+          ringLayer &&
+          coreLayer
         ) {
+
+          /*
+           * Повний цикл ≈ 1.35 секунди.
+           */
+
+          const cycle =
+            (
+              timestamp %
+              1350
+            ) / 1350;
+
+
+          /*
+           * Sine дає м'який
+           * natural breathing effect.
+           */
 
           const wave =
             (
               Math.sin(
-                timestamp / 620
+                cycle *
+                Math.PI *
+                2
               ) + 1
             ) / 2;
 
 
+          /*
+           * Додаткова хвиля
+           * для кільця.
+           */
+
+          const ringWave =
+            (
+              Math.sin(
+                (
+                  cycle *
+                  Math.PI *
+                  2
+                ) -
+                Math.PI / 2
+              ) + 1
+            ) / 2;
+
+
+          /* ---------------------------------------------------
+             GLOW
+          --------------------------------------------------- */
+
+          const glowRadius =
+            5.0 +
+            wave * 5.5;
+
+
           const glowOpacity =
-            0.18 +
-            wave * 0.22;
+            0.10 +
+            wave * 0.32;
 
 
-          const coreOpacity =
-            0.84 +
-            wave * 0.16;
+          map.setPaintProperty(
+
+            "test-events-glow",
+
+            "circle-radius",
+
+            glowRadius
+
+          );
 
 
           map.setPaintProperty(
@@ -1315,13 +1170,82 @@
           );
 
 
+          /* ---------------------------------------------------
+             RING
+          --------------------------------------------------- */
+
+          const ringRadius =
+            2.2 +
+            ringWave * 5.0;
+
+
+          const ringOpacity =
+            0.78 -
+            ringWave * 0.66;
+
+
+          map.setPaintProperty(
+
+            "test-events-ring",
+
+            "circle-radius",
+
+            ringRadius
+
+          );
+
+
+          map.setPaintProperty(
+
+            "test-events-ring",
+
+            "circle-stroke-opacity",
+
+            ringOpacity
+
+          );
+
+
+          map.setPaintProperty(
+
+            "test-events-ring",
+
+            "circle-opacity",
+
+            0.035 +
+            ringWave * 0.09
+
+          );
+
+
+          /* ---------------------------------------------------
+             CORE
+          --------------------------------------------------- */
+
+          const coreRadius =
+            1.45 +
+            wave * 0.38;
+
+
+          map.setPaintProperty(
+
+            "test-events-core",
+
+            "circle-radius",
+
+            coreRadius
+
+          );
+
+
           map.setPaintProperty(
 
             "test-events-core",
 
             "circle-opacity",
 
-            coreOpacity
+            0.88 +
+            wave * 0.12
 
           );
 
@@ -1330,15 +1254,16 @@
       }
 
 
-      requestAnimationFrame(
-        animateTestPoints
-      );
+      animationFrame =
+        requestAnimationFrame(
+          animateTestPoints
+        );
 
     }
 
 
     /* =========================================================
-       GET CURRENT EVENTS
+       LOAD EVENTS
     ========================================================= */
 
     async function loadEvents() {
@@ -1349,11 +1274,13 @@
           await fetch(
             EVENTS_URL,
             {
+
               method:
                 "GET",
 
               cache:
                 "no-store"
+
             }
           );
 
@@ -1623,30 +1550,40 @@
 
 
         /* =====================================================
-           TEST EVENT GEOJSON LAYERS
+           TEST EVENTS
         ===================================================== */
 
         setupTestEventLayers();
 
 
         /* =====================================================
-           EVENTS
+           LOAD EVENTS
         ===================================================== */
 
         await loadEvents();
 
 
+        /* =====================================================
+           WEBSOCKET
+        ===================================================== */
+
         connectWebSocket();
 
 
-        /*
-         * Запускаємо pulse після
-         * завантаження карти.
-         */
+        /* =====================================================
+           START ANIMATION
+        ===================================================== */
 
-        requestAnimationFrame(
-          animateTestPoints
-        );
+        if (
+          animationFrame === null
+        ) {
+
+          animationFrame =
+            requestAnimationFrame(
+              animateTestPoints
+            );
+
+        }
 
       }
     );
@@ -1703,7 +1640,7 @@
 
 
       /* =======================================================
-         УКРАЇНСЬКІ НАЗВИ
+         UKRAINIAN PLACE NAMES
       ======================================================= */
 
       for (
@@ -1988,9 +1925,7 @@
         if (!response.ok) {
 
           throw new Error(
-
             `Nominatim HTTP ${response.status}`
-
           );
 
         }
@@ -2011,9 +1946,7 @@
         ) {
 
           throw new Error(
-
             "Геометрію Київської області не знайдено"
-
           );
 
         }
@@ -2228,9 +2161,9 @@
       }
 
 
-      /*
-       * Назви міст поверх меж.
-       */
+      /* =======================================================
+         PLACE LABELS ABOVE BORDERS
+      ======================================================= */
 
       for (
         const layerId
@@ -2465,12 +2398,10 @@
 
             data:
               ctx.getImageData(
-
                 0,
                 0,
                 width,
                 height
-
               ).data
 
           }
@@ -2481,7 +2412,7 @@
 
 
       /* =======================================================
-         FIND LABEL LAYER
+         FIND SYMBOL LAYER
       ======================================================= */
 
       const styleLayers =
@@ -2683,7 +2614,7 @@
 
 
       /* =======================================================
-         DARK RED UNDERLINE
+         DARK RED BASE
       ======================================================= */
 
       if (
