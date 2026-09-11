@@ -28,18 +28,11 @@
     body {
       margin: 0;
       padding: 0;
-
       width: 100%;
       height: 100%;
-
       overflow: hidden;
-
       background: #05090b;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
@@ -47,29 +40,23 @@
       inset: 0;
     }
 
-
     /* =========================================================
        MAP
     ========================================================= */
 
     #map {
       position: absolute;
-
       inset: 0;
-
       width: 100%;
       height: 100%;
-
       background: #05090b;
     }
-
 
     /* =========================================================
        ONLINE STATUS
     ========================================================= */
 
     #status {
-
       position: fixed;
 
       left: 50%;
@@ -120,9 +107,7 @@
       user-select: none;
     }
 
-
     #online-dot {
-
       width: 6px;
       height: 6px;
 
@@ -142,46 +127,30 @@
       flex: 0 0 auto;
     }
 
-
     #online-text {
-
       color: #00ff66;
-
       font-weight: 700;
-
       letter-spacing: 0.65px;
     }
 
-
     #datetime {
-
       color: #b9c5c7;
-
-      font-variant-numeric:
-        tabular-nums;
+      font-variant-numeric: tabular-nums;
     }
-
 
     @keyframes pulse {
 
       0%,
       100% {
-
         opacity: 1;
-
-        transform:
-          scale(1);
+        transform: scale(1);
       }
 
       50% {
-
         opacity: 0.45;
-
-        transform:
-          scale(0.78);
+        transform: scale(0.78);
       }
     }
-
 
     /* =========================================================
        MAP CONTROLS
@@ -190,13 +159,10 @@
     .maplibregl-ctrl-top-left,
     .maplibregl-ctrl-top-right,
     .maplibregl-ctrl-bottom-left {
-
       display: none !important;
     }
 
-
     .maplibregl-ctrl-bottom-right {
-
       opacity: 0.25;
 
       transform:
@@ -206,9 +172,7 @@
         bottom right;
     }
 
-
     .maplibregl-ctrl-attrib {
-
       background:
         rgba(0, 0, 0, 0.2) !important;
 
@@ -216,16 +180,12 @@
         #899496 !important;
     }
 
-
     .maplibregl-ctrl-attrib a {
-
       color:
         #899496 !important;
     }
 
-
     #map canvas {
-
       outline: none;
     }
 
@@ -235,9 +195,7 @@
 
 <body>
 
-
   <div id="map"></div>
-
 
   <div id="status">
 
@@ -258,13 +216,20 @@
 
   <script>
 
-
     /* =========================================================
        CONFIG
     ========================================================= */
 
     const MAP_STYLE =
       "https://tiles.openfreemap.org/styles/dark";
+
+
+    const BACKEND_URL =
+      "https://monitor-map-ua.onrender.com";
+
+
+    const HEALTH_URL =
+      `${BACKEND_URL}/health`;
 
 
     const KYIV_VIEW_BOUNDS = [
@@ -285,43 +250,167 @@
     ];
 
 
+    /* =========================================================
+       BACKEND STATUS
+    ========================================================= */
+
+    const onlineDot =
+      document.getElementById(
+        "online-dot"
+      );
+
+
+    const onlineText =
+      document.getElementById(
+        "online-text"
+      );
+
+
+    function setBackendStatus(
+      online
+    ) {
+
+      if (online) {
+
+        onlineText.textContent =
+          "ONLINE RADAR";
+
+        onlineText.style.color =
+          "#00ff66";
+
+        onlineDot.style.background =
+          "#00ff66";
+
+        onlineDot.style.boxShadow =
+          "0 0 4px rgba(0,255,102,.9), 0 0 9px rgba(0,255,102,.45)";
+
+      } else {
+
+        onlineText.textContent =
+          "OFFLINE";
+
+        onlineText.style.color =
+          "#ff5369";
+
+        onlineDot.style.background =
+          "#ff304f";
+
+        onlineDot.style.boxShadow =
+          "0 0 4px rgba(255,48,79,.9), 0 0 9px rgba(255,48,79,.45)";
+
+      }
+
+    }
+
+
+    async function checkBackend() {
+
+      try {
+
+        const response =
+          await fetch(
+            HEALTH_URL,
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP ${response.status}`
+          );
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (data.ok === true) {
+
+          setBackendStatus(
+            true
+          );
+
+        } else {
+
+          setBackendStatus(
+            false
+          );
+
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "Backend:",
+          error
+        );
+
+        setBackendStatus(
+          false
+        );
+
+      }
+
+    }
+
+
+    /*
+     * Перша перевірка.
+     */
+
+    checkBackend();
+
+
+    /*
+     * Перевіряємо сервер кожні 30 секунд.
+     */
+
+    setInterval(
+      checkBackend,
+      30000
+    );
+
 
     /* =========================================================
        MAP
     ========================================================= */
 
-    const map = new maplibregl.Map({
+    const map =
+      new maplibregl.Map({
 
-      container: "map",
+        container: "map",
 
-      style: MAP_STYLE,
+        style: MAP_STYLE,
 
-      center: [
-        30.95,
-        50.75
-      ],
+        center: [
+          30.95,
+          50.75
+        ],
 
-      zoom: 5.7,
+        zoom: 5.7,
 
-      minZoom: 5.7,
+        minZoom: 5.7,
 
-      maxZoom: 16,
+        maxZoom: 16,
 
-      maxBounds:
-        MAP_MAX_BOUNDS,
+        maxBounds:
+          MAP_MAX_BOUNDS,
 
-      dragRotate: false,
+        dragRotate: false,
 
-      pitchWithRotate: false,
+        pitchWithRotate: false,
 
-      touchPitch: false,
+        touchPitch: false,
 
-      cooperativeGestures: false,
+        cooperativeGestures: false,
 
-      attributionControl: true
+        attributionControl: true
 
-    });
-
+      });
 
 
     /* =========================================================
@@ -337,13 +426,19 @@
       const dd =
         String(
           now.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+          2,
+          "0"
+        );
 
 
       const mm =
         String(
           now.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(
+          2,
+          "0"
+        );
 
 
       const yyyy =
@@ -353,29 +448,42 @@
       const hh =
         String(
           now.getHours()
-        ).padStart(2, "0");
+        ).padStart(
+          2,
+          "0"
+        );
 
 
       const min =
         String(
           now.getMinutes()
-        ).padStart(2, "0");
+        ).padStart(
+          2,
+          "0"
+        );
 
 
       const sec =
         String(
           now.getSeconds()
-        ).padStart(2, "0");
+        ).padStart(
+          2,
+          "0"
+        );
 
 
       document
-        .getElementById("datetime")
+        .getElementById(
+          "datetime"
+        )
         .textContent =
           `${dd}.${mm}.${yyyy} · ${hh}:${min}:${sec}`;
+
     }
 
 
     updateClock();
+
 
     setInterval(
       updateClock,
@@ -383,72 +491,64 @@
     );
 
 
-
     /* =========================================================
        MAP LOAD
     ========================================================= */
 
-    map.on("load", async () => {
+    map.on(
+      "load",
+      async () => {
+
+        map.fitBounds(
+
+          KYIV_VIEW_BOUNDS,
+
+          {
+
+            padding: {
+
+              top: 40,
+
+              bottom: 95,
+
+              left: 18,
+
+              right: 18
+
+            },
+
+            maxZoom: 6.15,
+
+            duration: 0
+
+          }
+
+        );
 
 
-      map.fitBounds(
-
-        KYIV_VIEW_BOUNDS,
-
-        {
-
-          padding: {
-
-            top: 40,
-
-            bottom: 95,
-
-            left: 18,
-
-            right: 18
-
-          },
-
-          maxZoom: 6.15,
-
-          duration: 0
-
-        }
-
-      );
+        const initialZoom =
+          map.getZoom();
 
 
-      const initialZoom =
-        map.getZoom();
+        map.setMinZoom(
+          initialZoom
+        );
 
 
-      map.setMinZoom(
-        initialZoom
-      );
+        map.dragRotate.disable();
 
 
-      map.dragRotate.disable();
-
-      map.touchZoomRotate
-        .disableRotation();
+        map.touchZoomRotate
+          .disableRotation();
 
 
-      await buildCustomMapLayers();
+        await buildCustomMapLayers();
 
 
-      /*
-       * ЄГОЗА БІЛОРУСЬКОГО КОРДОНУ
-       *
-       * Без Overpass.
-       * Без додаткового fetch.
-       * Малюється безпосередньо
-       * з vector tiles.
-       */
+        addBelarusBorderInstant();
 
-      addBelarusBorderInstant();
-
-    });
-
+      }
+    );
 
 
     /* =========================================================
@@ -456,7 +556,6 @@
     ========================================================= */
 
     async function buildCustomMapLayers() {
-
 
       const styleLayers =
         map.getStyle().layers || [];
@@ -479,7 +578,6 @@
         of styleLayers
       ) {
 
-
         if (
 
           layer.type === "symbol" &&
@@ -487,7 +585,6 @@
           layer["source-layer"] === "place"
 
         ) {
-
 
           if (
             !firstSymbolLayerId
@@ -508,7 +605,6 @@
       }
 
 
-
       /* =======================================================
          УКРАЇНСЬКІ НАЗВИ
       ======================================================= */
@@ -518,9 +614,7 @@
         of placeSymbolLayers
       ) {
 
-
         try {
-
 
           map.setLayoutProperty(
 
@@ -557,21 +651,17 @@
 
           );
 
-
         } catch (e) {
 
           console.warn(
-
             "Place layer:",
             layerId,
             e
-
           );
 
         }
 
       }
-
 
 
       /* =======================================================
@@ -583,7 +673,6 @@
           "kyiv-districts"
         )
       ) {
-
 
         map.addLayer(
 
@@ -676,7 +765,6 @@
       }
 
 
-
       /* =======================================================
          WATER LABELS
       ======================================================= */
@@ -686,7 +774,6 @@
           "water-labels-ukrainian"
         )
       ) {
-
 
         map.addLayer(
 
@@ -775,13 +862,11 @@
       }
 
 
-
       /* =======================================================
          EXACT KYIV OBLAST
       ======================================================= */
 
       try {
-
 
         const response =
           await fetch(
@@ -837,7 +922,6 @@
         }
 
 
-
         /* =====================================================
            SOURCE
         ===================================================== */
@@ -847,7 +931,6 @@
             "kyiv-oblast-exact"
           )
         ) {
-
 
           map.addSource(
 
@@ -868,7 +951,6 @@
         }
 
 
-
         /* =====================================================
            FILL
         ===================================================== */
@@ -878,7 +960,6 @@
             "kyiv-oblast-fill"
           )
         ) {
-
 
           map.addLayer(
 
@@ -914,7 +995,6 @@
         }
 
 
-
         /* =====================================================
            GLOW
         ===================================================== */
@@ -924,7 +1004,6 @@
             "kyiv-oblast-glow"
           )
         ) {
-
 
           map.addLayer(
 
@@ -980,7 +1059,6 @@
         }
 
 
-
         /* =====================================================
            MAIN KYIV OBLAST BORDER
         ===================================================== */
@@ -990,7 +1068,6 @@
             "kyiv-oblast-border"
           )
         ) {
-
 
           map.addLayer(
 
@@ -1048,7 +1125,6 @@
 
         }
 
-
       } catch (error) {
 
         console.warn(
@@ -1061,7 +1137,6 @@
       }
 
 
-
       /*
        * Назви міст поверх меж.
        */
@@ -1070,7 +1145,6 @@
         const layerId
         of placeSymbolLayers
       ) {
-
 
         try {
 
@@ -1085,54 +1159,17 @@
     }
 
 
-
     /* =========================================================
        BELARUS BORDER / RAZOR WIRE
-    =========================================================
-
-       Тут спеціально НЕМАЄ fetch.
-
-       Використовується existing vector source:
-
-         openmaptiles
-
-       source-layer:
-
-         boundary
-
-       admin_level 2
-
-       Фільтр:
-
-         BLR <-> UKR
-
     ========================================================= */
 
     function addBelarusBorderInstant() {
-
-
-      /*
-       * =======================================================
-       * RAZOR WIRE IMAGE
-       * =======================================================
-       *
-       * Робимо більший патерн, ніж був раніше.
-       *
-       * Вигляд приблизно:
-       *
-       *       /\        /\
-       * ------\/-------\/------
-       *
-       * Дві лінії + великі леза.
-       */
-
 
       if (
         !map.hasImage(
           "red-razor-wire"
         )
       ) {
-
 
         const width =
           64;
@@ -1171,7 +1208,7 @@
 
 
         /*
-         * Основні два дроти.
+         * Основні дроти.
          */
 
         ctx.strokeStyle =
@@ -1218,23 +1255,15 @@
         ctx.stroke();
 
 
-
         /*
-         * Великі леза.
-         *
-         * Вони спеціально зроблені
-         * значно більшими,
-         * щоб були помітні навіть
-         * на віддаленому zoom.
+         * Леза.
          */
 
         const bladePositions = [
-
           8,
           24,
           40,
           56
-
         ];
 
 
@@ -1242,7 +1271,6 @@
           const x
           of bladePositions
         ) {
-
 
           ctx.strokeStyle =
             "#ff5369";
@@ -1252,53 +1280,35 @@
             1.45;
 
 
-          /*
-           * Верхнє лезо.
-           */
-
           ctx.beginPath();
-
 
           ctx.moveTo(
             x - 6,
             4
           );
 
-
           ctx.lineTo(
             x + 6,
             20
           );
 
-
           ctx.stroke();
 
 
-          /*
-           * Нижнє лезо.
-           */
-
           ctx.beginPath();
-
 
           ctx.moveTo(
             x - 6,
             20
           );
 
-
           ctx.lineTo(
             x + 6,
             4
           );
 
-
           ctx.stroke();
 
-
-          /*
-           * Маленькі наконечники.
-           */
 
           ctx.fillStyle =
             "#ff304f";
@@ -1358,7 +1368,6 @@
         }
 
 
-
         map.addImage(
 
           "red-razor-wire",
@@ -1388,7 +1397,6 @@
       }
 
 
-
       /* =======================================================
          FIND LABEL LAYER
       ======================================================= */
@@ -1406,15 +1414,12 @@
         of styleLayers
       ) {
 
-
         if (
           layer.type === "symbol"
         ) {
 
-
           firstSymbolLayerId =
             layer.id;
-
 
           break;
 
@@ -1423,9 +1428,8 @@
       }
 
 
-
       /* =======================================================
-         COMMON BORDER FILTER
+         BELARUS / UKRAINE FILTER
       ======================================================= */
 
       const belarusUkraineFilter = [
@@ -1462,11 +1466,6 @@
 
           "any",
 
-
-          /*
-           * BLR -> UKR
-           */
-
           [
 
             "all",
@@ -1499,11 +1498,6 @@
 
           ],
 
-
-          /*
-           * UKR -> BLR
-           */
-
           [
 
             "all",
@@ -1535,11 +1529,6 @@
             ]
 
           ],
-
-
-          /*
-           * Альтернативні country codes.
-           */
 
           [
 
@@ -1572,7 +1561,6 @@
             ]
 
           ],
-
 
           [
 
@@ -1611,7 +1599,6 @@
       ];
 
 
-
       /* =======================================================
          DARK RED UNDERLINE
       ======================================================= */
@@ -1621,7 +1608,6 @@
           "belarus-border-base"
         )
       ) {
-
 
         map.addLayer(
 
@@ -1700,7 +1686,6 @@
       }
 
 
-
       /* =======================================================
          RED GLOW
       ======================================================= */
@@ -1710,7 +1695,6 @@
           "belarus-border-glow"
         )
       ) {
-
 
         map.addLayer(
 
@@ -1792,9 +1776,8 @@
       }
 
 
-
       /* =======================================================
-         MAIN RAZOR WIRE
+         RAZOR WIRE
       ======================================================= */
 
       if (
@@ -1802,7 +1785,6 @@
           "belarus-razor-wire"
         )
       ) {
-
 
         map.addLayer(
 
@@ -1858,9 +1840,8 @@
       }
 
 
-
       /* =======================================================
-         ADD EXTRA BRIGHT CORE
+         BRIGHT CORE
       ======================================================= */
 
       if (
@@ -1868,7 +1849,6 @@
           "belarus-border-core"
         )
       ) {
-
 
         map.addLayer(
 
@@ -1944,7 +1924,6 @@
       }
 
 
-
       /* =======================================================
          LABELS ABOVE BORDER
       ======================================================= */
@@ -1958,7 +1937,6 @@
         of finalLayers
       ) {
 
-
         if (
 
           layer.type === "symbol" &&
@@ -1966,7 +1944,6 @@
           layer["source-layer"] === "place"
 
         ) {
-
 
           try {
 
@@ -1986,7 +1963,6 @@
       );
 
     }
-
 
 
     /* =========================================================
@@ -2011,7 +1987,6 @@
 
       }
     );
-
 
   </script>
 
