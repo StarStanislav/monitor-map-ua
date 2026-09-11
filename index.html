@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -8,7 +10,7 @@
   content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
 >
 
-<title>ONLINE RADAR</title>
+<title>ONLINE RADAR v8</title>
 
 <link
   href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css"
@@ -24,12 +26,17 @@
 
 html,
 body {
+
   margin: 0;
   padding: 0;
+
   width: 100%;
   height: 100%;
+
   overflow: hidden;
+
   background: #050707;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -41,15 +48,26 @@ body {
 }
 
 body {
+
   position: fixed;
+
   inset: 0;
 }
 
+
+/* =========================================================
+   MAP
+========================================================= */
+
 #map {
+
   position: absolute;
+
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   background: #070909;
 }
 
@@ -59,36 +77,59 @@ body {
 ========================================================= */
 
 .radar-badge {
+
   position: absolute;
+
   z-index: 20;
 
-  top: max(24px, env(safe-area-inset-top));
+  top:
+    max(
+      24px,
+      env(safe-area-inset-top)
+    );
+
   left: 22px;
 
   height: 58px;
+
   padding: 0 22px;
 
   display: flex;
+
   align-items: center;
+
   gap: 14px;
 
   border-radius: 28px;
 
-  background: rgba(5,10,10,.92);
+  background:
+    rgba(5,10,10,.92);
 
-  border: 1px solid rgba(100,140,135,.22);
+  border:
+    1px solid
+    rgba(100,140,135,.22);
 
   box-shadow:
-    0 8px 30px rgba(0,0,0,.35),
-    inset 0 0 18px rgba(80,255,190,.025);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    0 8px 30px
+    rgba(0,0,0,.35),
 
-  pointer-events: none;
+    inset 0 0 18px
+    rgba(80,255,190,.025);
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  pointer-events:
+    none;
 }
 
+
 .radar-dot {
+
   position: relative;
 
   width: 20px;
@@ -98,105 +139,168 @@ body {
 
   border-radius: 50%;
 
-  background: #55f5a5;
+  background:
+    #55f5a5;
 
   box-shadow:
-    0 0 10px rgba(85,245,165,.9),
-    0 0 25px rgba(85,245,165,.55);
+
+    0 0 10px
+    rgba(85,245,165,.9),
+
+    0 0 25px
+    rgba(85,245,165,.55);
 }
 
+
 .radar-dot::after {
+
   content: "";
 
   position: absolute;
+
   inset: -8px;
 
   border-radius: 50%;
 
-  border: 1px solid rgba(85,245,165,.28);
+  border:
+    1px solid
+    rgba(85,245,165,.28);
 
-  animation: pulse 2s infinite ease-out;
+  animation:
+    pulse 2s infinite ease-out;
 }
+
 
 @keyframes pulse {
 
   0% {
-    transform: scale(.65);
-    opacity: .8;
+
+    transform:
+      scale(.65);
+
+    opacity:
+      .8;
   }
 
   70% {
-    transform: scale(1.25);
-    opacity: 0;
+
+    transform:
+      scale(1.25);
+
+    opacity:
+      0;
   }
 
   100% {
-    transform: scale(1.25);
-    opacity: 0;
+
+    transform:
+      scale(1.25);
+
+    opacity:
+      0;
   }
 
 }
 
+
 .radar-title {
-  color: #f1f6f5;
 
-  font-size: 16px;
-  font-weight: 700;
+  color:
+    #f1f6f5;
 
-  letter-spacing: 5px;
+  font-size:
+    16px;
 
-  white-space: nowrap;
+  font-weight:
+    700;
+
+  letter-spacing:
+    5px;
+
+  white-space:
+    nowrap;
 }
 
 
 /* =========================================================
-   BOTTOM INFO
+   BOTTOM PANEL
 ========================================================= */
 
 .info-panel {
+
   position: absolute;
+
   z-index: 20;
 
   left: 22px;
 
   bottom:
-    max(22px, env(safe-area-inset-bottom));
+    max(
+      22px,
+      env(safe-area-inset-bottom)
+    );
 
-  padding: 18px 24px 17px;
+  padding:
+    18px 24px 17px;
 
-  min-width: 305px;
+  min-width:
+    305px;
 
-  border-radius: 24px;
+  border-radius:
+    24px;
 
-  background: rgba(5,9,9,.94);
+  background:
+    rgba(5,9,9,.94);
 
-  border: 1px solid rgba(105,145,140,.20);
+  border:
+    1px solid
+    rgba(105,145,140,.20);
 
   box-shadow:
-    0 10px 35px rgba(0,0,0,.4),
-    inset 0 0 20px rgba(100,255,200,.02);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    0 10px 35px
+    rgba(0,0,0,.4),
 
-  pointer-events: none;
+    inset 0 0 20px
+    rgba(100,255,200,.02);
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  pointer-events:
+    none;
 }
+
 
 .region-name {
-  color: #e7eeee;
 
-  font-size: 17px;
-  font-weight: 700;
+  color:
+    #e7eeee;
 
-  letter-spacing: 4px;
+  font-size:
+    17px;
 
-  margin-bottom: 8px;
+  font-weight:
+    700;
+
+  letter-spacing:
+    4px;
+
+  margin-bottom:
+    8px;
 }
 
-.date-time {
-  color: #81908e;
 
-  font-size: 14px;
+.date-time {
+
+  color:
+    #81908e;
+
+  font-size:
+    14px;
 
   font-family:
     ui-monospace,
@@ -206,7 +310,8 @@ body {
     Consolas,
     monospace;
 
-  letter-spacing: 1px;
+  letter-spacing:
+    1px;
 }
 
 
@@ -215,18 +320,24 @@ body {
 ========================================================= */
 
 .info-button {
+
   position: absolute;
+
   z-index: 30;
 
   right: 22px;
 
   bottom:
-    max(22px, env(safe-area-inset-bottom));
+    max(
+      22px,
+      env(safe-area-inset-bottom)
+    );
 
   width: 62px;
   height: 62px;
 
-  border-radius: 50%;
+  border-radius:
+    50%;
 
   border:
     1px solid
@@ -241,19 +352,34 @@ body {
   font-family:
     Georgia, serif;
 
-  font-size: 38px;
-  font-weight: bold;
+  font-size:
+    38px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-weight:
+    bold;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
 
   box-shadow:
-    0 8px 30px rgba(0,0,0,.45),
-    inset 0 0 15px rgba(255,255,255,.02);
 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+    0 8px 30px
+    rgba(0,0,0,.45),
+
+    inset 0 0 15px
+    rgba(255,255,255,.02);
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
 }
 
 
@@ -262,34 +388,53 @@ body {
 ========================================================= */
 
 .maplibregl-ctrl-top-right {
+
   top: 20px;
+
   right: 18px;
 }
 
+
 .maplibregl-ctrl-group {
-  background: rgba(5,9,9,.85) !important;
+
+  background:
+    rgba(5,9,9,.85) !important;
 
   border:
     1px solid
     rgba(130,150,145,.20) !important;
 
-  border-radius: 14px !important;
+  border-radius:
+    14px !important;
 
-  overflow: hidden;
+  overflow:
+    hidden;
 
-  backdrop-filter: blur(10px);
+  backdrop-filter:
+    blur(10px);
 }
+
 
 .maplibregl-ctrl-group button {
-  background-color: transparent !important;
+
+  background-color:
+    transparent !important;
 }
 
-.maplibregl-ctrl-group button span {
-  filter: invert(1);
-  opacity: .7;
+
+.maplibregl-ctrl-group
+button span {
+
+  filter:
+    invert(1);
+
+  opacity:
+    .7;
 }
+
 
 .maplibregl-ctrl-attrib {
+
   background:
     rgba(5,8,8,.7) !important;
 
@@ -300,8 +445,11 @@ body {
     9px !important;
 }
 
+
 .maplibregl-ctrl-attrib a {
-  color: #7e928e !important;
+
+  color:
+    #7e928e !important;
 }
 
 
@@ -312,59 +460,102 @@ body {
 @media (max-width:600px) {
 
   .radar-badge {
+
     top:
-      max(18px,env(safe-area-inset-top));
+      max(
+        18px,
+        env(safe-area-inset-top)
+      );
 
-    left:22px;
+    left:
+      22px;
 
-    height:56px;
+    height:
+      56px;
 
-    padding:0 20px;
+    padding:
+      0 20px;
   }
+
 
   .radar-title {
-    font-size:15px;
-    letter-spacing:4px;
+
+    font-size:
+      15px;
+
+    letter-spacing:
+      4px;
   }
+
 
   .radar-dot {
-    width:19px;
-    height:19px;
-    flex-basis:19px;
+
+    width:
+      19px;
+
+    height:
+      19px;
+
+    flex-basis:
+      19px;
   }
+
 
   .info-panel {
-    left:22px;
+
+    left:
+      22px;
 
     bottom:
-      max(20px,env(safe-area-inset-bottom));
+      max(
+        20px,
+        env(safe-area-inset-bottom)
+      );
 
-    min-width:285px;
+    min-width:
+      285px;
 
-    padding:17px 21px;
+    padding:
+      17px 21px;
   }
+
 
   .region-name {
-    font-size:16px;
+
+    font-size:
+      16px;
   }
+
 
   .date-time {
-    font-size:13px;
+
+    font-size:
+      13px;
   }
 
+
   .info-button {
-    right:20px;
+
+    right:
+      20px;
 
     bottom:
-      max(20px,env(safe-area-inset-bottom));
+      max(
+        20px,
+        env(safe-area-inset-bottom)
+      );
 
-    width:60px;
-    height:60px;
+    width:
+      60px;
+
+    height:
+      60px;
   }
 
 }
 
 </style>
+
 </head>
 
 
@@ -409,14 +600,18 @@ body {
 </button>
 
 
-<script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
+<script
+  src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"
+></script>
 
 
 <script>
 
+
 /* ============================================================
-   MAP SETTINGS
+   CONFIG
 ============================================================ */
+
 
 const STYLE_URL =
   "https://tiles.openfreemap.org/styles/dark";
@@ -432,25 +627,20 @@ const INITIAL_CENTER =
 
 /*
   ==========================================================
-  СТАРТОВИЙ МАСШТАБ
+  ПОТРІБНИЙ СТАРТОВИЙ МАСШТАБ
   ==========================================================
 
   8.0
 
-  Саме цей масштаб тепер буде
-  при кожному відкритті Mini App.
-
-  Приблизно:
+  Це приблизно:
 
   попередній вигляд
-        ↓
-      натиснути +
-        ↓
+        +
      ще трохи
-        ↓
+        =
        8.0
 
-  Але це НЕ максимум.
+  Саме ТАК карта відкривається.
 */
 
 const INITIAL_ZOOM =
@@ -458,7 +648,7 @@ const INITIAL_ZOOM =
 
 
 /*
-  Можна віддаляти.
+  Мінімальний масштаб.
 */
 
 const MIN_ZOOM =
@@ -466,7 +656,10 @@ const MIN_ZOOM =
 
 
 /*
-  Можна сильно наближати.
+  Максимальний масштаб.
+
+  Можна збільшувати набагато
+  сильніше.
 */
 
 const MAX_ZOOM =
@@ -474,7 +667,7 @@ const MAX_ZOOM =
 
 
 /*
-  Київська область.
+  Контур області.
 */
 
 const KYIV_OBLAST_GEOJSON =
@@ -482,49 +675,76 @@ const KYIV_OBLAST_GEOJSON =
 
 
 /* ============================================================
-   CLOCK
+   DATE / TIME
 ============================================================ */
+
 
 function updateDateTime() {
 
   const now =
     new Date();
 
+
   const day =
     String(
       now.getDate()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const month =
     String(
       now.getMonth()+1
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const year =
     now.getFullYear();
 
+
   const hours =
     String(
       now.getHours()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const minutes =
     String(
       now.getMinutes()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const seconds =
     String(
       now.getSeconds()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   document
-    .getElementById("datetime")
+    .getElementById(
+      "datetime"
+    )
     .textContent =
     `${day}.${month}.${year} · ${hours}:${minutes}:${seconds}`;
 }
 
+
 updateDateTime();
+
 
 setInterval(
   updateDateTime,
@@ -533,8 +753,9 @@ setInterval(
 
 
 /* ============================================================
-   STYLE
+   PREPARE STYLE
 ============================================================ */
+
 
 function prepareStyle(style) {
 
@@ -542,22 +763,27 @@ function prepareStyle(style) {
     !style ||
     !style.layers
   ) {
+
     return style;
   }
+
 
   style.layers =
     style.layers.map(
       layer => {
+
 
         const sourceLayer =
           String(
             layer["source-layer"] || ""
           ).toLowerCase();
 
+
         const layerId =
           String(
             layer.id || ""
           ).toLowerCase();
+
 
         const isPlaceLayer =
 
@@ -572,6 +798,7 @@ function prepareStyle(style) {
           layerId.includes("place") ||
 
           layerId.includes("settlement");
+
 
         if (
           isPlaceLayer &&
@@ -589,10 +816,12 @@ function prepareStyle(style) {
 
         }
 
+
         return layer;
 
       }
     );
+
 
   return style;
 }
@@ -602,12 +831,14 @@ function prepareStyle(style) {
    CREATE MAP
 ============================================================ */
 
+
 let map;
 
 
 async function createMap() {
 
   let style;
+
 
   try {
 
@@ -616,14 +847,21 @@ async function createMap() {
         STYLE_URL
       );
 
-    if (!response.ok) {
+
+    if (
+      !response.ok
+    ) {
+
       throw new Error(
         "Style loading failed"
       );
+
     }
+
 
     style =
       await response.json();
+
 
     style =
       prepareStyle(
@@ -638,6 +876,7 @@ async function createMap() {
       "Style preparation error:",
       error
     );
+
 
     style =
       STYLE_URL;
@@ -657,10 +896,6 @@ async function createMap() {
       center:
         INITIAL_CENTER,
 
-      /*
-        ТЕПЕР 8.0
-      */
-
       zoom:
         INITIAL_ZOOM,
 
@@ -669,10 +904,6 @@ async function createMap() {
 
       maxZoom:
         MAX_ZOOM,
-
-      /*
-        maxBounds ВІДСУТНІ.
-      */
 
       dragRotate:
         false,
@@ -696,7 +927,7 @@ async function createMap() {
 
 
   /* ==========================================================
-     ZOOM CONTROLS
+     CONTROLS
   ========================================================== */
 
   map.addControl(
@@ -723,26 +954,85 @@ async function createMap() {
      LOAD
   ========================================================== */
 
-  map.on(
+  map.once(
     "load",
     async () => {
 
+
+      /*
+        ======================================================
+        ГОЛОВНА ЗМІНА
+        ======================================================
+
+        Примусово ставимо zoom ПІСЛЯ
+        повного завантаження карти.
+
+        Тобто навіть якщо MapLibre
+        або стиль спробує використати
+        інше значення — тут буде 8.0.
+      */
+
+      map.jumpTo({
+
+        center:
+          INITIAL_CENTER,
+
+        zoom:
+          INITIAL_ZOOM,
+
+        bearing:
+          0,
+
+        pitch:
+          0
+
+      });
+
+
       hideDefaultPlaceLabels();
+
 
       addCustomPlaceLabels();
 
+
       addWaterLabels();
+
 
       addDistrictBoundaries();
 
+
       await addKyivOblastBoundary();
+
+
+      /*
+        Ще одна перевірка.
+
+        Після додавання шарів
+        знову фіксуємо стартовий zoom.
+      */
+
+      map.jumpTo({
+
+        center:
+          INITIAL_CENTER,
+
+        zoom:
+          INITIAL_ZOOM,
+
+        bearing:
+          0,
+
+        pitch:
+          0
+
+      });
 
     }
   );
 
 
   /* ==========================================================
-     HIDE DEFAULT LABELS
+     HIDE DEFAULT PLACE LABELS
   ========================================================== */
 
   function hideDefaultPlaceLabels() {
@@ -750,19 +1040,23 @@ async function createMap() {
     const layers =
       map.getStyle().layers || [];
 
+
     for (
       const layer of layers
     ) {
+
 
       const sourceLayer =
         String(
           layer["source-layer"] || ""
         ).toLowerCase();
 
+
       const layerId =
         String(
           layer.id || ""
         ).toLowerCase();
+
 
       const isPlace =
 
@@ -778,6 +1072,7 @@ async function createMap() {
 
         layerId.includes("settlement");
 
+
       if (
         isPlace &&
         layer.type === "symbol"
@@ -786,9 +1081,13 @@ async function createMap() {
         try {
 
           map.setLayoutProperty(
+
             layer.id,
+
             "visibility",
+
             "none"
+
           );
 
         }
@@ -803,10 +1102,11 @@ async function createMap() {
 
 
   /* ==========================================================
-     UKRAINIAN LABELS
+     UKRAINIAN PLACE LABELS
   ========================================================== */
 
   function addCustomPlaceLabels() {
+
 
     if (
       !map.getSource(
@@ -866,6 +1166,7 @@ async function createMap() {
           "name:uk"
         ],
 
+
       layout: {
 
         "text-field":
@@ -874,10 +1175,12 @@ async function createMap() {
             "name:uk"
           ],
 
+
         "text-font":
           [
             "Noto Sans Regular"
           ],
+
 
         "text-size":
           [
@@ -888,53 +1191,68 @@ async function createMap() {
 
             ["zoom"],
 
+
             5.5,
             8,
+
 
             7,
             8.5,
 
+
             9,
             9,
+
 
             11,
             10,
 
+
             13,
             11,
 
+
             16,
             12,
+
 
             20,
             13
 
           ],
 
+
         "text-anchor":
           "center",
+
 
         "text-offset":
           [0,0],
 
+
         "text-allow-overlap":
           false,
+
 
         "text-ignore-placement":
           false
 
       },
 
+
       paint: {
 
         "text-color":
           "#b9c5c2",
 
+
         "text-halo-color":
           "rgba(4,7,7,.96)",
 
+
         "text-halo-width":
           1.2,
+
 
         "text-halo-blur":
           .25
@@ -952,11 +1270,13 @@ async function createMap() {
 
   function addWaterLabels() {
 
+
     if (
       map.getLayer(
         "ukrainian-water-labels"
       )
     ) {
+
       return;
     }
 
@@ -984,6 +1304,7 @@ async function createMap() {
           "name:uk"
         ],
 
+
       layout: {
 
         "text-field":
@@ -992,26 +1313,32 @@ async function createMap() {
             "name:uk"
           ],
 
+
         "text-font":
           [
             "Noto Sans Regular"
           ],
 
+
         "text-size":
           10,
+
 
         "text-allow-overlap":
           false
 
       },
 
+
       paint: {
 
         "text-color":
           "#657674",
 
+
         "text-halo-color":
           "rgba(4,7,7,.8)",
+
 
         "text-halo-width":
           1
@@ -1029,11 +1356,13 @@ async function createMap() {
 
   function addDistrictBoundaries() {
 
+
     if (
       map.getSource(
         "district-boundaries"
       )
     ) {
+
       return;
     }
 
@@ -1072,6 +1401,7 @@ async function createMap() {
       minzoom:
         6,
 
+
       filter:
         [
 
@@ -1092,10 +1422,12 @@ async function createMap() {
 
         ],
 
+
       paint: {
 
         "line-color":
           "rgba(130,155,149,.38)",
+
 
         "line-width":
           [
@@ -1106,19 +1438,24 @@ async function createMap() {
 
             ["zoom"],
 
+
             6,
             .45,
+
 
             9,
             .7,
 
+
             12,
             .9,
+
 
             16,
             1
 
           ],
+
 
         "line-opacity":
           .58
@@ -1136,18 +1473,26 @@ async function createMap() {
 
   async function addKyivOblastBoundary() {
 
+
     try {
+
 
       const response =
         await fetch(
           KYIV_OBLAST_GEOJSON
         );
 
-      if (!response.ok) {
+
+      if (
+        !response.ok
+      ) {
+
         throw new Error(
           "GeoJSON loading failed"
         );
+
       }
+
 
       const geojson =
         await response.json();
@@ -1170,9 +1515,9 @@ async function createMap() {
       );
 
 
-      /* ------------------------------------------------------
+      /* ======================================================
          FILL
-      ------------------------------------------------------ */
+      ====================================================== */
 
       map.addLayer({
 
@@ -1198,9 +1543,9 @@ async function createMap() {
       });
 
 
-      /* ------------------------------------------------------
+      /* ======================================================
          GLOW
-      ------------------------------------------------------ */
+      ====================================================== */
 
       map.addLayer({
 
@@ -1227,22 +1572,28 @@ async function createMap() {
 
               ["zoom"],
 
+
               5,
               3,
+
 
               7,
               4,
 
+
               10,
               5,
+
 
               15,
               6
 
             ],
 
+
           "line-opacity":
             .12,
+
 
           "line-blur":
             4
@@ -1252,9 +1603,9 @@ async function createMap() {
       });
 
 
-      /* ------------------------------------------------------
+      /* ======================================================
          MAIN OUTLINE
-      ------------------------------------------------------ */
+      ====================================================== */
 
       map.addLayer({
 
@@ -1281,22 +1632,28 @@ async function createMap() {
 
               ["zoom"],
 
+
               5,
               1.1,
+
 
               7,
               1.5,
 
+
               10,
               1.9,
 
+
               15,
               2.4,
+
 
               20,
               3
 
             ],
+
 
           "line-opacity":
             .95
@@ -1304,6 +1661,7 @@ async function createMap() {
         }
 
       });
+
 
     }
 
@@ -1320,7 +1678,7 @@ async function createMap() {
 
 
   /* ==========================================================
-     INFO BUTTON
+     INFO
   ========================================================== */
 
   document
@@ -1332,9 +1690,15 @@ async function createMap() {
       () => {
 
         alert(
+
           "ONLINE RADAR\n\n" +
+
           "Карта Київської області\n\n" +
-          "Масштабування доступне до 20."
+
+          "Стартовий масштаб: 8.0\n" +
+
+          "Максимальний zoom: 20"
+
         );
 
       }
@@ -1363,7 +1727,9 @@ async function createMap() {
     () => {
 
       if (map) {
+
         map.resize();
+
       }
 
     }
