@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="uk">
-
 <head>
 
 <meta charset="UTF-8">
@@ -19,10 +18,6 @@
 
 <style>
 
-/* =========================================================
-   RESET
-========================================================= */
-
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -30,17 +25,12 @@
 
 html,
 body {
-
   margin: 0;
   padding: 0;
-
   width: 100%;
   height: 100%;
-
   overflow: hidden;
-
   background: #050707;
-
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -52,26 +42,15 @@ body {
 }
 
 body {
-
   position: fixed;
-
   inset: 0;
 }
 
-
-/* =========================================================
-   MAP
-========================================================= */
-
 #map {
-
   position: absolute;
-
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   background: #070909;
 }
 
@@ -114,12 +93,8 @@ body {
     rgba(80,180,160,.20);
 
   box-shadow:
-
-    0 8px 30px
-    rgba(0,0,0,.40),
-
-    inset 0 0 20px
-    rgba(60,255,190,.025);
+    0 8px 30px rgba(0,0,0,.40),
+    inset 0 0 20px rgba(60,255,190,.025);
 
   backdrop-filter:
     blur(12px);
@@ -130,7 +105,6 @@ body {
   pointer-events:
     none;
 }
-
 
 .radar-dot {
 
@@ -147,14 +121,9 @@ body {
     #55f5a5;
 
   box-shadow:
-
-    0 0 10px
-    rgba(85,245,165,.95),
-
-    0 0 25px
-    rgba(85,245,165,.60);
+    0 0 10px rgba(85,245,165,.95),
+    0 0 25px rgba(85,245,165,.60);
 }
-
 
 .radar-dot::after {
 
@@ -174,38 +143,24 @@ body {
     radarPulse 2s infinite ease-out;
 }
 
-
 @keyframes radarPulse {
 
   0% {
-
-    transform:
-      scale(.65);
-
-    opacity:
-      .85;
+    transform: scale(.65);
+    opacity: .85;
   }
 
   70% {
-
-    transform:
-      scale(1.25);
-
-    opacity:
-      0;
+    transform: scale(1.25);
+    opacity: 0;
   }
 
   100% {
-
-    transform:
-      scale(1.25);
-
-    opacity:
-      0;
+    transform: scale(1.25);
+    opacity: 0;
   }
 
 }
-
 
 .radar-title {
 
@@ -261,12 +216,8 @@ body {
     rgba(90,160,150,.20);
 
   box-shadow:
-
-    0 10px 35px
-    rgba(0,0,0,.45),
-
-    inset 0 0 20px
-    rgba(80,255,210,.02);
+    0 10px 35px rgba(0,0,0,.45),
+    inset 0 0 20px rgba(80,255,210,.02);
 
   backdrop-filter:
     blur(12px);
@@ -277,7 +228,6 @@ body {
   pointer-events:
     none;
 }
-
 
 .region-name {
 
@@ -296,7 +246,6 @@ body {
   margin-bottom:
     8px;
 }
-
 
 .date-time {
 
@@ -372,12 +321,7 @@ body {
     center;
 
   box-shadow:
-
-    0 8px 30px
-    rgba(0,0,0,.45),
-
-    inset 0 0 15px
-    rgba(255,255,255,.02);
+    0 8px 30px rgba(0,0,0,.45);
 
   backdrop-filter:
     blur(10px);
@@ -393,11 +337,12 @@ body {
 
 .maplibregl-ctrl-top-right {
 
-  top: 20px;
+  top:
+    20px;
 
-  right: 18px;
+  right:
+    18px;
 }
-
 
 .maplibregl-ctrl-group {
 
@@ -419,16 +364,13 @@ body {
     rgba(0,0,0,.30);
 }
 
-
 .maplibregl-ctrl-group button {
 
   background:
     transparent !important;
 }
 
-
-.maplibregl-ctrl-group
-button span {
+.maplibregl-ctrl-group button span {
 
   filter:
     invert(1);
@@ -436,7 +378,6 @@ button span {
   opacity:
     .72;
 }
-
 
 .maplibregl-ctrl-attrib {
 
@@ -448,13 +389,6 @@ button span {
 
   font-size:
     9px !important;
-}
-
-
-.maplibregl-ctrl-attrib a {
-
-  color:
-    #718581 !important;
 }
 
 
@@ -482,7 +416,6 @@ button span {
       0 20px;
   }
 
-
   .radar-title {
 
     font-size:
@@ -491,7 +424,6 @@ button span {
     letter-spacing:
       4px;
   }
-
 
   .radar-dot {
 
@@ -504,7 +436,6 @@ button span {
     flex-basis:
       19px;
   }
-
 
   .info-panel {
 
@@ -524,20 +455,17 @@ button span {
       17px 21px;
   }
 
-
   .region-name {
 
     font-size:
       16px;
   }
 
-
   .date-time {
 
     font-size:
       13px;
   }
-
 
   .info-button {
 
@@ -563,16 +491,11 @@ button span {
 
 </head>
 
-
 <body>
 
 
 <div id="map"></div>
 
-
-<!-- =========================================================
-     ONLINE RADAR
-========================================================= -->
 
 <div class="radar-badge">
 
@@ -584,10 +507,6 @@ button span {
 
 </div>
 
-
-<!-- =========================================================
-     BOTTOM INFORMATION
-========================================================= -->
 
 <div class="info-panel">
 
@@ -603,10 +522,6 @@ button span {
 </div>
 
 
-<!-- =========================================================
-     INFO
-========================================================= -->
-
 <button
   class="info-button"
   id="infoButton"
@@ -615,36 +530,25 @@ button span {
 </button>
 
 
-<script
-  src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"
-></script>
+<script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
 
 
 <script>
 
-
 /* ============================================================
-   CONFIG
+   SETTINGS
 ============================================================ */
-
-
-/*
-  Dark basemap.
-*/
 
 const STYLE_URL =
   "https://tiles.openfreemap.org/styles/dark";
 
 
 /*
-  Максимальне наближення.
-
-  Можна йти від стартової області
-  аж до рівня вулиць.
+  Максимальний zoom,
+  до якого можна наближати.
 */
 
-const MAX_ZOOM =
-  20;
+const MAX_ZOOM = 20;
 
 
 /*
@@ -652,14 +556,15 @@ const MAX_ZOOM =
   СТАРТОВИЙ КАДР
   ==========================================================
 
-  Трохи ширший за саму Київську область,
-  щоб область не обрізалась по краях,
-  але сусідні регіони були лише трохи видні.
+  Трохи ширше за попередню версію.
+
+  Це зроблено спеціально під
+  вертикальний екран телефону.
 */
 
 const KYIV_VIEW_BOUNDS = [
 
-  [29.20, 49.35],
+  [29.05, 49.20],
 
   [32.20, 51.55]
 
@@ -668,39 +573,28 @@ const KYIV_VIEW_BOUNDS = [
 
 /*
   ==========================================================
-  ОБМЕЖЕННЯ ПАНОРАМУВАННЯ
+  ОБМЕЖЕННЯ ПЕРЕМІЩЕННЯ
   ==========================================================
 
-  Невеликий запас навколо Київщини.
-
-  Далеко відтягнути карту пальцями
-  вже не вийде.
+  Можна бачити трохи сусідніх
+  областей, але карту неможливо
+  відтягнути далеко.
 */
 
 const MAP_MAX_BOUNDS = [
 
   [28.85, 49.05],
 
-  [32.55, 51.80]
+  [32.45, 51.75]
 
 ];
 
-
-/*
-  Область для неонового контуру.
-*/
 
 const KYIV_OBLAST_GEOJSON =
   "https://geo2day.com/europe/ukraine/kiev_oblast.geojson";
 
 
-/*
-  Мінімальний zoom розраховується
-  автоматично.
-*/
-
-let minZoomCalculated =
-  5;
+let startZoom = 7;
 
 
 /* ============================================================
@@ -712,7 +606,6 @@ function updateDateTime() {
   const now =
     new Date();
 
-
   const day =
     String(
       now.getDate()
@@ -720,7 +613,6 @@ function updateDateTime() {
       2,
       "0"
     );
-
 
   const month =
     String(
@@ -730,10 +622,8 @@ function updateDateTime() {
       "0"
     );
 
-
   const year =
     now.getFullYear();
-
 
   const hours =
     String(
@@ -743,7 +633,6 @@ function updateDateTime() {
       "0"
     );
 
-
   const minutes =
     String(
       now.getMinutes()
@@ -752,7 +641,6 @@ function updateDateTime() {
       "0"
     );
 
-
   const seconds =
     String(
       now.getSeconds()
@@ -760,7 +648,6 @@ function updateDateTime() {
       2,
       "0"
     );
-
 
   document
     .getElementById(
@@ -794,10 +681,10 @@ const map =
       STYLE_URL,
 
     center:
-      [30.70,50.40],
+      [30.65, 50.35],
 
     zoom:
-      7.5,
+      7.1,
 
     minZoom:
       5,
@@ -832,9 +719,10 @@ const map =
   });
 
 
-/* ============================================================
-   PAN LIMIT
-============================================================ */
+/*
+  Забороняємо втечу карти
+  далеко від Київщини.
+*/
 
 map.setMaxBounds(
   MAP_MAX_BOUNDS
@@ -874,10 +762,11 @@ map.once(
   async () => {
 
 
-    /* ======================================================
-       1. STARTING VIEW
-    ====================================================== */
-
+    /*
+      ========================================================
+      СТАРТОВИЙ МАСШТАБ
+      ========================================================
+    */
 
     map.fitBounds(
 
@@ -886,34 +775,37 @@ map.once(
       {
 
         /*
-          Тут спеціально НЕ величезний
-          padding.
-
-          Карта повинна бути трохи
-          ближча, але вся область
-          має залишитися в кадрі.
+          Трохи більше простору
+          зверху та знизу,
+          щоб інформаційні панелі
+          не перекривали міста.
         */
 
         padding: {
 
           top:
-            105,
+            115,
 
           bottom:
-            125,
+            155,
 
           left:
-            25,
+            35,
 
           right:
-            25
+            35
 
         },
 
+        /*
+          КЛЮЧОВЕ:
+
+          стартовий zoom не може
+          стати більшим за 7.25.
+        */
 
         maxZoom:
-          8.65,
-
+          7.25,
 
         duration:
           0
@@ -924,27 +816,26 @@ map.once(
 
 
     /*
-      Запам'ятовуємо реальний
+      Запам'ятовуємо отриманий
       стартовий масштаб.
     */
 
-    minZoomCalculated =
+    startZoom =
       map.getZoom();
 
 
     /*
-      Нижче цього масштабу
-      кнопка "-" більше
-      не працює.
+      Не дозволяємо натискати "-"
+      нижче стартового масштабу.
     */
 
     map.setMinZoom(
-      minZoomCalculated
+      startZoom
     );
 
 
     /*
-      Стартова позиція.
+      Центруємо остаточно.
     */
 
     map.jumpTo({
@@ -953,7 +844,7 @@ map.once(
         map.getCenter(),
 
       zoom:
-        minZoomCalculated,
+        startZoom,
 
       bearing:
         0,
@@ -964,44 +855,47 @@ map.once(
     });
 
 
-    /* ======================================================
-       2. REMOVE ENGLISH PLACE LABELS
-    ====================================================== */
+    /*
+      Прибираємо стандартні
+      англійські назви.
+    */
 
     hideDefaultPlaceLabels();
 
 
-    /* ======================================================
-       3. OUR CITY NODES
-    ====================================================== */
+    /*
+      Додаємо наші українські
+      вузли міст.
+    */
 
     addMajorCityNodes();
 
 
-    /* ======================================================
-       4. WATER LABELS
-    ====================================================== */
+    /*
+      Вода.
+    */
 
     addWaterLabels();
 
 
-    /* ======================================================
-       5. DISTRICTS
-    ====================================================== */
+    /*
+      Райони.
+    */
 
     addDistrictBoundaries();
 
 
-    /* ======================================================
-       6. KYIV OBLAST NEON
-    ====================================================== */
+    /*
+      Неоновий контур Київщини.
+    */
 
     await addKyivOblastBoundary();
 
 
     /*
-      Фінально залишаємо карту
-      саме в стартовій позиції.
+      Ще раз фіксуємо
+      стартовий кадр після
+      завантаження всіх шарів.
     */
 
     map.jumpTo({
@@ -1010,7 +904,7 @@ map.once(
         map.getCenter(),
 
       zoom:
-        minZoomCalculated,
+        startZoom,
 
       bearing:
         0,
@@ -1025,11 +919,10 @@ map.once(
 
 
 /* ============================================================
-   HIDE DEFAULT PLACE LABELS
+   DEFAULT LABELS
 ============================================================ */
 
 function hideDefaultPlaceLabels() {
-
 
   const layers =
     map.getStyle().layers || [];
@@ -1038,7 +931,6 @@ function hideDefaultPlaceLabels() {
   for (
     const layer of layers
   ) {
-
 
     const sourceLayer =
       String(
@@ -1072,7 +964,6 @@ function hideDefaultPlaceLabels() {
       layer.type === "symbol"
     ) {
 
-
       try {
 
         map.setLayoutProperty(
@@ -1097,22 +988,10 @@ function hideDefaultPlaceLabels() {
 
 
 /* ============================================================
-   MAJOR CITY NODES
+   CITY NODES
 ============================================================ */
 
 function addMajorCityNodes() {
-
-
-  /*
-    Статичний список основних міст
-    та вузлів Київської області.
-
-    Вони не залежать від zoom
-    базової карти.
-
-    Саме тому будуть видні
-    вже при відкритті.
-  */
 
   const cities = [
 
@@ -1294,10 +1173,6 @@ function addMajorCityNodes() {
   ];
 
 
-  /*
-    GeoJSON.
-  */
-
   const features =
     cities.map(
       city => ({
@@ -1333,49 +1208,32 @@ function addMajorCityNodes() {
     );
 
 
-  const data = {
+  map.addSource(
 
-    type:
-      "FeatureCollection",
+    "major-city-nodes",
 
-    features:
-      features
+    {
 
-  };
+      type:
+        "geojson",
 
-
-  /* ========================================================
-     SOURCE
-  ======================================================== */
-
-  if (
-    !map.getSource(
-      "major-city-nodes"
-    )
-  ) {
-
-
-    map.addSource(
-
-      "major-city-nodes",
-
-      {
+      data: {
 
         type:
-          "geojson",
+          "FeatureCollection",
 
-        data:
-          data
+        features:
+          features
 
       }
 
-    );
+    }
 
-  }
+  );
 
 
   /* ========================================================
-     CITY DOTS
+     DOTS
   ======================================================== */
 
   map.addLayer({
@@ -1389,10 +1247,8 @@ function addMajorCityNodes() {
     source:
       "major-city-nodes",
 
-
     minzoom:
-      5.5,
-
+      6.5,
 
     paint: {
 
@@ -1405,43 +1261,34 @@ function addMajorCityNodes() {
 
           ["zoom"],
 
+          6.5,
+          1.7,
 
-          5.5,
-          2.3,
+          8,
+          2.1,
 
+          10,
+          2.7,
 
-          7,
-          2.8,
-
-
-          9,
+          14,
           3.5,
 
-
-          12,
-          4,
-
-
-          16,
-          5
+          20,
+          4.5
 
         ],
 
-
       "circle-color":
-        "#7bdcff",
-
+        "#63d7f5",
 
       "circle-stroke-color":
-        "#071012",
-
+        "#061014",
 
       "circle-stroke-width":
-        1,
-
+        .8,
 
       "circle-opacity":
-        .95
+        .9
 
     }
 
@@ -1463,10 +1310,8 @@ function addMajorCityNodes() {
     source:
       "major-city-nodes",
 
-
     minzoom:
-      5.5,
-
+      6.5,
 
     layout: {
 
@@ -1476,20 +1321,10 @@ function addMajorCityNodes() {
           "name"
         ],
 
-
       "text-font":
         [
           "Noto Sans Regular"
         ],
-
-
-      /*
-        Основні міста трохи
-        помітніші.
-
-        Але без величезних
-        написів.
-      */
 
       "text-size":
         [
@@ -1500,76 +1335,56 @@ function addMajorCityNodes() {
 
           ["zoom"],
 
+          6.5,
+          6.5,
 
-          5.5,
+          7.25,
           7.2,
 
-
-          7,
+          8,
           7.8,
 
-
-          8.5,
-          8.8,
-
-
           10,
-          9.5,
-
+          9,
 
           13,
-          10.5,
-
+          10,
 
           16,
-          12,
-
+          11,
 
           20,
           13
 
         ],
 
-
       "text-offset":
         [
-
           0,
-          1.15
-
+          1.05
         ],
-
 
       "text-anchor":
         "top",
 
-
       "text-allow-overlap":
         false,
-
 
       "text-ignore-placement":
         false
 
     },
 
-
     paint: {
 
       "text-color":
-        "#d3dedc",
-
+        "#c9d8d6",
 
       "text-halo-color":
         "rgba(3,7,8,.98)",
 
-
       "text-halo-width":
-        1.25,
-
-
-      "text-halo-blur":
-        .15
+        1.1
 
     }
 
@@ -1577,7 +1392,7 @@ function addMajorCityNodes() {
 
 
   /* ========================================================
-     BIG CITY LABELS
+     IMPORTANT CITY LABELS
   ======================================================== */
 
   map.addLayer({
@@ -1591,10 +1406,8 @@ function addMajorCityNodes() {
     source:
       "major-city-nodes",
 
-
     minzoom:
-      5.5,
-
+      6.5,
 
     filter:
       [
@@ -1606,7 +1419,6 @@ function addMajorCityNodes() {
         true
       ],
 
-
     layout: {
 
       "text-field":
@@ -1615,12 +1427,10 @@ function addMajorCityNodes() {
           "name"
         ],
 
-
       "text-font":
         [
           "Noto Sans Bold"
         ],
-
 
       "text-size":
         [
@@ -1631,76 +1441,56 @@ function addMajorCityNodes() {
 
           ["zoom"],
 
+          6.5,
+          7,
 
-          5.5,
+          7.25,
+          7.5,
+
+          8,
           8.2,
 
-
-          7,
-          8.8,
-
-
-          8.5,
-          9.5,
-
-
           10,
+          9.3,
+
+          13,
           10.5,
 
-
-          13,
-          11.5,
-
-
           16,
-          13,
-
+          12,
 
           20,
           14
 
         ],
 
-
       "text-offset":
         [
-
           0,
-          1.15
-
+          1.05
         ],
-
 
       "text-anchor":
         "top",
 
-
       "text-allow-overlap":
         false,
-
 
       "text-ignore-placement":
         false
 
     },
 
-
     paint: {
 
       "text-color":
-        "#edf5f3",
-
+        "#e7f1ef",
 
       "text-halo-color":
         "rgba(3,7,8,1)",
 
-
       "text-halo-width":
-        1.4,
-
-
-      "text-halo-blur":
-        .2
+        1.2
 
     }
 
@@ -1710,22 +1500,10 @@ function addMajorCityNodes() {
 
 
 /* ============================================================
-   WATER LABELS
+   WATER
 ============================================================ */
 
 function addWaterLabels() {
-
-
-  if (
-    map.getSource(
-      "water-label-source"
-    )
-  ) {
-
-    return;
-
-  }
-
 
   map.addSource(
 
@@ -1758,17 +1536,14 @@ function addWaterLabels() {
     "source-layer":
       "water",
 
-
     minzoom:
       7,
-
 
     filter:
       [
         "has",
         "name:uk"
       ],
-
 
     layout: {
 
@@ -1778,32 +1553,26 @@ function addWaterLabels() {
           "name:uk"
         ],
 
-
       "text-font":
         [
           "Noto Sans Regular"
         ],
 
-
       "text-size":
-        9,
-
+        8,
 
       "text-allow-overlap":
         false
 
     },
 
-
     paint: {
 
       "text-color":
         "#657a83",
 
-
       "text-halo-color":
         "rgba(4,7,8,.9)",
-
 
       "text-halo-width":
         1
@@ -1816,22 +1585,10 @@ function addWaterLabels() {
 
 
 /* ============================================================
-   DISTRICT BOUNDARIES
+   DISTRICTS
 ============================================================ */
 
 function addDistrictBoundaries() {
-
-
-  if (
-    map.getSource(
-      "district-boundaries"
-    )
-  ) {
-
-    return;
-
-  }
-
 
   map.addSource(
 
@@ -1864,10 +1621,8 @@ function addDistrictBoundaries() {
     "source-layer":
       "boundary",
 
-
     minzoom:
       6,
-
 
     filter:
       [
@@ -1883,12 +1638,10 @@ function addDistrictBoundaries() {
 
       ],
 
-
     paint: {
 
       "line-color":
-        "rgba(105,130,130,.32)",
-
+        "rgba(105,130,130,.25)",
 
       "line-width":
         [
@@ -1899,27 +1652,22 @@ function addDistrictBoundaries() {
 
           ["zoom"],
 
-
           6,
-          .4,
-
+          .3,
 
           8,
-          .55,
-
+          .45,
 
           11,
-          .75,
-
+          .65,
 
           15,
-          1
+          .9
 
         ],
 
-
       "line-opacity":
-        .52
+        .42
 
     }
 
@@ -1929,14 +1677,12 @@ function addDistrictBoundaries() {
 
 
 /* ============================================================
-   KYIV OBLAST NEON OUTLINE
+   KYIV OBLAST NEON
 ============================================================ */
 
 async function addKyivOblastBoundary() {
 
-
   try {
-
 
     const response =
       await fetch(
@@ -1949,7 +1695,7 @@ async function addKyivOblastBoundary() {
     ) {
 
       throw new Error(
-        "Kyiv Oblast GeoJSON unavailable"
+        "GeoJSON unavailable"
       );
 
     }
@@ -1958,10 +1704,6 @@ async function addKyivOblastBoundary() {
     const geojson =
       await response.json();
 
-
-    /* ======================================================
-       SOURCE
-    ====================================================== */
 
     map.addSource(
 
@@ -1981,7 +1723,7 @@ async function addKyivOblastBoundary() {
 
 
     /* ======================================================
-       SUBTLE AREA
+       SUBTLE BLUE FILL
     ====================================================== */
 
     map.addLayer({
@@ -1998,10 +1740,10 @@ async function addKyivOblastBoundary() {
       paint: {
 
         "fill-color":
-          "#087d9d",
+          "#0787a8",
 
         "fill-opacity":
-          .055
+          .035
 
       }
 
@@ -2009,13 +1751,13 @@ async function addKyivOblastBoundary() {
 
 
     /* ======================================================
-       BLUE NEON GLOW
+       NEON GLOW
     ====================================================== */
 
     map.addLayer({
 
       id:
-        "kyiv-oblast-neon-glow",
+        "kyiv-oblast-glow",
 
       type:
         "line",
@@ -2026,8 +1768,7 @@ async function addKyivOblastBoundary() {
       paint: {
 
         "line-color":
-          "#29d9ff",
-
+          "#24dfff",
 
         "line-width":
           [
@@ -2038,31 +1779,25 @@ async function addKyivOblastBoundary() {
 
             ["zoom"],
 
-
             5,
-            5,
-
+            3,
 
             7,
-            6,
-
+            4,
 
             10,
-            7,
-
+            5,
 
             15,
-            8
+            7
 
           ],
 
-
         "line-opacity":
-          .20,
-
+          .18,
 
         "line-blur":
-          5
+          4
 
       }
 
@@ -2070,13 +1805,13 @@ async function addKyivOblastBoundary() {
 
 
     /* ======================================================
-       MAIN NEON LINE
+       MAIN NEON BORDER
     ====================================================== */
 
     map.addLayer({
 
       id:
-        "kyiv-oblast-neon",
+        "kyiv-oblast-border",
 
       type:
         "line",
@@ -2087,8 +1822,7 @@ async function addKyivOblastBoundary() {
       paint: {
 
         "line-color":
-          "#62e7ff",
-
+          "#55e6ff",
 
         "line-width":
           [
@@ -2099,31 +1833,25 @@ async function addKyivOblastBoundary() {
 
             ["zoom"],
 
-
             5,
-            1.4,
-
+            1,
 
             7,
-            1.8,
-
+            1.35,
 
             10,
-            2.2,
-
+            1.8,
 
             15,
-            2.8,
-
+            2.5,
 
             20,
-            3.5
+            3.2
 
           ],
 
-
         "line-opacity":
-          .96
+          .95
 
       }
 
@@ -2131,11 +1859,10 @@ async function addKyivOblastBoundary() {
 
   }
 
-
   catch(error) {
 
     console.warn(
-      "Kyiv Oblast outline error:",
+      "Kyiv Oblast boundary:",
       error
     );
 
@@ -2159,11 +1886,8 @@ document
       alert(
 
         "ONLINE RADAR\n\n" +
-
         "КИЇВСЬКА ОБЛАСТЬ\n\n" +
-
         "Карта масштабується " +
-
         "до рівня міст та вулиць."
 
       );
@@ -2184,12 +1908,6 @@ map.scrollZoom.enable();
 
 map.doubleClickZoom.enable();
 
-
-/*
-  Вимикаємо нахил карти
-  при жестах.
-*/
-
 map.touchPitch.disable();
 
 
@@ -2201,11 +1919,7 @@ window.addEventListener(
   "resize",
   () => {
 
-    if (map) {
-
-      map.resize();
-
-    }
+    map.resize();
 
   }
 );
@@ -2213,5 +1927,4 @@ window.addEventListener(
 </script>
 
 </body>
-
 </html>
