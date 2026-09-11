@@ -40,6 +40,7 @@
       inset: 0;
     }
 
+
     /* =========================================================
        MAP
     ========================================================= */
@@ -51,6 +52,7 @@
       height: 100%;
       background: #05090b;
     }
+
 
     /* =========================================================
        ONLINE STATUS
@@ -107,6 +109,7 @@
       user-select: none;
     }
 
+
     #online-dot {
       width: 6px;
       height: 6px;
@@ -127,16 +130,19 @@
       flex: 0 0 auto;
     }
 
+
     #online-text {
       color: #00ff66;
       font-weight: 700;
       letter-spacing: 0.65px;
     }
 
+
     #datetime {
       color: #b9c5c7;
       font-variant-numeric: tabular-nums;
     }
+
 
     @keyframes pulse {
 
@@ -153,6 +159,7 @@
 
     }
 
+
     /* =========================================================
        MAP CONTROLS
     ========================================================= */
@@ -163,11 +170,13 @@
       display: none !important;
     }
 
+
     .maplibregl-ctrl-bottom-right {
       opacity: 0.25;
       transform: scale(0.72);
       transform-origin: bottom right;
     }
+
 
     .maplibregl-ctrl-attrib {
       background:
@@ -177,31 +186,39 @@
         #899496 !important;
     }
 
+
     .maplibregl-ctrl-attrib a {
       color:
         #899496 !important;
     }
 
+
     #map canvas {
       outline: none;
     }
 
+
     /* =========================================================
-       TEST / DEMO EVENTS
+       TEST / DEMO EVENT MARKER
     ========================================================= */
 
     /*
-     * MapLibre позиціонує тільки wrapper.
+     * ВАЖЛИВО:
      *
-     * На wrapper немає transform / animation.
-     * Це принципово важливо для правильного
-     * розташування маркера на карті.
+     * Wrapper має фіксований центр на географічній координаті.
+     *
+     * Внутрішній .test-marker-content масштабується
+     * залежно від zoom карти.
+     *
+     * Тому при віддаленні карти маркер НЕ займає
+     * величезну площу і не створює враження,
+     * що він "поїхав" в інше місто.
      */
 
     .test-marker-wrapper {
 
-      width: 52px;
-      height: 52px;
+      width: 64px;
+      height: 64px;
 
       display: flex;
 
@@ -212,23 +229,47 @@
 
       pointer-events: none;
 
-      /*
-       * Забороняємо браузеру стискати
-       * або змінювати розмір wrapper.
-       */
-
       flex:
-        0 0 52px;
+        0 0 64px;
+
+      overflow: visible;
     }
 
 
     /*
-     * =========================================================
-     * RADAR RING
-     * =========================================================
+     * Вся графіка маркера знаходиться
+     * всередині цього контейнера.
      *
-     * Додатковий імпульс навколо об'єкта.
+     * Сам він масштабується через CSS variable.
      */
+
+    .test-marker-content {
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 52px;
+      height: 52px;
+
+      transform:
+        translate(-50%, -50%)
+        scale(var(--marker-scale, 0.62));
+
+      transform-origin:
+        center center;
+
+      will-change:
+        transform;
+
+      pointer-events: none;
+    }
+
+
+    /* =========================================================
+       RADAR RING
+    ========================================================= */
 
     .test-marker-radar {
 
@@ -263,10 +304,6 @@
     }
 
 
-    /*
-     * Другий імпульс із затримкою.
-     */
-
     .test-marker-radar::after {
 
       content: "";
@@ -296,11 +333,9 @@
     }
 
 
-    /*
-     * =========================================================
-     * OUTER GLOW
-     * =========================================================
-     */
+    /* =========================================================
+       OUTER GLOW
+    ========================================================= */
 
     .test-marker-glow {
 
@@ -309,8 +344,8 @@
       left: 50%;
       top: 50%;
 
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
 
       transform:
         translate(-50%, -50%);
@@ -338,23 +373,22 @@
     }
 
 
-    /*
-     * =========================================================
-     * MAIN ABSTRACT OBJECT
-     * =========================================================
-     *
-     * Не круг.
-     *
-     * Чітка геометрична форма з центральним
-     * корпусом і чотирма напрямними елементами.
-     */
+    /* =========================================================
+       MAIN ABSTRACT AIRCRAFT / DRONE SYMBOL
+    ========================================================= */
 
     .test-marker {
 
-      position: relative;
+      position: absolute;
 
-      width: 38px;
-      height: 38px;
+      left: 50%;
+      top: 50%;
+
+      width: 42px;
+      height: 42px;
+
+      transform:
+        translate(-50%, -50%);
 
       animation:
         testMarkerPulse
@@ -377,11 +411,9 @@
     }
 
 
-    /*
-     * =========================================================
-     * CENTRAL DIAMOND / BODY
-     * =========================================================
-     */
+    /* =========================================================
+       CENTRAL BODY
+    ========================================================= */
 
     .test-marker-body {
 
@@ -390,8 +422,8 @@
       left: 50%;
       top: 50%;
 
-      width: 11px;
-      height: 28px;
+      width: 12px;
+      height: 30px;
 
       transform:
         translate(-50%, -50%);
@@ -409,11 +441,11 @@
       clip-path:
         polygon(
           50% 0%,
-          100% 34%,
-          78% 100%,
-          50% 86%,
-          22% 100%,
-          0% 34%
+          100% 30%,
+          82% 100%,
+          50% 84%,
+          18% 100%,
+          0% 30%
         );
 
       box-shadow:
@@ -422,11 +454,9 @@
     }
 
 
-    /*
-     * =========================================================
-     * CENTRAL DARK CORE
-     * =========================================================
-     */
+    /* =========================================================
+       CENTRAL CORE
+    ========================================================= */
 
     .test-marker-core {
 
@@ -436,7 +466,7 @@
       top: 50%;
 
       width: 5px;
-      height: 10px;
+      height: 11px;
 
       transform:
         translate(-50%, -50%);
@@ -468,21 +498,19 @@
     }
 
 
-    /*
-     * =========================================================
-     * LEFT WING
-     * =========================================================
-     */
+    /* =========================================================
+       LEFT WING
+    ========================================================= */
 
     .test-marker-wing-left {
 
       position: absolute;
 
       left: 0;
-      top: 14px;
+      top: 15px;
 
-      width: 21px;
-      height: 12px;
+      width: 23px;
+      height: 13px;
 
       background:
         linear-gradient(
@@ -498,7 +526,7 @@
           100% 0%,
           82% 100%,
           0% 72%,
-          36% 42%
+          35% 40%
         );
 
       filter:
@@ -509,21 +537,19 @@
     }
 
 
-    /*
-     * =========================================================
-     * RIGHT WING
-     * =========================================================
-     */
+    /* =========================================================
+       RIGHT WING
+    ========================================================= */
 
     .test-marker-wing-right {
 
       position: absolute;
 
       right: 0;
-      top: 14px;
+      top: 15px;
 
-      width: 21px;
-      height: 12px;
+      width: 23px;
+      height: 13px;
 
       background:
         linear-gradient(
@@ -539,7 +565,7 @@
           0% 0%,
           18% 100%,
           100% 72%,
-          64% 42%
+          65% 40%
         );
 
       filter:
@@ -550,11 +576,9 @@
     }
 
 
-    /*
-     * =========================================================
-     * UPPER FIN
-     * =========================================================
-     */
+    /* =========================================================
+       TOP FIN
+    ========================================================= */
 
     .test-marker-fin-top {
 
@@ -563,8 +587,8 @@
       left: 50%;
       top: 1px;
 
-      width: 10px;
-      height: 13px;
+      width: 11px;
+      height: 14px;
 
       transform:
         translateX(-50%);
@@ -593,11 +617,9 @@
     }
 
 
-    /*
-     * =========================================================
-     * LOWER FIN
-     * =========================================================
-     */
+    /* =========================================================
+       BOTTOM FIN
+    ========================================================= */
 
     .test-marker-fin-bottom {
 
@@ -606,8 +628,8 @@
       left: 50%;
       bottom: 1px;
 
-      width: 8px;
-      height: 9px;
+      width: 9px;
+      height: 10px;
 
       transform:
         translateX(-50%);
@@ -628,21 +650,19 @@
     }
 
 
-    /*
-     * =========================================================
-     * LIGHT TRAIL
-     * =========================================================
-     */
+    /* =========================================================
+       LIGHT TRAIL
+    ========================================================= */
 
     .test-marker-trail {
 
       position: absolute;
 
       left: 50%;
-      top: 29px;
+      top: 31px;
 
       width: 3px;
-      height: 15px;
+      height: 17px;
 
       transform:
         translateX(-50%);
@@ -673,18 +693,16 @@
     }
 
 
-    /*
-     * =========================================================
-     * SMALL LIGHT POINTS
-     * =========================================================
-     */
+    /* =========================================================
+       SMALL LIGHTS
+    ========================================================= */
 
     .test-marker-light-left,
     .test-marker-light-right {
 
       position: absolute;
 
-      top: 18px;
+      top: 19px;
 
       width: 3px;
       height: 3px;
@@ -701,20 +719,18 @@
 
 
     .test-marker-light-left {
-      left: 5px;
+      left: 6px;
     }
 
 
     .test-marker-light-right {
-      right: 5px;
+      right: 6px;
     }
 
 
-    /*
-     * =========================================================
-     * ANIMATIONS
-     * =========================================================
-     */
+    /* =========================================================
+       ANIMATIONS
+    ========================================================= */
 
     @keyframes testMarkerPulse {
 
@@ -724,6 +740,7 @@
           1;
 
         transform:
+          translate(-50%, -50%)
           scale(0.92);
       }
 
@@ -733,6 +750,7 @@
           1;
 
         transform:
+          translate(-50%, -50%)
           scale(1);
       }
 
@@ -742,6 +760,7 @@
           0.58;
 
         transform:
+          translate(-50%, -50%)
           scale(0.88);
       }
 
@@ -751,6 +770,7 @@
           0.96;
 
         transform:
+          translate(-50%, -50%)
           scale(1.03);
       }
 
@@ -760,6 +780,7 @@
           0.7;
 
         transform:
+          translate(-50%, -50%)
           scale(0.94);
       }
 
@@ -769,6 +790,7 @@
           1;
 
         transform:
+          translate(-50%, -50%)
           scale(0.92);
       }
 
@@ -939,9 +961,9 @@
     }
 
 
-    /*
-     * Ніякого TEST label.
-     */
+    /* =========================================================
+       NO TEST LABEL
+    ========================================================= */
 
     .test-label {
       display: none !important;
@@ -970,6 +992,7 @@
 
   </div>
 
+
   <script>
 
     /* =========================================================
@@ -979,20 +1002,25 @@
     const MAP_STYLE =
       "https://tiles.openfreemap.org/styles/dark";
 
+
     const BACKEND_URL =
       "https://monitor-map-ua.onrender.com";
+
 
     const HEALTH_URL =
       `${BACKEND_URL}/health`;
 
+
     const EVENTS_URL =
       `${BACKEND_URL}/events`;
+
 
     const WS_URL =
       BACKEND_URL.replace(
         /^http/,
         "ws"
       ) + "/ws";
+
 
     const KYIV_VIEW_BOUNDS = [
 
@@ -1002,6 +1030,7 @@
 
     ];
 
+
     const MAP_MAX_BOUNDS = [
 
       [28.25, 48.55],
@@ -1009,6 +1038,48 @@
       [33.15, 52.05]
 
     ];
+
+
+    /* =========================================================
+       MARKER ZOOM SETTINGS
+    ========================================================= */
+
+    /*
+     * Мінімальний масштаб на загальній карті.
+     *
+     * 0.45 = дуже компактний.
+     */
+
+    const MARKER_MIN_SCALE =
+      0.45;
+
+
+    /*
+     * Максимальний масштаб
+     * при сильному наближенні.
+     */
+
+    const MARKER_MAX_SCALE =
+      1.0;
+
+
+    /*
+     * Zoom, на якому маркер
+     * досягає максимального розміру.
+     */
+
+    const MARKER_MAX_ZOOM =
+      13;
+
+
+    /*
+     * При стартовому zoom ~6
+     * маркер буде маленьким.
+     */
+
+    const MARKER_MIN_ZOOM =
+      5.7;
+
 
     /* =========================================================
        BACKEND STATUS
@@ -1019,10 +1090,12 @@
         "online-dot"
       );
 
+
     const onlineText =
       document.getElementById(
         "online-text"
       );
+
 
     function setBackendStatus(
       online
@@ -1033,11 +1106,14 @@
         onlineText.textContent =
           "ONLINE RADAR";
 
+
         onlineText.style.color =
           "#00ff66";
 
+
         onlineDot.style.background =
           "#00ff66";
+
 
         onlineDot.style.boxShadow =
           "0 0 4px rgba(0,255,102,.9), 0 0 9px rgba(0,255,102,.45)";
@@ -1047,11 +1123,14 @@
         onlineText.textContent =
           "OFFLINE";
 
+
         onlineText.style.color =
           "#ff5369";
 
+
         onlineDot.style.background =
           "#ff304f";
+
 
         onlineDot.style.boxShadow =
           "0 0 4px rgba(255,48,79,.9), 0 0 9px rgba(255,48,79,.45)";
@@ -1069,10 +1148,14 @@
           await fetch(
             HEALTH_URL,
             {
-              method: "GET",
-              cache: "no-store"
+              method:
+                "GET",
+
+              cache:
+                "no-store"
             }
           );
+
 
         if (!response.ok) {
 
@@ -1082,8 +1165,10 @@
 
         }
 
+
         const data =
           await response.json();
+
 
         setBackendStatus(
           data.ok === true
@@ -1095,6 +1180,7 @@
           "Backend:",
           error
         );
+
 
         setBackendStatus(
           false
@@ -1163,6 +1249,124 @@
 
 
     /* =========================================================
+       MARKER SCALE
+    ========================================================= */
+
+    function calculateMarkerScale(
+      zoom
+    ) {
+
+      const minZoom =
+        MARKER_MIN_ZOOM;
+
+
+      const maxZoom =
+        MARKER_MAX_ZOOM;
+
+
+      const clampedZoom =
+        Math.max(
+          minZoom,
+          Math.min(
+            maxZoom,
+            zoom
+          )
+        );
+
+
+      const progress =
+        (
+          clampedZoom -
+          minZoom
+        ) /
+        (
+          maxZoom -
+          minZoom
+        );
+
+
+      /*
+       * Нелінійна крива:
+       *
+       * на далекому zoom
+       * маркер маленький;
+       *
+       * при наближенні
+       * збільшується плавніше.
+       */
+
+      const eased =
+        Math.pow(
+          progress,
+          0.72
+        );
+
+
+      return (
+        MARKER_MIN_SCALE +
+        (
+          MARKER_MAX_SCALE -
+          MARKER_MIN_SCALE
+        ) *
+        eased
+      );
+
+    }
+
+
+    function updateMarkerScales() {
+
+      const scale =
+        calculateMarkerScale(
+          map.getZoom()
+        );
+
+
+      for (
+        const marker
+        of eventMarkers.values()
+      ) {
+
+        const element =
+          marker.getElement();
+
+
+        const content =
+          element.querySelector(
+            ".test-marker-content"
+          );
+
+
+        if (!content) {
+
+          continue;
+
+        }
+
+
+        content.style.setProperty(
+          "--marker-scale",
+          scale.toFixed(3)
+        );
+
+      }
+
+    }
+
+
+    map.on(
+      "zoom",
+      updateMarkerScales
+    );
+
+
+    map.on(
+      "zoomend",
+      updateMarkerScales
+    );
+
+
+    /* =========================================================
        CLOCK
     ========================================================= */
 
@@ -1170,6 +1374,7 @@
 
       const now =
         new Date();
+
 
       const dd =
         String(
@@ -1179,6 +1384,7 @@
           "0"
         );
 
+
       const mm =
         String(
           now.getMonth() + 1
@@ -1187,8 +1393,10 @@
           "0"
         );
 
+
       const yyyy =
         now.getFullYear();
+
 
       const hh =
         String(
@@ -1198,6 +1406,7 @@
           "0"
         );
 
+
       const min =
         String(
           now.getMinutes()
@@ -1206,6 +1415,7 @@
           "0"
         );
 
+
       const sec =
         String(
           now.getSeconds()
@@ -1213,6 +1423,7 @@
           2,
           "0"
         );
+
 
       document
         .getElementById(
@@ -1241,9 +1452,9 @@
       new Map();
 
 
-    /*
-     * Видаляє всі поточні маркери.
-     */
+    /* =========================================================
+       REMOVE ALL
+    ========================================================= */
 
     function removeAllEventMarkers() {
 
@@ -1256,14 +1467,15 @@
 
       }
 
+
       eventMarkers.clear();
 
     }
 
 
-    /*
-     * Видаляє конкретний маркер.
-     */
+    /* =========================================================
+       REMOVE ONE
+    ========================================================= */
 
     function removeEventMarker(
       id
@@ -1272,10 +1484,12 @@
       const key =
         String(id);
 
+
       const marker =
         eventMarkers.get(
           key
         );
+
 
       if (!marker) {
 
@@ -1283,7 +1497,9 @@
 
       }
 
+
       marker.remove();
+
 
       eventMarkers.delete(
         key
@@ -1292,26 +1508,15 @@
     }
 
 
-    /*
-     * =========================================================
-     * СТВОРЕННЯ МАРКЕРА
-     * =========================================================
-     *
-     * Wrapper залишається статичним.
-     *
-     * MapLibre позиціонує wrapper.
-     *
-     * Внутрішня графіка анімується
-     * незалежно від MapLibre.
-     */
+    /* =========================================================
+       CREATE EVENT MARKER
+    ========================================================= */
 
     function createEventMarker(
       event
     ) {
 
-      if (
-        !event
-      ) {
+      if (!event) {
 
         return;
 
@@ -1322,6 +1527,7 @@
         Number(
           event.lat
         );
+
 
       const lon =
         Number(
@@ -1362,12 +1568,10 @@
 
 
       /*
-       * Якщо маркер з таким ID
-       * вже є — видаляємо його.
+       * Якщо ID вже існує —
+       * старий marker прибирається.
        *
-       * Це дозволяє рухати
-       * одну точку без видалення
-       * інших точок.
+       * Інші ID не чіпаємо.
        */
 
       removeEventMarker(
@@ -1375,242 +1579,286 @@
       );
 
 
-      /*
-       * =======================================================
-       * WRAPPER
-       * =======================================================
-       */
+      /* =======================================================
+         WRAPPER
+      ======================================================= */
 
       const wrapper =
         document.createElement(
           "div"
         );
 
+
       wrapper.className =
         "test-marker-wrapper";
 
 
-      /*
-       * =======================================================
-       * RADAR IMPULSE
-       * =======================================================
-       */
+      /* =======================================================
+         CONTENT
+      ======================================================= */
+
+      const content =
+        document.createElement(
+          "div"
+        );
+
+
+      content.className =
+        "test-marker-content";
+
+
+      const currentScale =
+        calculateMarkerScale(
+          map.getZoom()
+        );
+
+
+      content.style.setProperty(
+        "--marker-scale",
+        currentScale.toFixed(3)
+      );
+
+
+      /* =======================================================
+         RADAR
+      ======================================================= */
 
       const radar =
         document.createElement(
           "div"
         );
 
+
       radar.className =
         "test-marker-radar";
 
-      wrapper.appendChild(
+
+      content.appendChild(
         radar
       );
 
 
-      /*
-       * =======================================================
-       * GLOW
-       * =======================================================
-       */
+      /* =======================================================
+         GLOW
+      ======================================================= */
 
       const glow =
         document.createElement(
           "div"
         );
 
+
       glow.className =
         "test-marker-glow";
 
-      wrapper.appendChild(
+
+      content.appendChild(
         glow
       );
 
 
-      /*
-       * =======================================================
-       * MAIN OBJECT
-       * =======================================================
-       */
+      /* =======================================================
+         MAIN OBJECT
+      ======================================================= */
 
       const markerElement =
         document.createElement(
           "div"
         );
 
+
       markerElement.className =
         "test-marker";
 
 
-      /*
-       * Центральний корпус.
-       */
+      /* =======================================================
+         BODY
+      ======================================================= */
 
       const body =
         document.createElement(
           "div"
         );
 
+
       body.className =
         "test-marker-body";
+
 
       markerElement.appendChild(
         body
       );
 
 
-      /*
-       * Верхній елемент.
-       */
+      /* =======================================================
+         TOP FIN
+      ======================================================= */
 
       const finTop =
         document.createElement(
           "div"
         );
 
+
       finTop.className =
         "test-marker-fin-top";
+
 
       markerElement.appendChild(
         finTop
       );
 
 
-      /*
-       * Нижній елемент.
-       */
+      /* =======================================================
+         BOTTOM FIN
+      ======================================================= */
 
       const finBottom =
         document.createElement(
           "div"
         );
 
+
       finBottom.className =
         "test-marker-fin-bottom";
+
 
       markerElement.appendChild(
         finBottom
       );
 
 
-      /*
-       * Лівий елемент.
-       */
+      /* =======================================================
+         LEFT WING
+      ======================================================= */
 
       const wingLeft =
         document.createElement(
           "div"
         );
 
+
       wingLeft.className =
         "test-marker-wing-left";
+
 
       markerElement.appendChild(
         wingLeft
       );
 
 
-      /*
-       * Правий елемент.
-       */
+      /* =======================================================
+         RIGHT WING
+      ======================================================= */
 
       const wingRight =
         document.createElement(
           "div"
         );
 
+
       wingRight.className =
         "test-marker-wing-right";
+
 
       markerElement.appendChild(
         wingRight
       );
 
 
-      /*
-       * Центральне світло.
-       */
+      /* =======================================================
+         CORE
+      ======================================================= */
 
       const core =
         document.createElement(
           "div"
         );
 
+
       core.className =
         "test-marker-core";
+
 
       markerElement.appendChild(
         core
       );
 
 
-      /*
-       * Ліве світло.
-       */
+      /* =======================================================
+         LEFT LIGHT
+      ======================================================= */
 
       const lightLeft =
         document.createElement(
           "div"
         );
 
+
       lightLeft.className =
         "test-marker-light-left";
+
 
       markerElement.appendChild(
         lightLeft
       );
 
 
-      /*
-       * Праве світло.
-       */
+      /* =======================================================
+         RIGHT LIGHT
+      ======================================================= */
 
       const lightRight =
         document.createElement(
           "div"
         );
 
+
       lightRight.className =
         "test-marker-light-right";
+
 
       markerElement.appendChild(
         lightRight
       );
 
 
-      /*
-       * Світловий слід.
-       */
+      /* =======================================================
+         TRAIL
+      ======================================================= */
 
       const trail =
         document.createElement(
           "div"
         );
 
+
       trail.className =
         "test-marker-trail";
+
 
       markerElement.appendChild(
         trail
       );
 
 
-      /*
-       * Додаємо основну графіку
-       * у wrapper.
-       */
+      /* =======================================================
+         APPEND
+      ======================================================= */
 
-      wrapper.appendChild(
+      content.appendChild(
         markerElement
       );
 
 
-      /*
-       * =======================================================
-       * MAPLIBRE MARKER
-       * =======================================================
-       */
+      wrapper.appendChild(
+        content
+      );
+
+
+      /* =======================================================
+         MAPLIBRE MARKER
+      ======================================================= */
 
       const mapMarker =
         new maplibregl.Marker({
@@ -1635,7 +1883,7 @@
 
 
       /*
-       * Зберігаємо за ID.
+       * Зберігаємо marker за ID.
        */
 
       eventMarkers.set(
@@ -1646,11 +1894,9 @@
     }
 
 
-    /*
-     * =========================================================
-     * RENDER EVENTS
-     * =========================================================
-     */
+    /* =========================================================
+       RENDER EVENTS
+    ========================================================= */
 
     function renderEvents(
       events
@@ -1710,9 +1956,8 @@
 
 
       /*
-       * Видаляємо маркери,
-       * яких більше немає
-       * на backend.
+       * Прибираємо маркери,
+       * яких більше немає на backend.
        */
 
       for (
@@ -1731,6 +1976,7 @@
 
           marker.remove();
 
+
           eventMarkers.delete(
             id
           );
@@ -1738,6 +1984,14 @@
         }
 
       }
+
+
+      /*
+       * На всяк випадок
+       * синхронізуємо масштаб.
+       */
+
+      updateMarkerScales();
 
     }
 
@@ -1834,7 +2088,9 @@
           error
         );
 
+
         scheduleReconnect();
+
 
         return;
 
@@ -1902,6 +2158,7 @@
             "WebSocket disconnected"
           );
 
+
           scheduleReconnect();
 
         }
@@ -1940,6 +2197,7 @@
 
             reconnectTimer =
               null;
+
 
             connectWebSocket();
 
@@ -2015,18 +2273,19 @@
         addBelarusBorderInstant();
 
 
-        /*
-         * Поточні події.
-         */
-
         await loadEvents();
 
 
+        connectWebSocket();
+
+
         /*
-         * Живі оновлення.
+         * Після першого fitBounds
+         * встановлюємо правильний
+         * розмір маркерів.
          */
 
-        connectWebSocket();
+        updateMarkerScales();
 
       }
     );
