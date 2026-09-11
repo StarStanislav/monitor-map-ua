@@ -190,17 +190,19 @@
     ========================================================= */
 
     /*
-     * ЗОВНІШНІЙ КОНТЕЙНЕР.
+     * ЗОВНІШНІЙ КОНТЕЙНЕР
      *
      * MapLibre позиціонує саме його.
      *
      * Важливо:
-     * на цьому елементі НЕМАЄ animation і transform.
+     * тут НЕМАЄ animation та transform.
+     *
+     * Це захищає позиціонування MapLibre.
      */
 
     .test-marker-wrapper {
-      width: 22px;
-      height: 22px;
+      width: 46px;
+      height: 46px;
 
       display: flex;
 
@@ -208,57 +210,24 @@
       justify-content: center;
 
       pointer-events: none;
+
+      position: relative;
     }
 
 
     /*
-     * ЧЕРВОНА ТОЧКА.
-     *
-     * Анімація знаходиться тільки тут.
-     *
-     * Тому transform MapLibre
-     * більше не конфліктує з animation.
+     * ЗАГАЛЬНЕ СВІТІННЯ
      */
 
-    .test-marker {
-      width: 18px;
-      height: 18px;
-
-      border-radius: 50%;
-
-      background:
-        rgba(255, 48, 79, 0.18);
-
-      border:
-        2px solid
-        #ff304f;
-
-      box-shadow:
-        0 0 5px
-        rgba(255, 48, 79, 0.95),
-
-        0 0 16px
-        rgba(255, 48, 79, 0.65);
-
-      position: relative;
-
-      animation:
-        testMarkerPulse 1.5s
-        infinite
-        ease-in-out;
-    }
-
-
-    .test-marker::after {
-      content: "";
+    .test-marker-glow {
 
       position: absolute;
 
       left: 50%;
       top: 50%;
 
-      width: 5px;
-      height: 5px;
+      width: 42px;
+      height: 42px;
 
       transform:
         translate(-50%, -50%);
@@ -266,25 +235,482 @@
       border-radius: 50%;
 
       background:
-        #ff304f;
+        radial-gradient(
+          circle,
+          rgba(255, 48, 79, 0.28) 0%,
+          rgba(255, 48, 79, 0.14) 30%,
+          rgba(255, 48, 79, 0.055) 52%,
+          transparent 74%
+        );
+
+      filter:
+        blur(1px);
+
+      opacity: 0.75;
+
+      animation:
+        testMarkerGlow
+        1.45s
+        infinite
+        ease-in-out;
+    }
+
+
+    /*
+     * АБСТРАКТНИЙ ЛІТАЛЬНИЙ МАРКЕР
+     *
+     * Це нейтральна графічна іконка.
+     *
+     * Уся анімація знаходиться всередині
+     * wrapper, тому MapLibre transform
+     * не конфліктує з нею.
+     */
+
+    .test-marker {
+
+      position: relative;
+
+      width: 32px;
+      height: 32px;
+
+      animation:
+        testMarkerPulse
+        1.45s
+        infinite
+        ease-in-out;
+
+      filter:
+        drop-shadow(
+          0 0 3px
+          rgba(255, 48, 79, 1)
+        )
+        drop-shadow(
+          0 0 8px
+          rgba(255, 48, 79, 0.78)
+        );
+    }
+
+
+    /*
+     * ЦЕНТРАЛЬНИЙ КОРПУС
+     */
+
+    .test-marker-body {
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 7px;
+      height: 27px;
+
+      transform:
+        translate(-50%, -50%);
+
+      border-radius:
+        60% 60% 42% 42%;
+
+      background:
+        linear-gradient(
+          to bottom,
+          #ffb1ba 0%,
+          #ff5369 18%,
+          #ff304f 48%,
+          #e51b3d 72%,
+          #a90e27 100%
+        );
 
       box-shadow:
-        0 0 5px
+
+        0 0 4px
+        rgba(255, 48, 79, 1),
+
+        0 0 9px
+        rgba(255, 48, 79, 0.9);
+    }
+
+
+    /*
+     * ПЕРЕДНЯ ЧАСТИНА
+     */
+
+    .test-marker-nose {
+
+      position: absolute;
+
+      left: 50%;
+      top: 1px;
+
+      width: 9px;
+      height: 12px;
+
+      transform:
+        translateX(-50%);
+
+      background:
+        linear-gradient(
+          to bottom,
+          #ffd2d8 0%,
+          #ff7182 35%,
+          #ff304f 100%
+        );
+
+      clip-path:
+        polygon(
+          50% 0%,
+          100% 100%,
+          50% 77%,
+          0% 100%
+        );
+
+      filter:
+        drop-shadow(
+          0 0 4px
+          rgba(255, 48, 79, 1)
+        );
+    }
+
+
+    /*
+     * ЛІВЕ КРИЛО
+     */
+
+    .test-marker-wing-left {
+
+      position: absolute;
+
+      left: -1px;
+      top: 12px;
+
+      width: 18px;
+      height: 11px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff8b99 0%,
+          #ff5369 28%,
+          #ff304f 68%,
+          #b70f29 100%
+        );
+
+      clip-path:
+        polygon(
+          100% 8%,
+          100% 100%,
+          0% 72%,
+          30% 0%
+        );
+
+      filter:
+        drop-shadow(
+          0 0 3px
+          rgba(255, 48, 79, 0.95)
+        );
+    }
+
+
+    /*
+     * ПРАВЕ КРИЛО
+     */
+
+    .test-marker-wing-right {
+
+      position: absolute;
+
+      right: -1px;
+      top: 12px;
+
+      width: 18px;
+      height: 11px;
+
+      background:
+        linear-gradient(
+          225deg,
+          #ff8b99 0%,
+          #ff5369 28%,
+          #ff304f 68%,
+          #b70f29 100%
+        );
+
+      clip-path:
+        polygon(
+          0% 8%,
+          0% 100%,
+          100% 72%,
+          70% 0%
+        );
+
+      filter:
+        drop-shadow(
+          0 0 3px
+          rgba(255, 48, 79, 0.95)
+        );
+    }
+
+
+    /*
+     * ЦЕНТРАЛЬНИЙ СВІТЛОВИЙ ЕЛЕМЕНТ
+     */
+
+    .test-marker-core {
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 4px;
+      height: 8px;
+
+      transform:
+        translate(-50%, -50%);
+
+      border-radius: 50%;
+
+      background:
+        #ffe9ec;
+
+      box-shadow:
+
+        0 0 3px
+        #ffffff,
+
+        0 0 6px
+        #ff304f,
+
+        0 0 11px
         rgba(255, 48, 79, 0.95);
     }
 
 
+    /*
+     * СВІТЛОВИЙ СЛІД
+     */
+
+    .test-marker-trail {
+
+      position: absolute;
+
+      left: 50%;
+      bottom: -2px;
+
+      width: 3px;
+      height: 11px;
+
+      transform:
+        translateX(-50%);
+
+      border-radius:
+        50%;
+
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(255, 154, 166, 0.95),
+          rgba(255, 48, 79, 0.6),
+          rgba(255, 48, 79, 0)
+        );
+
+      filter:
+        blur(0.4px);
+
+      animation:
+        testMarkerTrail
+        0.72s
+        infinite
+        ease-out;
+    }
+
+
+    /*
+     * МАЛИЙ ДОДАТКОВИЙ СВІТЛОВИЙ СЛІД
+     */
+
+    .test-marker-trail::after {
+
+      content: "";
+
+      position: absolute;
+
+      left: 50%;
+      top: 4px;
+
+      width: 7px;
+      height: 7px;
+
+      transform:
+        translateX(-50%);
+
+      border-radius: 50%;
+
+      background:
+        rgba(255, 48, 79, 0.5);
+
+      filter:
+        blur(3px);
+    }
+
+
+    /*
+     * ПУЛЬСАЦІЯ ОБ'ЄКТА
+     */
+
     @keyframes testMarkerPulse {
+
+      0% {
+
+        opacity:
+          1;
+
+        transform:
+          scale(0.92);
+
+      }
+
+      18% {
+
+        opacity:
+          0.98;
+
+        transform:
+          scale(1);
+
+      }
+
+      45% {
+
+        opacity:
+          0.58;
+
+        transform:
+          scale(0.86);
+
+      }
+
+      65% {
+
+        opacity:
+          1;
+
+        transform:
+          scale(1.04);
+
+      }
+
+      82% {
+
+        opacity:
+          0.82;
+
+        transform:
+          scale(0.95);
+
+      }
+
+      100% {
+
+        opacity:
+          1;
+
+        transform:
+          scale(0.92);
+
+      }
+
+    }
+
+
+    /*
+     * ПУЛЬСАЦІЯ ОРЕОЛУ
+     */
+
+    @keyframes testMarkerGlow {
 
       0%,
       100% {
-        transform: scale(1);
-        opacity: 1;
+
+        opacity:
+          0.42;
+
+        transform:
+          translate(-50%, -50%)
+          scale(0.68);
+
       }
 
-      50% {
-        transform: scale(0.82);
-        opacity: 0.72;
+      45% {
+
+        opacity:
+          0.95;
+
+        transform:
+          translate(-50%, -50%)
+          scale(1);
+
+      }
+
+      65% {
+
+        opacity:
+          0.7;
+
+        transform:
+          translate(-50%, -50%)
+          scale(1.12);
+
+      }
+
+    }
+
+
+    /*
+     * АНІМАЦІЯ СЛІДУ
+     */
+
+    @keyframes testMarkerTrail {
+
+      0% {
+
+        opacity:
+          0.9;
+
+        height:
+          4px;
+
+        transform:
+          translateX(-50%)
+          scaleX(0.8);
+
+      }
+
+      45% {
+
+        opacity:
+          0.75;
+
+        height:
+          9px;
+
+        transform:
+          translateX(-50%)
+          scaleX(1);
+
+      }
+
+      100% {
+
+        opacity:
+          0;
+
+        height:
+          15px;
+
+        transform:
+          translateX(-50%)
+          scaleX(0.5);
+
       }
 
     }
@@ -301,11 +727,9 @@
   </style>
 </head>
 
-
 <body>
 
   <div id="map"></div>
-
 
   <div id="status">
 
@@ -323,7 +747,6 @@
 
   </div>
 
-
   <script>
 
     /* =========================================================
@@ -333,25 +756,20 @@
     const MAP_STYLE =
       "https://tiles.openfreemap.org/styles/dark";
 
-
     const BACKEND_URL =
       "https://monitor-map-ua.onrender.com";
-
 
     const HEALTH_URL =
       `${BACKEND_URL}/health`;
 
-
     const EVENTS_URL =
       `${BACKEND_URL}/events`;
-
 
     const WS_URL =
       BACKEND_URL.replace(
         /^http/,
         "ws"
       ) + "/ws";
-
 
     const KYIV_VIEW_BOUNDS = [
 
@@ -361,7 +779,6 @@
 
     ];
 
-
     const MAP_MAX_BOUNDS = [
 
       [28.25, 48.55],
@@ -369,7 +786,6 @@
       [33.15, 52.05]
 
     ];
-
 
     /* =========================================================
        BACKEND STATUS
@@ -380,12 +796,10 @@
         "online-dot"
       );
 
-
     const onlineText =
       document.getElementById(
         "online-text"
       );
-
 
     function setBackendStatus(
       online
@@ -423,7 +837,6 @@
 
     }
 
-
     async function checkBackend() {
 
       try {
@@ -437,17 +850,14 @@
             }
           );
 
-
         if (!response.ok) {
           throw new Error(
             `HTTP ${response.status}`
           );
         }
 
-
         const data =
           await response.json();
-
 
         setBackendStatus(
           data.ok === true
@@ -468,15 +878,12 @@
 
     }
 
-
     checkBackend();
-
 
     setInterval(
       checkBackend,
       30000
     );
-
 
     /* =========================================================
        MAP
@@ -515,7 +922,6 @@
 
       });
 
-
     /* =========================================================
        CLOCK
     ========================================================= */
@@ -525,7 +931,6 @@
       const now =
         new Date();
 
-
       const dd =
         String(
           now.getDate()
@@ -533,7 +938,6 @@
           2,
           "0"
         );
-
 
       const mm =
         String(
@@ -543,10 +947,8 @@
           "0"
         );
 
-
       const yyyy =
         now.getFullYear();
-
 
       const hh =
         String(
@@ -556,7 +958,6 @@
           "0"
         );
 
-
       const min =
         String(
           now.getMinutes()
@@ -565,7 +966,6 @@
           "0"
         );
 
-
       const sec =
         String(
           now.getSeconds()
@@ -573,7 +973,6 @@
           2,
           "0"
         );
-
 
       document
         .getElementById(
@@ -584,15 +983,12 @@
 
     }
 
-
     updateClock();
-
 
     setInterval(
       updateClock,
       1000
     );
-
 
     /* =========================================================
        EVENTS STATE
@@ -600,7 +996,6 @@
 
     const eventMarkers =
       new Map();
-
 
     /*
      * Видаляє всі поточні маркери.
@@ -617,11 +1012,9 @@
 
       }
 
-
       eventMarkers.clear();
 
     }
-
 
     /*
      * Видаляє конкретний маркер.
@@ -634,20 +1027,16 @@
       const key =
         String(id);
 
-
       const marker =
         eventMarkers.get(
           key
         );
 
-
       if (!marker) {
         return;
       }
 
-
       marker.remove();
-
 
       eventMarkers.delete(
         key
@@ -655,16 +1044,16 @@
 
     }
 
-
     /*
-     * Створення ОДНІЄЇ червоної точки.
-     *
-     * ВАЖЛИВО:
+     * =========================================================
+     * СТВОРЕННЯ АБСТРАКТНОГО ЛІТАЛЬНОГО МАРКЕРА
+     * =========================================================
      *
      * MapLibre позиціонує wrapper.
      *
-     * CSS animation працює тільки
-     * на внутрішньому test-marker.
+     * На wrapper немає animation/transform.
+     *
+     * Усі анімації знаходяться всередині.
      */
 
     function createEventMarker(
@@ -677,14 +1066,11 @@
         return;
       }
 
-
       const lat =
         Number(event.lat);
 
-
       const lon =
         Number(event.lon);
-
 
       if (
         !Number.isFinite(lat) ||
@@ -704,12 +1090,10 @@
 
       }
 
-
       const id =
         String(
           event.id
         );
-
 
       /*
        * Якщо така точка вже існує —
@@ -724,7 +1108,6 @@
         id
       );
 
-
       /*
        * ЗОВНІШНІЙ WRAPPER.
        *
@@ -737,15 +1120,27 @@
           "div"
         );
 
-
       wrapper.className =
         "test-marker-wrapper";
 
+      /*
+       * ЗОВНІШНЄ СВІТІННЯ.
+       */
+
+      const glow =
+        document.createElement(
+          "div"
+        );
+
+      glow.className =
+        "test-marker-glow";
+
+      wrapper.appendChild(
+        glow
+      );
 
       /*
-       * ВНУТРІШНЯ ЧЕРВОНА ТОЧКА.
-       *
-       * Саме на ній animation.
+       * ОСНОВНИЙ ЛІТАЛЬНИЙ ЕЛЕМЕНТ.
        */
 
       const markerElement =
@@ -753,15 +1148,113 @@
           "div"
         );
 
-
       markerElement.className =
         "test-marker";
 
+      /*
+       * Центральний корпус.
+       */
+
+      const body =
+        document.createElement(
+          "div"
+        );
+
+      body.className =
+        "test-marker-body";
+
+      markerElement.appendChild(
+        body
+      );
+
+      /*
+       * Передня частина.
+       */
+
+      const nose =
+        document.createElement(
+          "div"
+        );
+
+      nose.className =
+        "test-marker-nose";
+
+      markerElement.appendChild(
+        nose
+      );
+
+      /*
+       * Ліве крило.
+       */
+
+      const leftWing =
+        document.createElement(
+          "div"
+        );
+
+      leftWing.className =
+        "test-marker-wing-left";
+
+      markerElement.appendChild(
+        leftWing
+      );
+
+      /*
+       * Праве крило.
+       */
+
+      const rightWing =
+        document.createElement(
+          "div"
+        );
+
+      rightWing.className =
+        "test-marker-wing-right";
+
+      markerElement.appendChild(
+        rightWing
+      );
+
+      /*
+       * Світловий слід.
+       */
+
+      const trail =
+        document.createElement(
+          "div"
+        );
+
+      trail.className =
+        "test-marker-trail";
+
+      markerElement.appendChild(
+        trail
+      );
+
+      /*
+       * Центральне ядро.
+       */
+
+      const core =
+        document.createElement(
+          "div"
+        );
+
+      core.className =
+        "test-marker-core";
+
+      markerElement.appendChild(
+        core
+      );
+
+      /*
+       * Додаємо основний елемент
+       * у wrapper.
+       */
 
       wrapper.appendChild(
         markerElement
       );
-
 
       /*
        * Створюємо MapLibre marker.
@@ -781,7 +1274,6 @@
 
         })
 
-
         .setLngLat([
 
           lon,
@@ -790,9 +1282,7 @@
 
         ])
 
-
         .addTo(map);
-
 
       /*
        * Зберігаємо маркер
@@ -805,7 +1295,6 @@
       );
 
     }
-
 
     /*
      * Рендер усіх поточних подій.
@@ -832,7 +1321,6 @@
 
       }
 
-
       /*
        * Створюємо набір ID,
        * які зараз прийшли
@@ -841,7 +1329,6 @@
 
       const currentIds =
         new Set();
-
 
       for (
         const event
@@ -858,24 +1345,20 @@
 
         }
 
-
         const id =
           String(
             event.id
           );
 
-
         currentIds.add(
           id
         );
-
 
         createEventMarker(
           event
         );
 
       }
-
 
       /*
        * Видаляємо з карти маркери,
@@ -908,7 +1391,6 @@
 
     }
 
-
     /* =========================================================
        GET CURRENT EVENTS
     ========================================================= */
@@ -926,7 +1408,6 @@
             }
           );
 
-
         if (!response.ok) {
 
           throw new Error(
@@ -935,10 +1416,8 @@
 
         }
 
-
         const data =
           await response.json();
-
 
         if (
           data &&
@@ -964,7 +1443,6 @@
 
     }
 
-
     /* =========================================================
        WEBSOCKET
     ========================================================= */
@@ -972,10 +1450,8 @@
     let socket =
       null;
 
-
     let reconnectTimer =
       null;
-
 
     function connectWebSocket() {
 
@@ -999,7 +1475,6 @@
 
       }
 
-
       socket.addEventListener(
         "open",
         () => {
@@ -1011,7 +1486,6 @@
         }
       );
 
-
       socket.addEventListener(
         "message",
         event => {
@@ -1022,7 +1496,6 @@
               JSON.parse(
                 event.data
               );
-
 
             if (
               data.type === "state" &&
@@ -1049,7 +1522,6 @@
         }
       );
 
-
       socket.addEventListener(
         "close",
         () => {
@@ -1062,7 +1534,6 @@
 
         }
       );
-
 
       socket.addEventListener(
         "error",
@@ -1078,7 +1549,6 @@
 
     }
 
-
     function scheduleReconnect() {
 
       if (
@@ -1088,7 +1558,6 @@
         return;
 
       }
-
 
       reconnectTimer =
         setTimeout(
@@ -1106,7 +1575,6 @@
         );
 
     }
-
 
     /* =========================================================
        MAP LOAD
@@ -1142,35 +1610,27 @@
 
         );
 
-
         const initialZoom =
           map.getZoom();
-
 
         map.setMinZoom(
           initialZoom
         );
 
-
         map.dragRotate.disable();
-
 
         map.touchZoomRotate
           .disableRotation();
 
-
         await buildCustomMapLayers();
 
-
         addBelarusBorderInstant();
-
 
         /*
          * Поточні події.
          */
 
         await loadEvents();
-
 
         /*
          * Живі оновлення.
@@ -1181,7 +1641,6 @@
       }
     );
 
-
     /* =========================================================
        CUSTOM MAP LAYERS
     ========================================================= */
@@ -1191,14 +1650,11 @@
       const styleLayers =
         map.getStyle().layers || [];
 
-
       let firstSymbolLayerId =
         null;
 
-
       const placeSymbolLayers =
         [];
-
 
       for (
         const layer
@@ -1222,7 +1678,6 @@
 
           }
 
-
           placeSymbolLayers.push(
             layer.id
           );
@@ -1230,7 +1685,6 @@
         }
 
       }
-
 
       /* =======================================================
          УКРАЇНСЬКІ НАЗВИ
@@ -1252,7 +1706,6 @@
             "visible"
 
           );
-
 
           map.setLayoutProperty(
 
@@ -1289,7 +1742,6 @@
         }
 
       }
-
 
       /* =======================================================
          DISTRICTS
@@ -1391,7 +1843,6 @@
 
       }
 
-
       /* =======================================================
          WATER LABELS
       ======================================================= */
@@ -1488,7 +1939,6 @@
 
       }
 
-
       /* =======================================================
          EXACT KYIV OBLAST
       ======================================================= */
@@ -1514,7 +1964,6 @@
 
           );
 
-
         if (!response.ok) {
 
           throw new Error(
@@ -1525,10 +1974,8 @@
 
         }
 
-
         const data =
           await response.json();
-
 
         if (
 
@@ -1547,7 +1994,6 @@
           );
 
         }
-
 
         if (
           !map.getSource(
@@ -1572,7 +2018,6 @@
           );
 
         }
-
 
         /* =====================================================
            FILL
@@ -1616,7 +2061,6 @@
           );
 
         }
-
 
         /* =====================================================
            GLOW
@@ -1680,7 +2124,6 @@
           );
 
         }
-
 
         /* =====================================================
            MAIN BORDER
@@ -1757,7 +2200,6 @@
 
       }
 
-
       /*
        * Назви міст поверх меж.
        */
@@ -1779,7 +2221,6 @@
 
     }
 
-
     /* =========================================================
        BELARUS BORDER / RAZOR WIRE
     ========================================================= */
@@ -1795,30 +2236,24 @@
         const width =
           64;
 
-
         const height =
           24;
-
 
         const canvas =
           document.createElement(
             "canvas"
           );
 
-
         canvas.width =
           width;
 
-
         canvas.height =
           height;
-
 
         const ctx =
           canvas.getContext(
             "2d"
           );
-
 
         ctx.clearRect(
           0,
@@ -1827,50 +2262,39 @@
           height
         );
 
-
         ctx.strokeStyle =
           "#ff304f";
-
 
         ctx.lineWidth =
           1.6;
 
-
         ctx.beginPath();
-
 
         ctx.moveTo(
           0,
           9
         );
 
-
         ctx.lineTo(
           width,
           9
         );
 
-
         ctx.stroke();
 
-
         ctx.beginPath();
-
 
         ctx.moveTo(
           0,
           15
         );
 
-
         ctx.lineTo(
           width,
           15
         );
 
-
         ctx.stroke();
-
 
         const bladePositions = [
           8,
@@ -1878,7 +2302,6 @@
           40,
           56
         ];
-
 
         for (
           const x
@@ -1888,11 +2311,9 @@
           ctx.strokeStyle =
             "#ff5369";
 
-
           ctx.lineWidth =
             1.45;
 
-
           ctx.beginPath();
 
           ctx.moveTo(
@@ -1907,7 +2328,6 @@
 
           ctx.stroke();
 
-
           ctx.beginPath();
 
           ctx.moveTo(
@@ -1921,12 +2341,10 @@
           );
 
           ctx.stroke();
-
 
           ctx.fillStyle =
             "#ff304f";
 
-
           ctx.beginPath();
 
           ctx.arc(
@@ -1939,7 +2357,6 @@
 
           ctx.fill();
 
-
           ctx.beginPath();
 
           ctx.arc(
@@ -1951,7 +2368,6 @@
           );
 
           ctx.fill();
-
 
           ctx.beginPath();
 
@@ -1964,7 +2380,6 @@
           );
 
           ctx.fill();
-
 
           ctx.beginPath();
 
@@ -1979,7 +2394,6 @@
           ctx.fill();
 
         }
-
 
         map.addImage(
 
@@ -2009,7 +2423,6 @@
 
       }
 
-
       /* =======================================================
          FIND LABEL LAYER
       ======================================================= */
@@ -2017,10 +2430,8 @@
       const styleLayers =
         map.getStyle().layers || [];
 
-
       let firstSymbolLayerId =
         null;
-
 
       for (
         const layer
@@ -2039,7 +2450,6 @@
         }
 
       }
-
 
       /* =======================================================
          BELARUS / UKRAINE FILTER
@@ -2211,7 +2621,6 @@
 
       ];
 
-
       /* =======================================================
          DARK RED UNDERLINE
       ======================================================= */
@@ -2297,7 +2706,6 @@
         );
 
       }
-
 
       /* =======================================================
          RED GLOW
@@ -2388,7 +2796,6 @@
 
       }
 
-
       /* =======================================================
          RAZOR WIRE
       ======================================================= */
@@ -2451,7 +2858,6 @@
         );
 
       }
-
 
       /* =======================================================
          BRIGHT CORE
@@ -2536,14 +2942,12 @@
 
       }
 
-
       /* =======================================================
          LABELS ABOVE BORDER
       ======================================================= */
 
       const finalLayers =
         map.getStyle().layers || [];
-
 
       for (
         const layer
@@ -2570,13 +2974,11 @@
 
       }
 
-
       console.log(
         "🇧🇾 Razor wire border loaded instantly"
       );
 
     }
-
 
     /* =========================================================
        MAP ERRORS
