@@ -1,0 +1,15 @@
+{
+  "name": "online-radar-server",
+  "version": "1.0.0",
+  "description": "Backend server for Online Radar Mini App",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  }
+}
