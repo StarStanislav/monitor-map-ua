@@ -406,8 +406,6 @@
 
       /* ==========================================================
          EXISTING CITY LABELS
-         
-         DO NOT REBUILD THEM.
       ========================================================== */
 
       const styleLayers =
@@ -675,6 +673,8 @@
 
       /* ==========================================================
          EXACT KYIV OBLAST BORDER
+         
+         OSM RELATION 71248
       ========================================================== */
 
       const KYIV_OBLAST_GEOJSON =
@@ -738,10 +738,6 @@
 
           }
 
-
-          /* ------------------------------------------------------
-             FIRST SYMBOL LAYER
-          ------------------------------------------------------ */
 
           let firstSymbolId =
             undefined;
@@ -946,7 +942,7 @@
 
 
           /* ------------------------------------------------------
-             KEEP CITY LABELS ABOVE EVERYTHING
+             CITY LABELS TO TOP
           ------------------------------------------------------ */
 
           for (
@@ -959,7 +955,9 @@
 
               try {
 
-                map.moveLayer(id);
+                map.moveLayer(
+                  id
+                );
 
               } catch (e) {}
 
@@ -988,36 +986,28 @@
     /* ============================================================
        BELARUS BORDER
        
-       We query ONLY the shared ways between the Ukraine and
-       Belarus country boundary relations.
-       
-       Bounding box is limited to northern Ukraine so that
-       unrelated international borders are not drawn.
+       RED BARBED-WIRE STYLE
     ============================================================ */
 
     async function addBelarusBorder() {
 
 
+      /*
+       * We deliberately use a simple geographic bounding box
+       * covering the Ukraine-Belarus border.
+       *
+       * This avoids relying on country-relation properties that
+       * may differ between OSM extracts.
+       */
+
       const OVERPASS_QUERY = `
 
         [out:json][timeout:30];
 
-        rel
-          ["boundary"="administrative"]
-          ["admin_level"="2"]
-          ["ISO3166-1"="UA"]
-          ->.ukraine;
-
-        rel
-          ["boundary"="administrative"]
-          ["admin_level"="2"]
-          ["ISO3166-1"="BY"]
-          ->.belarus;
-
         way
-          (r.ukraine)
-          (r.belarus)
-          (50.5,27.5,52.5,32.8);
+          ["boundary"="administrative"]
+          ["admin_level"="2"]
+          (50.45,27.5,52.55,32.8);
 
         out geom;
 
@@ -1060,7 +1050,7 @@
         ) {
 
           throw new Error(
-            "Belarus border request failed"
+            "Overpass request failed"
           );
 
         }
@@ -1091,10 +1081,14 @@
 
           const coordinates =
             element.geometry.map(
+
               point => [
+
                 point.lon,
                 point.lat
+
               ]
+
             );
 
 
@@ -1126,7 +1120,7 @@
         ) {
 
           throw new Error(
-            "No Belarus-Ukraine border geometry found"
+            "Belarus border geometry not found"
           );
 
         }
@@ -1145,6 +1139,8 @@
 
         /* ========================================================
            SOURCE
+           
+           lineMetrics:true is important for line-pattern.
         ======================================================== */
 
         map.addSource(
@@ -1157,7 +1153,10 @@
               "geojson",
 
             data:
-              geojson
+              geojson,
+
+            lineMetrics:
+              true
 
           }
 
@@ -1165,7 +1164,60 @@
 
 
         /* ========================================================
-           SIMPLE DARK UNDERLINE
+           RED GLOW
+        ======================================================== */
+
+        map.addLayer({
+
+          id:
+            "belarus-border-glow",
+
+          type:
+            "line",
+
+          source:
+            "belarus-border",
+
+          paint: {
+
+            "line-color":
+              "#ff304f",
+
+            "line-opacity":
+              0.22,
+
+            "line-width": [
+
+              "interpolate",
+
+              ["linear"],
+
+              ["zoom"],
+
+              5.4,
+              5,
+
+              7,
+              6,
+
+              10,
+              8,
+
+              14,
+              10
+
+            ],
+
+            "line-blur":
+              4
+
+          }
+
+        });
+
+
+        /* ========================================================
+           DARK RED BASE
         ======================================================== */
 
         map.addLayer({
@@ -1182,7 +1234,7 @@
           paint: {
 
             "line-color":
-              "#142d30",
+              "#7d182b",
 
             "line-opacity":
               0.95,
@@ -1199,10 +1251,13 @@
               2,
 
               7,
-              2.5,
+              2.3,
 
               10,
-              3
+              2.8,
+
+              14,
+              3.2
 
             ]
 
@@ -1212,14 +1267,12 @@
 
 
         /* ========================================================
-           SMALL BARBED-WIRE PATTERN
-           
-           Generated locally — no external image needed.
+           CREATE BARBED-WIRE PATTERN
         ======================================================== */
 
         if (
           !map.hasImage(
-            "barbed-wire-pattern"
+            "red-barbed-wire"
           )
         ) {
 
@@ -1230,8 +1283,11 @@
             );
 
 
-          canvas.width = 32;
-          canvas.height = 16;
+          canvas.width =
+            48;
+
+          canvas.height =
+            20;
 
 
           const ctx =
@@ -1243,59 +1299,64 @@
           ctx.clearRect(
             0,
             0,
-            32,
-            16
+            48,
+            20
           );
 
 
-          /* Main wire */
+          /* ------------------------------------------------------
+             MAIN WIRE
+          ------------------------------------------------------ */
 
           ctx.strokeStyle =
-            "#55aeb2";
+            "#ff304f";
 
           ctx.lineWidth =
-            1.35;
+            1.4;
 
           ctx.beginPath();
 
           ctx.moveTo(
             0,
-            8
+            10
           );
 
           ctx.lineTo(
-            32,
-            8
+            48,
+            10
           );
 
           ctx.stroke();
 
 
-          /* Barbs */
+          /* ------------------------------------------------------
+             BARBS
+          ------------------------------------------------------ */
 
           ctx.strokeStyle =
-            "#72c7ca";
+            "#ff5268";
 
           ctx.lineWidth =
-            1;
+            1.2;
 
 
           for (
-            let x = 5;
-            x < 32;
-            x += 10
+            let x = 7;
+            x < 48;
+            x += 16
           ) {
+
 
             ctx.beginPath();
 
             ctx.moveTo(
-              x - 3,
+              x - 4,
               4
             );
 
             ctx.lineTo(
-              x + 3,
-              12
+              x + 4,
+              16
             );
 
             ctx.stroke();
@@ -1304,12 +1365,12 @@
             ctx.beginPath();
 
             ctx.moveTo(
-              x - 3,
-              12
+              x - 4,
+              16
             );
 
             ctx.lineTo(
-              x + 3,
+              x + 4,
               4
             );
 
@@ -1320,24 +1381,26 @@
 
           const imageData =
             ctx.getImageData(
+
               0,
               0,
-              32,
-              16
+              48,
+              20
+
             );
 
 
           map.addImage(
 
-            "barbed-wire-pattern",
+            "red-barbed-wire",
 
             {
 
               width:
-                32,
+                48,
 
               height:
-                16,
+                20,
 
               data:
                 imageData.data
@@ -1367,10 +1430,10 @@
           paint: {
 
             "line-pattern":
-              "barbed-wire-pattern",
+              "red-barbed-wire",
 
             "line-opacity":
-              0.72
+              0.9
 
           }
 
@@ -1378,57 +1441,7 @@
 
 
         /* ========================================================
-           SUBTLE GLOW
-        ======================================================== */
-
-        map.addLayer({
-
-          id:
-            "belarus-border-glow",
-
-          type:
-            "line",
-
-          source:
-            "belarus-border",
-
-          paint: {
-
-            "line-color":
-              "#36aeb3",
-
-            "line-opacity":
-              0.14,
-
-            "line-width": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              5.4,
-              4,
-
-              7,
-              5,
-
-              10,
-              7
-
-            ],
-
-            "line-blur":
-              3
-
-          }
-
-        });
-
-
-        /* ========================================================
-           KEEP CITY LABELS ABOVE BORDER
+           KEEP ALL SYMBOL LABELS ABOVE
         ======================================================== */
 
         const layers =
@@ -1466,6 +1479,19 @@
       }
 
     }
+
+
+    /* ============================================================
+       ROTATION OFF
+    ============================================================ */
+
+    map.on("load", () => {
+
+      map.dragRotate.disable();
+
+      map.touchZoomRotate.disableRotation();
+
+    });
 
   </script>
 
