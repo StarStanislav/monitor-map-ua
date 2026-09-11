@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
       "online",
 
     version:
-      "5.1.0",
+      "6.0.0",
 
     testChannel:
       `@${TEST_CHANNEL_USERNAME}`
@@ -113,8 +113,10 @@ app.post("/events", (req, res) => {
 
   }
 
+
   const now =
     Date.now();
+
 
   const event = {
 
@@ -145,18 +147,25 @@ app.post("/events", (req, res) => {
     createdAt:
       now,
 
+    updatedAt:
+      now,
+
     expiresAt:
       body.expiresAt ||
-      now + TEST_EVENT_TTL
+      now +
+      TEST_EVENT_TTL
 
   };
+
 
   events.set(
     event.id,
     event
   );
 
+
   broadcastState();
+
 
   res.json({
     ok:
@@ -168,6 +177,10 @@ app.post("/events", (req, res) => {
 });
 
 
+// ============================================================
+// DELETE EVENT
+// ============================================================
+
 app.delete(
   "/events/:id",
   (req, res) => {
@@ -177,7 +190,9 @@ app.delete(
         req.params.id
       );
 
+
     broadcastState();
+
 
     res.json({
       ok:
@@ -189,6 +204,10 @@ app.delete(
   }
 );
 
+
+// ============================================================
+// RESET
+// ============================================================
 
 app.post(
   "/events/reset",
@@ -220,6 +239,7 @@ app.get(
 
     const now =
       Date.now();
+
 
     const event = {
 
@@ -259,12 +279,15 @@ app.get(
 
     };
 
+
     events.set(
       event.id,
       event
     );
 
+
     broadcastState();
+
 
     res.json({
       ok:
@@ -319,12 +342,16 @@ function parseMessage(text) {
     String(text || "")
       .trim();
 
+
   let id =
     null;
+
 
   let deletePoint =
     false;
 
+
+  // DELETE
 
   const deleteMatch =
     value.match(
@@ -332,25 +359,33 @@ function parseMessage(text) {
     );
 
 
-  if (deleteMatch) {
+  if (
+    deleteMatch
+  ) {
 
     id =
       Number(
         deleteMatch[1]
       );
 
+
     deletePoint =
       true;
 
+
     return {
       id,
+
       text:
         "",
+
       deletePoint
     };
 
   }
 
+
+  // NUMBER + LOCATION
 
   const match =
     value.match(
@@ -358,24 +393,32 @@ function parseMessage(text) {
     );
 
 
-  if (match) {
+  if (
+    match
+  ) {
 
     id =
       Number(
         match[1]
       );
 
+
     value =
-      match[2].trim();
+      match[2]
+        .trim();
 
   }
 
 
   return {
+
     id,
+
     text:
       value,
+
     deletePoint
+
   };
 
 }
@@ -390,33 +433,41 @@ function deletePoint(pointId) {
   const eventId =
     `telegram-test-${pointId}`;
 
+
   const existed =
     events.delete(
       eventId
     );
 
+
   console.log(
     "================================"
   );
+
 
   console.log(
     `DELETE POINT ${pointId}`
   );
 
+
   console.log(
     `Event: ${eventId}`
   );
 
+
   console.log(
     `Deleted: ${existed}`
   );
+
 
   console.log(
     "================================"
   );
 
 
-  if (existed) {
+  if (
+    existed
+  ) {
 
     broadcastState();
 
@@ -429,7 +480,7 @@ function deletePoint(pointId) {
 
 
 // ============================================================
-// CLEAN LOCATION TEXT
+// CLEAN LOCATION
 // ============================================================
 
 function cleanLocationText(text) {
@@ -437,6 +488,10 @@ function cleanLocationText(text) {
   let value =
     normalizeText(text);
 
+
+  /*
+   * Remove common service words.
+   */
 
   value =
     value.replace(
@@ -485,6 +540,7 @@ function getAliasVariants(text) {
   const normalized =
     normalizeText(text);
 
+
   const aliases =
     [];
 
@@ -494,12 +550,17 @@ function getAliasVariants(text) {
     value =
       normalizeText(value);
 
+
     if (
       value &&
-      !aliases.includes(value)
+      !aliases.includes(
+        value
+      )
     ) {
 
-      aliases.push(value);
+      aliases.push(
+        value
+      );
 
     }
 
@@ -509,7 +570,9 @@ function getAliasVariants(text) {
   add(normalized);
 
 
-  // Українка
+  // ==========================================================
+  // УКРАЇНКА
+  // ==========================================================
 
   if (
     normalized === "українку" ||
@@ -518,12 +581,16 @@ function getAliasVariants(text) {
     normalized === "українкою"
   ) {
 
-    add("українка");
+    add(
+      "українка"
+    );
 
   }
 
 
-  // Біла Церква
+  // ==========================================================
+  // БІЛА ЦЕРКВА
+  // ==========================================================
 
   if (
     normalized === "білу церкву" ||
@@ -532,12 +599,16 @@ function getAliasVariants(text) {
     normalized === "білою церквою"
   ) {
 
-    add("біла церква");
+    add(
+      "біла церква"
+    );
 
   }
 
 
-  // Бровари
+  // ==========================================================
+  // БРОВАРИ
+  // ==========================================================
 
   if (
     normalized === "броварів" ||
@@ -545,12 +616,16 @@ function getAliasVariants(text) {
     normalized === "броварами"
   ) {
 
-    add("бровари");
+    add(
+      "бровари"
+    );
 
   }
 
 
-  // Яготин
+  // ==========================================================
+  // ЯГОТИН
+  // ==========================================================
 
   if (
     normalized === "яготина" ||
@@ -558,12 +633,16 @@ function getAliasVariants(text) {
     normalized === "яготином"
   ) {
 
-    add("яготин");
+    add(
+      "яготин"
+    );
 
   }
 
 
-  // Сквира
+  // ==========================================================
+  // СКВИРА
+  // ==========================================================
 
   if (
     normalized === "сквиру" ||
@@ -571,12 +650,16 @@ function getAliasVariants(text) {
     normalized === "сквирою"
   ) {
 
-    add("сквира");
+    add(
+      "сквира"
+    );
 
   }
 
 
-  // Трушки
+  // ==========================================================
+  // ТРУШКИ
+  // ==========================================================
 
   if (
     normalized === "трушок" ||
@@ -584,12 +667,16 @@ function getAliasVariants(text) {
     normalized === "трушками"
   ) {
 
-    add("трушки");
+    add(
+      "трушки"
+    );
 
   }
 
 
-  // Васильків
+  // ==========================================================
+  // ВАСИЛЬКІВ
+  // ==========================================================
 
   if (
     normalized === "василькова" ||
@@ -597,12 +684,16 @@ function getAliasVariants(text) {
     normalized === "васильковом"
   ) {
 
-    add("васильків");
+    add(
+      "васильків"
+    );
 
   }
 
 
-  // Обухів
+  // ==========================================================
+  // ОБУХІВ
+  // ==========================================================
 
   if (
     normalized === "обухова" ||
@@ -610,12 +701,16 @@ function getAliasVariants(text) {
     normalized === "обуховом"
   ) {
 
-    add("обухів");
+    add(
+      "обухів"
+    );
 
   }
 
 
-  // Фастів
+  // ==========================================================
+  // ФАСТІВ
+  // ==========================================================
 
   if (
     normalized === "фастова" ||
@@ -623,12 +718,16 @@ function getAliasVariants(text) {
     normalized === "фастовом"
   ) {
 
-    add("фастів");
+    add(
+      "фастів"
+    );
 
   }
 
 
-  // Переяслав
+  // ==========================================================
+  // ПЕРЕЯСЛАВ
+  // ==========================================================
 
   if (
     normalized === "переяслава" ||
@@ -636,7 +735,258 @@ function getAliasVariants(text) {
     normalized === "переяславом"
   ) {
 
-    add("переяслав");
+    add(
+      "переяслав"
+    );
+
+  }
+
+
+  return aliases;
+
+}
+
+
+// ============================================================
+// KYIV INTERNAL LOCATION ALIASES
+// ============================================================
+
+function getKyivLocationAliases(
+  text
+) {
+
+  const value =
+    normalizeText(text);
+
+
+  const aliases =
+    [];
+
+
+  function add(value) {
+
+    value =
+      normalizeText(value);
+
+
+    if (
+      value &&
+      !aliases.includes(
+        value
+      )
+    ) {
+
+      aliases.push(
+        value
+      );
+
+    }
+
+  }
+
+
+  /*
+   * Арсенальна
+   */
+
+  if (
+    value.includes(
+      "арсеналь"
+    )
+  ) {
+
+    add(
+      "Арсенальна Київ"
+    );
+
+    add(
+      "Арсенальна, Київ"
+    );
+
+    add(
+      "Арсенальна станція метро Київ"
+    );
+
+  }
+
+
+  /*
+   * Теремки
+   */
+
+  if (
+    value.includes(
+      "теремк"
+    )
+  ) {
+
+    add(
+      "Теремки Київ"
+    );
+
+    add(
+      "Теремки, Київ"
+    );
+
+  }
+
+
+  /*
+   * Печерськ
+   */
+
+  if (
+    value.includes(
+      "печерськ"
+    ) ||
+    value.includes(
+      "печерськ"
+    )
+  ) {
+
+    add(
+      "Печерськ Київ"
+    );
+
+    add(
+      "Печерськ, Київ"
+    );
+
+  }
+
+
+  /*
+   * Позняки
+   */
+
+  if (
+    value.includes(
+      "позняк"
+    )
+  ) {
+
+    add(
+      "Позняки Київ"
+    );
+
+  }
+
+
+  /*
+   * Осокорки
+   */
+
+  if (
+    value.includes(
+      "осокорк"
+    )
+  ) {
+
+    add(
+      "Осокорки Київ"
+    );
+
+  }
+
+
+  /*
+   * Оболонь
+   */
+
+  if (
+    value.includes(
+      "оболон"
+    )
+  ) {
+
+    add(
+      "Оболонь Київ"
+    );
+
+  }
+
+
+  /*
+   * Лівий берег
+   */
+
+  if (
+    value.includes(
+      "лівий берег"
+    )
+  ) {
+
+    add(
+      "Лівий берег Київ"
+    );
+
+  }
+
+
+  /*
+   * Виноградар
+   */
+
+  if (
+    value.includes(
+      "виноградар"
+    )
+  ) {
+
+    add(
+      "Виноградар Київ"
+    );
+
+  }
+
+
+  /*
+   * Троєщина
+   */
+
+  if (
+    value.includes(
+      "троєщин"
+    )
+  ) {
+
+    add(
+      "Троєщина Київ"
+    );
+
+  }
+
+
+  /*
+   * Солом'янка
+   */
+
+  if (
+    value.includes(
+      "солом"
+    )
+  ) {
+
+    add(
+      "Солом'янка Київ"
+    );
+
+  }
+
+
+  /*
+   * Голосіїв
+   */
+
+  if (
+    value.includes(
+      "голосіїв"
+    )
+  ) {
+
+    add(
+      "Голосіїв Київ"
+    );
 
   }
 
@@ -655,8 +1005,12 @@ function buildVariants(text) {
   const original =
     normalizeText(text);
 
+
   const cleaned =
-    cleanLocationText(original);
+    cleanLocationText(
+      original
+    );
+
 
   const variants =
     [];
@@ -667,17 +1021,46 @@ function buildVariants(text) {
     value =
       normalizeText(value);
 
+
     if (
       value &&
-      !variants.includes(value)
+      !variants.includes(
+        value
+      )
     ) {
 
-      variants.push(value);
+      variants.push(
+        value
+      );
 
     }
 
   }
 
+
+  /*
+   * Kyiv internal aliases first.
+   */
+
+  const kyivAliases =
+    getKyivLocationAliases(
+      cleaned
+    );
+
+
+  for (
+    const alias
+    of kyivAliases
+  ) {
+
+    add(alias);
+
+  }
+
+
+  /*
+   * Normal aliases.
+   */
 
   const aliases =
     getAliasVariants(
@@ -695,12 +1078,27 @@ function buildVariants(text) {
   }
 
 
-  add(cleaned);
-  add(original);
+  /*
+   * Original and cleaned.
+   */
 
+  add(
+    cleaned
+  );
+
+  add(
+    original
+  );
+
+
+  /*
+   * Shorter variants.
+   */
 
   const words =
-    cleaned.split(" ");
+    cleaned.split(
+      " "
+    );
 
 
   for (
@@ -716,7 +1114,8 @@ function buildVariants(text) {
     add(
       words
         .slice(
-          words.length - count
+          words.length -
+          count
         )
         .join(" ")
     );
@@ -730,7 +1129,7 @@ function buildVariants(text) {
 
 
 // ============================================================
-// DETECT KYIV LOCATION
+// IS KYIV LOCATION QUERY
 // ============================================================
 
 function isKyivLocationQuery(
@@ -738,16 +1137,24 @@ function isKyivLocationQuery(
 ) {
 
   const value =
-    normalizeText(query);
+    normalizeText(
+      query
+    );
 
 
   return (
     value === "київ" ||
+
     value.startsWith(
       "київ "
     ) ||
+
     value.includes(
       " київ "
+    ) ||
+
+    value.endsWith(
+      " київ"
     )
   );
 
@@ -755,7 +1162,7 @@ function isKyivLocationQuery(
 
 
 // ============================================================
-// NOMINATIM
+// NOMINATIM SEARCH
 // ============================================================
 
 async function searchNominatim(
@@ -771,24 +1178,23 @@ async function searchNominatim(
   let searchText;
 
 
-  /*
-   * For Kyiv and Kyiv internal
-   * locations we search all Ukraine.
-   *
-   * This allows:
-   *
-   * Київ
-   * Київ Арсенальна
-   * Київ Теремки
-   * Київ Печерськ
-   */
+  if (
+    kyivQuery
+  ) {
 
-  if (kyivQuery) {
+    /*
+     * Search specifically inside Kyiv.
+     */
 
     searchText =
       `${query}, Київ, Україна`;
 
   } else {
+
+    /*
+     * Search specifically inside
+     * Kyiv Oblast.
+     */
 
     searchText =
       `${query}, Київська область, Україна`;
@@ -813,9 +1219,12 @@ async function searchNominatim(
       url,
       {
         headers: {
+
           "User-Agent":
-            "ONLINE-RADAR-Test/5.1"
+            "ONLINE-RADAR-Test/6.0"
+
         }
+
       }
     );
 
@@ -837,10 +1246,12 @@ async function searchNominatim(
 
 
 // ============================================================
-// KYIV CHECK
+// IS KYIV
 // ============================================================
 
-function isKyiv(result) {
+function isKyiv(
+  result
+) {
 
   const address =
     result.address ||
@@ -902,26 +1313,30 @@ function isKyiv(result) {
 
   if (
     display.includes(
-      "київ, україна"
+      "київ"
     )
   ) {
+
+    /*
+     * Do not treat Kyiv Oblast
+     * as Kyiv city.
+     */
+
+    if (
+      display.includes(
+        "київська область"
+      )
+    ) {
+
+      return false;
+
+    }
+
 
     return true;
 
   }
 
-
-  /*
-   * Internal Kyiv areas:
-   *
-   * Печерськ
-   * Теремки
-   * Арсенальна
-   *
-   * Nominatim may return them
-   * as suburb / city_district /
-   * station / place / locality.
-   */
 
   if (
     cityDistrict &&
@@ -947,35 +1362,18 @@ function isKyiv(result) {
   }
 
 
-  /*
-   * Additional generic check.
-   *
-   * Important:
-   * this is only used for a query
-   * that explicitly contained "Київ".
-   */
-
-  if (
-    display.includes(
-      "київ"
-    )
-  ) {
-
-    return true;
-
-  }
-
-
   return false;
 
 }
 
 
 // ============================================================
-// KYIV OBLAST CHECK
+// KYIV OBLAST
 // ============================================================
 
-function isKyivOblast(result) {
+function isKyivOblast(
+  result
+) {
 
   const address =
     result.address ||
@@ -1008,7 +1406,8 @@ function isKyivOblast(result) {
 
 
   if (
-    state === "київська"
+    state ===
+    "київська"
   ) {
 
     return true;
@@ -1033,10 +1432,12 @@ function isKyivOblast(result) {
 
 
 // ============================================================
-// SETTLEMENT CHECK
+// SETTLEMENT
 // ============================================================
 
-function isSettlement(result) {
+function isSettlement(
+  result
+) {
 
   const type =
     String(
@@ -1080,62 +1481,19 @@ function isSettlement(result) {
 
 
 // ============================================================
-// PLACE NAME
+// EXACT KYIV SUBLOCATION MATCH
 // ============================================================
 
-function getPlaceName(result) {
-
-  const address =
-    result.address ||
-    {};
-
-
-  /*
-   * For internal Kyiv locations,
-   * prefer the actual object name.
-   *
-   * Examples:
-   *
-   * Арсенальна
-   * Теремки
-   * Печерськ
-   */
-
-  if (
-    isKyiv(result)
-  ) {
-
-    return (
-      result.name ||
-      address.suburb ||
-      address.city_district ||
-      address.neighbourhood ||
-      address.city ||
-      "Київ"
-    );
-
-  }
-
-
-  return (
-    address.city ||
-    address.town ||
-    address.village ||
-    address.hamlet ||
-    result.name ||
-    ""
-  );
-
-}
-
-
-// ============================================================
-// ACCEPT KYIV INTERNAL LOCATION
-// ============================================================
-
-function isAcceptedKyivResult(
+function hasRequestedKyivLocation(
+  query,
   result
 ) {
+
+  const normalizedQuery =
+    normalizeText(
+      query
+    );
+
 
   const display =
     normalizeText(
@@ -1144,31 +1502,152 @@ function isAcceptedKyivResult(
     );
 
 
+  const name =
+    normalizeText(
+      result.name ||
+      ""
+    );
+
+
+  const address =
+    result.address ||
+    {};
+
+
+  const suburb =
+    normalizeText(
+      address.suburb ||
+      ""
+    );
+
+
+  const neighbourhood =
+    normalizeText(
+      address.neighbourhood ||
+      ""
+    );
+
+
+  const cityDistrict =
+    normalizeText(
+      address.city_district ||
+      ""
+    );
+
+
   /*
-   * Result must clearly belong
-   * to Kyiv.
+   * Remove "київ" from the query.
+   *
+   * Example:
+   *
+   * київ арсенальна
+   *
+   * becomes:
+   *
+   * арсенальна
+   */
+
+  const requested =
+    normalizedQuery
+      .replace(
+        /\bкиїв\b/giu,
+        " "
+      )
+      .replace(
+        /\s+/g,
+        " "
+      )
+      .trim();
+
+
+  /*
+   * If there is no specific part,
+   * normal Kyiv query is accepted.
    */
 
   if (
-    !display.includes(
-      "київ"
-    )
+    !requested
   ) {
 
-    return false;
+    return true;
 
   }
 
 
   /*
-   * Reject Kyiv Oblast results.
+   * Build all searchable names.
    */
 
+  const searchable =
+    [
+      name,
+      suburb,
+      neighbourhood,
+      cityDistrict,
+      display
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+
+  /*
+   * Every word of the requested
+   * location should appear in the
+   * result.
+   */
+
+  const requestedWords =
+    requested
+      .split(" ")
+      .filter(Boolean);
+
+
+  const allWordsPresent =
+    requestedWords.every(
+      word =>
+        searchable.includes(
+          word
+        )
+    );
+
+
   if (
-    isKyivOblast(result)
+    allWordsPresent
   ) {
 
-    return false;
+    return true;
+
+  }
+
+
+  /*
+   * Special handling for common
+   * Ukrainian endings.
+   */
+
+  for (
+    const word
+    of requestedWords
+  ) {
+
+    const stem =
+      word.length >= 5
+        ? word.slice(
+            0,
+            word.length - 2
+          )
+        : word;
+
+
+    if (
+      !searchable.includes(
+        stem
+      )
+    ) {
+
+      return false;
+
+    }
 
   }
 
@@ -1179,7 +1658,62 @@ function isAcceptedKyivResult(
 
 
 // ============================================================
-// RESULT ACCEPTANCE
+// ACCEPT KYIV RESULT
+// ============================================================
+
+function isAcceptedKyivResult(
+  result,
+  query
+) {
+
+  if (
+    !isKyiv(result)
+  ) {
+
+    return false;
+
+  }
+
+
+  if (
+    isKyivOblast(result)
+  ) {
+
+    return false;
+
+  }
+
+
+  /*
+   * For plain "Київ" accept Kyiv.
+   */
+
+  if (
+    normalizeText(query) ===
+    "київ"
+  ) {
+
+    return true;
+
+  }
+
+
+  /*
+   * For "Київ Арсенальна",
+   * "Київ Теремки", etc.,
+   * require actual location match.
+   */
+
+  return hasRequestedKyivLocation(
+    query,
+    result
+  );
+
+}
+
+
+// ============================================================
+// ACCEPT RESULT
 // ============================================================
 
 function isAcceptedResult(
@@ -1194,9 +1728,7 @@ function isAcceptedResult(
 
 
   /*
-   * ==========================
    * KYIV
-   * ==========================
    */
 
   if (
@@ -1204,20 +1736,21 @@ function isAcceptedResult(
   ) {
 
     return isAcceptedKyivResult(
-      result
+      result,
+      query
     );
 
   }
 
 
   /*
-   * ==========================
    * KYIV OBLAST
-   * ==========================
    */
 
   if (
-    !isKyivOblast(result)
+    !isKyivOblast(
+      result
+    )
   ) {
 
     return false;
@@ -1225,13 +1758,10 @@ function isAcceptedResult(
   }
 
 
-  /*
-   * Only settlements for
-   * ordinary Kyiv Oblast queries.
-   */
-
   if (
-    !isSettlement(result)
+    !isSettlement(
+      result
+    )
   ) {
 
     return false;
@@ -1245,19 +1775,97 @@ function isAcceptedResult(
 
 
 // ============================================================
+// PLACE NAME
+// ============================================================
+
+function getPlaceName(
+  result
+) {
+
+  const address =
+    result.address ||
+    {};
+
+
+  if (
+    isKyiv(result)
+  ) {
+
+    return (
+      result.name ||
+
+      address.suburb ||
+
+      address.neighbourhood ||
+
+      address.city_district ||
+
+      address.city ||
+
+      "Київ"
+    );
+
+  }
+
+
+  return (
+    address.city ||
+
+    address.town ||
+
+    address.village ||
+
+    address.hamlet ||
+
+    result.name ||
+
+    ""
+  );
+
+}
+
+
+// ============================================================
 // FIND PLACE
 // ============================================================
 
-async function findPlace(text) {
+async function findPlace(
+  text
+) {
 
   const variants =
-    buildVariants(text);
+    buildVariants(
+      text
+    );
+
+
+  console.log(
+    "================================"
+  );
+
+
+  console.log(
+    "SEARCH:",
+    text
+  );
 
 
   console.log(
     "Search variants:",
     variants
   );
+
+
+  /*
+   * IMPORTANT:
+   *
+   * We don't immediately accept
+   * the first Nominatim result.
+   *
+   * For Kyiv internal locations,
+   * we require the requested name
+   * to actually occur in the result.
+   */
 
 
   for (
@@ -1313,10 +1921,25 @@ async function findPlace(text) {
         );
 
 
+      console.log(
+        `Nominatim results: ${results.length}`
+      );
+
+
       for (
         const result
         of results
       ) {
+
+        console.log(
+          "Candidate:",
+          result.name ||
+          "(no name)",
+          "|",
+          result.display_name ||
+          ""
+        );
+
 
         if (
           !isAcceptedResult(
@@ -1391,9 +2014,18 @@ async function findPlace(text) {
         }
 
 
+        /*
+         * Cache successful match.
+         */
+
         geocodeCache.set(
           cacheKey,
           place
+        );
+
+
+        console.log(
+          "--------------------------------"
         );
 
 
@@ -1403,7 +2035,7 @@ async function findPlace(text) {
 
 
         console.log(
-          `Coordinates: ${lat}, ${lon}`
+          `Coordinates: ${place.lat}, ${place.lon}`
         );
 
 
@@ -1412,15 +2044,32 @@ async function findPlace(text) {
         );
 
 
+        console.log(
+          "--------------------------------"
+        );
+
+
         return place;
 
       }
 
 
-      geocodeCache.set(
-        cacheKey,
-        null
-      );
+      /*
+       * Don't permanently cache
+       * a failed short variant too
+       * aggressively.
+       */
+
+      if (
+        variant.length >= 5
+      ) {
+
+        geocodeCache.set(
+          cacheKey,
+          null
+        );
+
+      }
 
 
     } catch (error) {
@@ -1432,6 +2081,11 @@ async function findPlace(text) {
     }
 
   }
+
+
+  console.log(
+    `NO MATCH: ${text}`
+  );
 
 
   return null;
@@ -1582,6 +2236,7 @@ app.post(
       ) {
 
         return res.json({
+
           ok:
             true,
 
@@ -1590,6 +2245,7 @@ app.post(
 
           reason:
             "not channel_post"
+
         });
 
       }
@@ -1613,7 +2269,7 @@ app.post(
 
 
       /*
-       * ONLY TEST CHANNEL
+       * ONLY @radaronlinetest
        */
 
       if (
@@ -1627,6 +2283,7 @@ app.post(
 
 
         return res.json({
+
           ok:
             true,
 
@@ -1635,6 +2292,7 @@ app.post(
 
           reason:
             "wrong channel"
+
         });
 
       }
@@ -1663,6 +2321,7 @@ app.post(
       ) {
 
         return res.json({
+
           ok:
             true,
 
@@ -1671,6 +2330,7 @@ app.post(
 
           reason:
             "empty message"
+
         });
 
       }
@@ -1715,6 +2375,7 @@ app.post(
 
 
         return res.json({
+
           ok:
             true,
 
@@ -1725,6 +2386,7 @@ app.post(
 
           pointId:
             parsed.id
+
         });
 
       }
@@ -1735,6 +2397,7 @@ app.post(
       ) {
 
         return res.json({
+
           ok:
             true,
 
@@ -1743,6 +2406,7 @@ app.post(
 
           reason:
             "empty location"
+
         });
 
       }
@@ -1758,12 +2422,8 @@ app.post(
         !place
       ) {
 
-        console.log(
-          `NO MATCH: ${parsed.text}`
-        );
-
-
         return res.json({
+
           ok:
             true,
 
@@ -1772,6 +2432,7 @@ app.post(
 
           reason:
             "location not found"
+
         });
 
       }
@@ -1800,6 +2461,7 @@ app.post(
 
 
       return res.json({
+
         ok:
           true,
 
@@ -1807,6 +2469,7 @@ app.post(
           true,
 
         event
+
       });
 
 
@@ -1819,11 +2482,13 @@ app.post(
 
 
       return res.status(500).json({
+
         ok:
           false,
 
         error:
           error.message
+
       });
 
     }
@@ -2103,7 +2768,7 @@ server.listen(
 
 
     console.log(
-      "ONLINE RADAR backend v5.1.0"
+      "ONLINE RADAR backend v6.0.0"
     );
 
 
@@ -2138,7 +2803,12 @@ server.listen(
 
 
     console.log(
-      "Kyiv internal places: ENABLED"
+      "Kyiv internal locations: ENABLED"
+    );
+
+
+    console.log(
+      "Exact Kyiv location matching: ENABLED"
     );
 
 
