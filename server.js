@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
   res.json({
     name: "ONLINE RADAR backend",
     status: "online",
-    version: "4.0.0",
+    version: "5.0.0",
     testChannel: `@${TEST_CHANNEL_USERNAME}`
   });
 });
@@ -97,7 +97,8 @@ app.post("/events", (req, res) => {
       "",
 
     place:
-      body.place || "",
+      body.place ||
+      "",
 
     lat:
       body.lat,
@@ -127,71 +128,101 @@ app.post("/events", (req, res) => {
 });
 
 
-app.delete("/events/:id", (req, res) => {
-  const deleted =
-    events.delete(req.params.id);
+app.delete(
+  "/events/:id",
+  (req, res) => {
 
-  broadcastState();
+    const deleted =
+      events.delete(
+        req.params.id
+      );
 
-  res.json({
-    ok: true,
-    deleted
-  });
-});
+    broadcastState();
+
+    res.json({
+      ok: true,
+      deleted
+    });
+  }
+);
 
 
-app.post("/events/reset", (req, res) => {
-  events.clear();
+app.post(
+  "/events/reset",
+  (req, res) => {
 
-  broadcastState();
+    events.clear();
 
-  res.json({
-    ok: true,
-    events: []
-  });
-});
+    broadcastState();
+
+    res.json({
+      ok: true,
+      events: []
+    });
+  }
+);
 
 
 // ============================================================
 // MANUAL TEST
 // ============================================================
 
-app.get("/test-event", (req, res) => {
-  const now = Date.now();
+app.get(
+  "/test-event",
+  (req, res) => {
 
-  const event = {
-    id: "manual-test",
+    const now =
+      Date.now();
 
-    type: "test",
+    const event = {
 
-    color: "red",
+      id:
+        "manual-test",
 
-    label: "",
+      pointId:
+        "manual-test",
 
-    place: "Біла Церква",
+      type:
+        "test",
 
-    lat: 49.7968,
+      color:
+        "red",
 
-    lon: 30.1153,
+      label:
+        "",
 
-    createdAt: now,
+      place:
+        "Біла Церква",
 
-    expiresAt:
-      now + TEST_EVENT_TTL
-  };
+      lat:
+        49.7968,
 
-  events.set(
-    event.id,
-    event
-  );
+      lon:
+        30.1153,
 
-  broadcastState();
+      createdAt:
+        now,
 
-  res.json({
-    ok: true,
-    event
-  });
-});
+      updatedAt:
+        now,
+
+      expiresAt:
+        now + TEST_EVENT_TTL
+    };
+
+    events.set(
+      event.id,
+      event
+    );
+
+    broadcastState();
+
+    res.json({
+      ok: true,
+      event
+    });
+  }
+);
 
 
 // ============================================================
@@ -199,65 +230,149 @@ app.get("/test-event", (req, res) => {
 // ============================================================
 
 function normalizeText(text) {
+
   return String(text || "")
     .toLowerCase()
     .normalize("NFC")
     .replace(/[’`]/g, "'")
-    .replace(/[.,!?;:()[\]{}"“”„]/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(
+      /[.,!?;:()[\]{}"“”„]/g,
+      " "
+    )
+    .replace(
+      /\s+/g,
+      " "
+    )
     .trim();
 }
 
 
 // ============================================================
-// EXTRACT TEST ID
-//
-// Supported:
+// PARSE MESSAGE
 //
 // 1 Біла Церква
 // 1 Трушки
 // 2 Яготин
 //
-// Also:
-//
 // TEST-1 Біла Церква
 // TEST 1 Біла Церква
 //
+// DELETE:
+//
+// 1 -
 // ============================================================
 
 function parseMessage(text) {
+
   let value =
-    String(text || "").trim();
+    String(text || "")
+      .trim();
 
   let id = null;
+  let deletePoint = false;
 
-  let match =
+
+  const deleteMatch =
+    value.match(
+      /^(?:test[-\s]*)?(\d+)\s*[-–—]\s*$/iu
+    );
+
+
+  if (deleteMatch) {
+
+    id =
+      Number(
+        deleteMatch[1]
+      );
+
+    deletePoint =
+      true;
+
+    return {
+      id,
+      text: "",
+      deletePoint
+    };
+  }
+
+
+  const match =
     value.match(
       /^(?:test[-\s]*)?(\d+)\s+(.+)$/iu
     );
 
+
   if (match) {
+
     id =
-      Number(match[1]);
+      Number(
+        match[1]
+      );
 
     value =
       match[2].trim();
   }
 
+
   return {
     id,
-    text: value
+    text: value,
+    deletePoint
   };
 }
 
 
 // ============================================================
-// CLEAN LOCATION TEXT
+// DELETE POINT
+// ============================================================
+
+function deletePoint(pointId) {
+
+  const eventId =
+    `telegram-test-${pointId}`;
+
+  const existed =
+    events.delete(
+      eventId
+    );
+
+  console.log(
+    "================================"
+  );
+
+  console.log(
+    `DELETE POINT ${pointId}`
+  );
+
+  console.log(
+    `Event: ${eventId}`
+  );
+
+  console.log(
+    `Deleted: ${existed}`
+  );
+
+  console.log(
+    "================================"
+  );
+
+  if (existed) {
+    broadcastState();
+  }
+
+  return existed;
+}
+
+
+// ============================================================
+// CLEAN LOCATION
 // ============================================================
 
 function cleanLocationText(text) {
+
   let value =
     normalizeText(text);
+
 
   value =
     value.replace(
@@ -265,11 +380,13 @@ function cleanLocationText(text) {
       ""
     );
 
+
   value =
     value.replace(
       /^(від|з|із|зі|на|до|біля|коло|через|у|в|в напрямку)\s+/iu,
       ""
     );
+
 
   value =
     value.replace(
@@ -277,18 +394,162 @@ function cleanLocationText(text) {
       ""
     );
 
+
   value =
     value.replace(
       /\b(один|одна|одне)\b/giu,
       ""
     );
 
-  value =
-    value
-      .replace(/\s+/g, " ")
-      .trim();
 
-  return value;
+  return value
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+// ============================================================
+// ALIASES
+// ============================================================
+
+function getAliasVariants(text) {
+
+  const normalized =
+    normalizeText(text);
+
+  const aliases = [];
+
+
+  function add(value) {
+
+    value =
+      normalizeText(value);
+
+    if (
+      value &&
+      !aliases.includes(value)
+    ) {
+      aliases.push(value);
+    }
+  }
+
+
+  add(normalized);
+
+
+  // Українка
+
+  if (
+    normalized === "українку" ||
+    normalized === "українки" ||
+    normalized === "українці" ||
+    normalized === "українкою"
+  ) {
+    add("українка");
+  }
+
+
+  // Біла Церква
+
+  if (
+    normalized === "білу церкву" ||
+    normalized === "білої церкви" ||
+    normalized === "білій церкві" ||
+    normalized === "білою церквою"
+  ) {
+    add("біла церква");
+  }
+
+
+  // Бровари
+
+  if (
+    normalized === "броварів" ||
+    normalized === "броварам" ||
+    normalized === "броварами"
+  ) {
+    add("бровари");
+  }
+
+
+  // Яготин
+
+  if (
+    normalized === "яготина" ||
+    normalized === "яготині" ||
+    normalized === "яготином"
+  ) {
+    add("яготин");
+  }
+
+
+  // Сквира
+
+  if (
+    normalized === "сквиру" ||
+    normalized === "сквири" ||
+    normalized === "сквирою"
+  ) {
+    add("сквира");
+  }
+
+
+  // Трушки
+
+  if (
+    normalized === "трушок" ||
+    normalized === "трушкам" ||
+    normalized === "трушками"
+  ) {
+    add("трушки");
+  }
+
+
+  // Васильків
+
+  if (
+    normalized === "василькова" ||
+    normalized === "василькові" ||
+    normalized === "васильковом"
+  ) {
+    add("васильків");
+  }
+
+
+  // Обухів
+
+  if (
+    normalized === "обухова" ||
+    normalized === "обухові" ||
+    normalized === "обуховом"
+  ) {
+    add("обухів");
+  }
+
+
+  // Фастів
+
+  if (
+    normalized === "фастова" ||
+    normalized === "фастові" ||
+    normalized === "фастовом"
+  ) {
+    add("фастів");
+  }
+
+
+  // Переяслав
+
+  if (
+    normalized === "переяслава" ||
+    normalized === "переяславі" ||
+    normalized === "переяславом"
+  ) {
+    add("переяслав");
+  }
+
+
+  return aliases;
 }
 
 
@@ -297,6 +558,7 @@ function cleanLocationText(text) {
 // ============================================================
 
 function buildVariants(text) {
+
   const original =
     normalizeText(text);
 
@@ -305,7 +567,9 @@ function buildVariants(text) {
 
   const variants = [];
 
+
   function add(value) {
+
     value =
       normalizeText(value);
 
@@ -317,18 +581,39 @@ function buildVariants(text) {
     }
   }
 
+
+  const aliases =
+    getAliasVariants(
+      cleaned
+    );
+
+
+  for (
+    const alias
+    of aliases
+  ) {
+    add(alias);
+  }
+
+
   add(cleaned);
   add(original);
+
 
   const words =
     cleaned.split(" ");
 
-  // Try the whole phrase and shorter endings.
+
   for (
     let count = 1;
-    count <= Math.min(4, words.length);
+    count <=
+      Math.min(
+        5,
+        words.length
+      );
     count++
   ) {
+
     add(
       words
         .slice(
@@ -338,6 +623,7 @@ function buildVariants(text) {
     );
   }
 
+
   return variants;
 }
 
@@ -346,18 +632,52 @@ function buildVariants(text) {
 // NOMINATIM
 // ============================================================
 
-async function searchNominatim(query) {
+async function searchNominatim(
+  query
+) {
+
+  const normalizedQuery =
+    normalizeText(query);
+
+
+  const isKyivQuery =
+    normalizedQuery === "київ" ||
+    normalizedQuery.startsWith(
+      "київ "
+    ) ||
+    normalizedQuery.includes(
+      " київ "
+    );
+
+
+  let searchText;
+
+
+  if (isKyivQuery) {
+
+    searchText =
+      query +
+      ", Україна";
+
+  } else {
+
+    searchText =
+      query +
+      ", Київська область, Україна";
+  }
+
+
   const url =
     `${NOMINATIM_URL}` +
     `?format=jsonv2` +
-    `&limit=8` +
+    `&limit=10` +
     `&countrycodes=ua` +
     `&addressdetails=1` +
     `&accept-language=uk` +
     `&q=${encodeURIComponent(
-      query +
-      ", Київська область, Україна"
+      searchText
     )}`;
+
 
   const response =
     await fetch(
@@ -365,18 +685,79 @@ async function searchNominatim(query) {
       {
         headers: {
           "User-Agent":
-            "ONLINE-RADAR-Test/4.0"
+            "ONLINE-RADAR-Test/5.0"
         }
       }
     );
 
+
   if (!response.ok) {
+
     throw new Error(
       `Nominatim HTTP ${response.status}`
     );
   }
 
+
   return await response.json();
+}
+
+
+// ============================================================
+// KYIV CHECK
+// ============================================================
+
+function isKyiv(result) {
+
+  const address =
+    result.address || {};
+
+  const display =
+    normalizeText(
+      result.display_name ||
+      ""
+    );
+
+  const city =
+    normalizeText(
+      address.city ||
+      ""
+    );
+
+  const municipality =
+    normalizeText(
+      address.municipality ||
+      ""
+    );
+
+
+  if (
+    city === "київ"
+  ) {
+    return true;
+  }
+
+
+  if (
+    municipality === "київ"
+  ) {
+    return true;
+  }
+
+
+  if (
+    display.includes(
+      "київ, україна"
+    ) ||
+    display.startsWith(
+      "київ,"
+    )
+  ) {
+    return true;
+  }
+
+
+  return false;
 }
 
 
@@ -385,18 +766,22 @@ async function searchNominatim(query) {
 // ============================================================
 
 function isKyivOblast(result) {
+
   const address =
     result.address || {};
 
   const state =
     normalizeText(
-      address.state || ""
+      address.state ||
+      ""
     );
 
   const display =
     normalizeText(
-      result.display_name || ""
+      result.display_name ||
+      ""
     );
+
 
   if (
     state.includes(
@@ -406,11 +791,13 @@ function isKyivOblast(result) {
     return true;
   }
 
+
   if (
     state === "київська"
   ) {
     return true;
   }
+
 
   if (
     display.includes(
@@ -419,6 +806,75 @@ function isKyivOblast(result) {
   ) {
     return true;
   }
+
+
+  return false;
+}
+
+
+// ============================================================
+// KYIV LOCATION CHECK
+// ============================================================
+
+function isInsideKyiv(result) {
+
+  if (
+    isKyiv(result)
+  ) {
+    return true;
+  }
+
+
+  const address =
+    result.address || {};
+
+  const city =
+    normalizeText(
+      address.city ||
+      ""
+    );
+
+  const cityDistrict =
+    normalizeText(
+      address.city_district ||
+      ""
+    );
+
+  const suburb =
+    normalizeText(
+      address.suburb ||
+      ""
+    );
+
+  const display =
+    normalizeText(
+      result.display_name ||
+      ""
+    );
+
+
+  if (
+    city === "київ"
+  ) {
+    return true;
+  }
+
+
+  if (
+    cityDistrict &&
+    display.includes("київ")
+  ) {
+    return true;
+  }
+
+
+  if (
+    suburb &&
+    display.includes("київ")
+  ) {
+    return true;
+  }
+
 
   return false;
 }
@@ -429,13 +885,16 @@ function isKyivOblast(result) {
 // ============================================================
 
 function isSettlement(result) {
+
   const type =
     String(
-      result.type || ""
+      result.type ||
+      ""
     ).toLowerCase();
 
   const address =
-    result.address || {};
+    result.address ||
+    {};
 
   const settlement =
     address.city ||
@@ -444,11 +903,13 @@ function isSettlement(result) {
     address.hamlet ||
     "";
 
+
   if (
     settlement
   ) {
     return true;
   }
+
 
   return [
     "city",
@@ -464,8 +925,25 @@ function isSettlement(result) {
 // ============================================================
 
 function getPlaceName(result) {
+
   const address =
-    result.address || {};
+    result.address ||
+    {};
+
+
+  if (
+    isInsideKyiv(result)
+  ) {
+
+    return (
+      result.name ||
+      address.suburb ||
+      address.city_district ||
+      address.city ||
+      "Київ"
+    );
+  }
+
 
   return (
     address.city ||
@@ -479,31 +957,101 @@ function getPlaceName(result) {
 
 
 // ============================================================
+// RESULT ACCEPTANCE
+// ============================================================
+
+function isAcceptedResult(
+  result,
+  query
+) {
+
+  const normalizedQuery =
+    normalizeText(query);
+
+
+  /*
+   * Київ та внутрішні райони Києва.
+   */
+
+  if (
+    normalizedQuery === "київ" ||
+    normalizedQuery.startsWith(
+      "київ "
+    ) ||
+    normalizedQuery.includes(
+      " київ "
+    )
+  ) {
+
+    return isInsideKyiv(
+      result
+    );
+  }
+
+
+  /*
+   * Київська область.
+   */
+
+  if (
+    !isKyivOblast(result)
+  ) {
+    return false;
+  }
+
+
+  if (
+    !isSettlement(result)
+  ) {
+    return false;
+  }
+
+
+  return true;
+}
+
+
+// ============================================================
 // FIND PLACE
 // ============================================================
 
 async function findPlace(text) {
+
   const variants =
     buildVariants(text);
+
 
   console.log(
     "Search variants:",
     variants
   );
 
+
   for (
-    const variant of variants
+    const variant
+    of variants
   ) {
+
     const cacheKey =
       variant;
 
-    if (
-      geocodeCache.has(cacheKey)
-    ) {
-      const cached =
-        geocodeCache.get(cacheKey);
 
-      if (cached) {
+    if (
+      geocodeCache.has(
+        cacheKey
+      )
+    ) {
+
+      const cached =
+        geocodeCache.get(
+          cacheKey
+        );
+
+
+      if (
+        cached
+      ) {
+
         console.log(
           `CACHE MATCH: ${cached.name}`
         );
@@ -511,39 +1059,49 @@ async function findPlace(text) {
         return cached;
       }
 
+
       continue;
     }
 
+
     try {
+
       console.log(
         `Geocoding: "${variant}"`
       );
+
 
       const results =
         await searchNominatim(
           variant
         );
 
+
       for (
-        const result of results
+        const result
+        of results
       ) {
+
         if (
-          !isKyivOblast(result)
+          !isAcceptedResult(
+            result,
+            variant
+          )
         ) {
           continue;
         }
 
-        if (
-          !isSettlement(result)
-        ) {
-          continue;
-        }
 
         const lat =
-          Number(result.lat);
+          Number(
+            result.lat
+          );
 
         const lon =
-          Number(result.lon);
+          Number(
+            result.lon
+          );
+
 
         if (
           !Number.isFinite(lat) ||
@@ -552,17 +1110,32 @@ async function findPlace(text) {
           continue;
         }
 
+
         const place = {
+
           name:
-            getPlaceName(result),
+            getPlaceName(
+              result
+            ),
 
           lat,
 
           lon,
 
           displayName:
-            result.display_name || ""
+            result.display_name ||
+            "",
+
+          osmType:
+            result.osm_type ||
+            "",
+
+          osmId:
+            result.osm_id ||
+            null
+
         };
+
 
         if (
           !place.name
@@ -570,33 +1143,46 @@ async function findPlace(text) {
           continue;
         }
 
+
         geocodeCache.set(
           cacheKey,
           place
         );
 
+
         console.log(
           `MATCHED: ${place.name}`
         );
+
 
         console.log(
           `Coordinates: ${lat}, ${lon}`
         );
 
+
+        console.log(
+          `Display: ${place.displayName}`
+        );
+
+
         return place;
       }
+
 
       geocodeCache.set(
         cacheKey,
         null
       );
 
+
     } catch (error) {
+
       console.error(
         `Geocoding error: ${error.message}`
       );
     }
   }
+
 
   return null;
 }
@@ -611,13 +1197,23 @@ async function createOrMovePoint(
   place,
   originalMessage
 ) {
+
   const now =
     Date.now();
+
 
   const eventId =
     `telegram-test-${pointId}`;
 
+
+  const oldEvent =
+    events.get(
+      eventId
+    );
+
+
   const event = {
+
     id:
       eventId,
 
@@ -630,7 +1226,6 @@ async function createOrMovePoint(
     color:
       "red",
 
-    // NO TEST TEXT
     label:
       "",
 
@@ -647,21 +1242,24 @@ async function createOrMovePoint(
       place.lon,
 
     createdAt:
-      events.has(eventId)
-        ? events.get(eventId).createdAt
+      oldEvent
+        ? oldEvent.createdAt
         : now,
 
     updatedAt:
       now,
 
     expiresAt:
-      now + TEST_EVENT_TTL
+      now +
+      TEST_EVENT_TTL
   };
+
 
   events.set(
     eventId,
     event
   );
+
 
   console.log(
     "================================"
@@ -684,12 +1282,15 @@ async function createOrMovePoint(
   );
 
   console.log(
-    "Action: CREATED / MOVED"
+    oldEvent
+      ? "Action: MOVED"
+      : "Action: CREATED"
   );
 
   console.log(
     "================================"
   );
+
 
   broadcastState();
 
@@ -704,16 +1305,22 @@ async function createOrMovePoint(
 app.post(
   "/telegram/webhook",
   async (req, res) => {
+
     try {
+
       const update =
-        req.body || {};
+        req.body ||
+        {};
+
 
       const channelPost =
         update.channel_post;
 
+
       if (
         !channelPost
       ) {
+
         return res.json({
           ok: true,
           ignored: true,
@@ -722,24 +1329,37 @@ app.post(
         });
       }
 
+
       const chat =
-        channelPost.chat || {};
+        channelPost.chat ||
+        {};
+
 
       const username =
         String(
-          chat.username || ""
+          chat.username ||
+          ""
         )
-          .replace(/^@/, "")
+          .replace(
+            /^@/,
+            ""
+          )
           .toLowerCase();
 
-      // ONLY TEST CHANNEL
+
+      /*
+       * ТІЛЬКИ @radaronlinetest
+       */
+
       if (
         username !==
         TEST_CHANNEL_USERNAME
       ) {
+
         console.log(
           `Ignored channel: @${username}`
         );
+
 
         return res.json({
           ok: true,
@@ -749,6 +1369,7 @@ app.post(
         });
       }
 
+
       const message =
         String(
           channelPost.text ||
@@ -756,17 +1377,21 @@ app.post(
           ""
         ).trim();
 
+
       console.log(
         "--------------------------------"
       );
+
 
       console.log(
         `Telegram test channel message: ${message}`
       );
 
+
       if (
         !message
       ) {
+
         return res.json({
           ok: true,
           ignored: true,
@@ -775,8 +1400,12 @@ app.post(
         });
       }
 
+
       const parsed =
-        parseMessage(message);
+        parseMessage(
+          message
+        );
+
 
       console.log(
         `Point ID: ${
@@ -786,50 +1415,89 @@ app.post(
         }`
       );
 
+
       console.log(
-        `Location text: ${parsed.text}`
+        `Location text: ${
+          parsed.text
+        }`
       );
+
+
+      /*
+       * DELETE:
+       *
+       * 1 -
+       */
+
+      if (
+        parsed.deletePoint
+      ) {
+
+        const deleted =
+          deletePoint(
+            parsed.id
+          );
+
+
+        return res.json({
+          ok: true,
+          matched: true,
+          deleted,
+          pointId:
+            parsed.id
+        });
+      }
+
+
+      if (
+        !parsed.text
+      ) {
+
+        return res.json({
+          ok: true,
+          matched: false,
+          reason:
+            "empty location"
+        });
+      }
+
 
       const place =
         await findPlace(
           parsed.text
         );
 
+
       if (
         !place
       ) {
+
         console.log(
           `NO MATCH: ${parsed.text}`
         );
+
 
         return res.json({
           ok: true,
           matched: false,
           reason:
-            "settlement not found"
+            "location not found"
         });
       }
 
-      // ------------------------------------------------------
-      // If a number is supplied, use it as the point ID.
-      //
-      // Example:
-      //
-      // 1 Біла Церква
-      // 1 Трушки
-      //
-      // Otherwise create an automatic unique point.
-      // ------------------------------------------------------
 
       let pointId =
         parsed.id;
 
+
       if (
         pointId === null
       ) {
+
         pointId =
           Date.now();
       }
+
 
       const event =
         await createOrMovePoint(
@@ -838,17 +1506,21 @@ app.post(
           message
         );
 
+
       return res.json({
         ok: true,
         matched: true,
         event
       });
 
+
     } catch (error) {
+
       console.error(
         "Telegram webhook error:",
         error
       );
+
 
       return res.status(500).json({
         ok: false,
@@ -865,9 +1537,11 @@ app.post(
 // ============================================================
 
 async function setupTelegramWebhook() {
+
   if (
     !TELEGRAM_BOT_TOKEN
   ) {
+
     console.log(
       "TELEGRAM_BOT_TOKEN is not configured"
     );
@@ -875,10 +1549,13 @@ async function setupTelegramWebhook() {
     return;
   }
 
+
   const webhookUrl =
     "https://monitor-map-ua.onrender.com/telegram/webhook";
 
+
   try {
+
     const response =
       await fetch(
         `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`,
@@ -903,15 +1580,19 @@ async function setupTelegramWebhook() {
         }
       );
 
+
     const data =
       await response.json();
+
 
     console.log(
       "Telegram webhook setup:",
       data
     );
 
+
   } catch (error) {
+
     console.error(
       "Telegram webhook setup failed:",
       error.message
@@ -927,20 +1608,24 @@ async function setupTelegramWebhook() {
 const wss =
   new WebSocket.Server({
     server,
-    path: "/ws"
+    path:
+      "/ws"
   });
 
 
 wss.on(
   "connection",
   socket => {
+
     clients.add(
       socket
     );
 
+
     console.log(
       `WebSocket client connected. Total: ${clients.size}`
     );
+
 
     socket.send(
       JSON.stringify({
@@ -954,12 +1639,15 @@ wss.on(
       })
     );
 
+
     socket.on(
       "close",
       () => {
+
         clients.delete(
           socket
         );
+
 
         console.log(
           `WebSocket client disconnected. Total: ${clients.size}`
@@ -967,14 +1655,17 @@ wss.on(
       }
     );
 
+
     socket.on(
       "error",
       () => {
+
         clients.delete(
           socket
         );
       }
     );
+
   }
 );
 
@@ -984,6 +1675,7 @@ wss.on(
 // ============================================================
 
 function broadcastState() {
+
   const payload =
     JSON.stringify({
       type:
@@ -995,13 +1687,17 @@ function broadcastState() {
         )
     });
 
+
   for (
-    const socket of clients
+    const socket
+    of clients
   ) {
+
     if (
       socket.readyState ===
       WebSocket.OPEN
     ) {
+
       socket.send(
         payload
       );
@@ -1015,29 +1711,37 @@ function broadcastState() {
 // ============================================================
 
 function cleanupExpiredEvents() {
+
   const now =
     Date.now();
 
   let changed =
     false;
 
+
   for (
     const [
       id,
       event
-    ] of events.entries()
+    ]
+    of events.entries()
   ) {
+
     if (
       typeof event.expiresAt ===
         "number" &&
-      event.expiresAt <= now
+      event.expiresAt <=
+        now
     ) {
+
       events.delete(
         id
       );
 
+
       changed =
         true;
+
 
       console.log(
         `Expired point removed: ${id}`
@@ -1045,9 +1749,11 @@ function cleanupExpiredEvents() {
     }
   }
 
+
   if (
     changed
   ) {
+
     broadcastState();
   }
 }
@@ -1066,12 +1772,13 @@ setInterval(
 server.listen(
   PORT,
   async () => {
+
     console.log(
       "================================"
     );
 
     console.log(
-      "ONLINE RADAR backend v4.0.0"
+      "ONLINE RADAR backend v5.0.0"
     );
 
     console.log(
@@ -1087,7 +1794,23 @@ server.listen(
     );
 
     console.log(
-      "Red markers: ENABLED"
+      "Point movement: ENABLED"
+    );
+
+    console.log(
+      "Point deletion: ENABLED"
+    );
+
+    console.log(
+      "Kyiv locations: ENABLED"
+    );
+
+    console.log(
+      "Case normalization: ENABLED"
+    );
+
+    console.log(
+      "Red test events: ENABLED"
     );
 
     console.log(
@@ -1098,6 +1821,8 @@ server.listen(
       "================================"
     );
 
+
     await setupTelegramWebhook();
+
   }
 );
