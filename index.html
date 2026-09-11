@@ -10,7 +10,7 @@
   content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
 >
 
-<title>ONLINE RADAR — TEST 9.5</title>
+<title>ONLINE RADAR</title>
 
 <link
   href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css"
@@ -18,6 +18,10 @@
 >
 
 <style>
+
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
   box-sizing: border-box;
@@ -73,41 +77,6 @@ body {
 
 
 /* =========================================================
-   TEST LABEL
-========================================================= */
-
-.test-label {
-
-  position: absolute;
-
-  z-index: 9999;
-
-  top: 90px;
-
-  left: 22px;
-
-  padding: 14px 22px;
-
-  border-radius: 16px;
-
-  background: #ff1744;
-
-  color: white;
-
-  font-size: 20px;
-
-  font-weight: 900;
-
-  letter-spacing: 2px;
-
-  box-shadow:
-    0 0 25px rgba(255,23,68,.7);
-
-  pointer-events: none;
-}
-
-
-/* =========================================================
    ONLINE RADAR
 ========================================================= */
 
@@ -119,7 +88,7 @@ body {
 
   top:
     max(
-      160px,
+      24px,
       env(safe-area-inset-top)
     );
 
@@ -165,6 +134,8 @@ body {
 
 .radar-dot {
 
+  position: relative;
+
   width: 20px;
   height: 20px;
 
@@ -182,6 +153,57 @@ body {
 
     0 0 25px
     rgba(85,245,165,.55);
+}
+
+
+.radar-dot::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: -8px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(85,245,165,.28);
+
+  animation:
+    pulse 2s infinite ease-out;
+}
+
+
+@keyframes pulse {
+
+  0% {
+
+    transform:
+      scale(.65);
+
+    opacity:
+      .8;
+  }
+
+  70% {
+
+    transform:
+      scale(1.25);
+
+    opacity:
+      0;
+  }
+
+  100% {
+
+    transform:
+      scale(1.25);
+
+    opacity:
+      0;
+  }
+
 }
 
 
@@ -205,7 +227,7 @@ body {
 
 
 /* =========================================================
-   INFO
+   BOTTOM INFO PANEL
 ========================================================= */
 
 .info-panel {
@@ -237,6 +259,20 @@ body {
   border:
     1px solid
     rgba(105,145,140,.20);
+
+  box-shadow:
+
+    0 10px 35px
+    rgba(0,0,0,.4),
+
+    inset 0 0 20px
+    rgba(100,255,200,.02);
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
 
   pointer-events:
     none;
@@ -277,6 +313,9 @@ body {
     Monaco,
     Consolas,
     monospace;
+
+  letter-spacing:
+    1px;
 }
 
 
@@ -301,7 +340,8 @@ body {
   width: 62px;
   height: 62px;
 
-  border-radius: 50%;
+  border-radius:
+    50%;
 
   border:
     1px solid
@@ -330,11 +370,25 @@ body {
 
   justify-content:
     center;
+
+  box-shadow:
+
+    0 8px 30px
+    rgba(0,0,0,.45),
+
+    inset 0 0 15px
+    rgba(255,255,255,.02);
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
 }
 
 
 /* =========================================================
-   CONTROLS
+   MAP CONTROLS
 ========================================================= */
 
 .maplibregl-ctrl-top-right {
@@ -348,7 +402,7 @@ body {
 .maplibregl-ctrl-group {
 
   background:
-    rgba(5,9,9,.90) !important;
+    rgba(5,9,9,.88) !important;
 
   border:
     1px solid
@@ -359,12 +413,15 @@ body {
 
   overflow:
     hidden;
+
+  backdrop-filter:
+    blur(10px);
 }
 
 
 .maplibregl-ctrl-group button {
 
-  background:
+  background-color:
     transparent !important;
 }
 
@@ -374,6 +431,9 @@ button span {
 
   filter:
     invert(1);
+
+  opacity:
+    .7;
 }
 
 
@@ -389,6 +449,115 @@ button span {
     9px !important;
 }
 
+
+.maplibregl-ctrl-attrib a {
+
+  color:
+    #7e928e !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width:600px) {
+
+  .radar-badge {
+
+    top:
+      max(
+        18px,
+        env(safe-area-inset-top)
+      );
+
+    left:
+      22px;
+
+    height:
+      56px;
+
+    padding:
+      0 20px;
+  }
+
+
+  .radar-title {
+
+    font-size:
+      15px;
+
+    letter-spacing:
+      4px;
+  }
+
+
+  .radar-dot {
+
+    width:
+      19px;
+
+    height:
+      19px;
+
+    flex-basis:
+      19px;
+  }
+
+
+  .info-panel {
+
+    left:
+      22px;
+
+    bottom:
+      max(
+        20px,
+        env(safe-area-inset-bottom)
+      );
+
+    min-width:
+      285px;
+
+    padding:
+      17px 21px;
+  }
+
+
+  .region-name {
+
+    font-size:
+      16px;
+  }
+
+
+  .date-time {
+
+    font-size:
+      13px;
+  }
+
+
+  .info-button {
+
+    right:
+      20px;
+
+    bottom:
+      max(
+        20px,
+        env(safe-area-inset-bottom)
+      );
+
+    width:
+      60px;
+
+    height:
+      60px;
+  }
+
+}
+
 </style>
 
 </head>
@@ -401,16 +570,7 @@ button span {
 
 
 <!-- =========================================================
-     ТЕСТОВИЙ НАПИС
-========================================================= -->
-
-<div class="test-label">
-  TEST 9.5
-</div>
-
-
-<!-- =========================================================
-     RADAR
+     ONLINE RADAR
 ========================================================= -->
 
 <div class="radar-badge">
@@ -425,7 +585,7 @@ button span {
 
 
 <!-- =========================================================
-     INFO
+     INFORMATION
 ========================================================= -->
 
 <div class="info-panel">
@@ -442,6 +602,10 @@ button span {
 
 </div>
 
+
+<!-- =========================================================
+     INFO BUTTON
+========================================================= -->
 
 <button
   class="info-button"
@@ -460,43 +624,20 @@ button span {
 
 
 /* ============================================================
-   SETTINGS
+   CONFIGURATION
 ============================================================ */
 
 
 /*
-  Центр карти.
+  OpenFreeMap Dark.
 */
 
-const INITIAL_CENTER =
-  [30.95, 50.65];
+const STYLE_URL =
+  "https://tiles.openfreemap.org/styles/dark";
 
 
 /*
-  ==========================================================
-  ТЕСТОВИЙ ZOOM
-  ==========================================================
-
-  Спеціально ставимо 9.5.
-
-  Якщо новий файл завантажився,
-  карта буде суттєво ближче.
-*/
-
-const INITIAL_ZOOM =
-  9.5;
-
-
-/*
-  Можна віддаляти.
-*/
-
-const MIN_ZOOM =
-  5;
-
-
-/*
-  Можна збільшувати.
+  Максимальне наближення.
 */
 
 const MAX_ZOOM =
@@ -504,16 +645,49 @@ const MAX_ZOOM =
 
 
 /*
-  Версія для примусового
-  оновлення URL у браузері.
+  Мінімальний zoom буде визначений
+  АВТОМАТИЧНО після підгонки карти
+  під Київську область.
 */
 
-const VERSION =
-  "TEST_9_5_20260911";
+let calculatedMinZoom =
+  5;
+
+
+/*
+  ------------------------------------------------------------
+  РЕАЛЬНІ ГЕОГРАФІЧНІ МЕЖІ КИЇВСЬКОЇ ОБЛАСТІ
+  ------------------------------------------------------------
+
+  Використовуємо їх для стартового
+  fitBounds.
+
+  Це не фіксований zoom.
+
+  MapLibre сам визначить,
+  який zoom потрібен конкретно
+  під розмір екрана.
+*/
+
+const KYIV_OBLAST_BOUNDS = [
+
+  [29.00, 49.15],
+
+  [32.35, 51.65]
+
+];
+
+
+/*
+  Контур області.
+*/
+
+const KYIV_OBLAST_GEOJSON =
+  "https://geo2day.com/europe/ukraine/kiev_oblast.geojson";
 
 
 /* ============================================================
-   CLOCK
+   DATE / TIME
 ============================================================ */
 
 function updateDateTime() {
@@ -521,43 +695,67 @@ function updateDateTime() {
   const now =
     new Date();
 
+
   const day =
     String(
       now.getDate()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const month =
     String(
-      now.getMonth()+1
-    ).padStart(2,"0");
+      now.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const year =
     now.getFullYear();
 
+
   const hours =
     String(
       now.getHours()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const minutes =
     String(
       now.getMinutes()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
+
 
   const seconds =
     String(
       now.getSeconds()
-    ).padStart(2,"0");
+    ).padStart(
+      2,
+      "0"
+    );
 
 
   document
-    .getElementById("datetime")
+    .getElementById(
+      "datetime"
+    )
     .textContent =
     `${day}.${month}.${year} · ${hours}:${minutes}:${seconds}`;
 }
 
 
 updateDateTime();
+
 
 setInterval(
   updateDateTime,
@@ -569,10 +767,6 @@ setInterval(
    MAP
 ============================================================ */
 
-const STYLE_URL =
-  "https://tiles.openfreemap.org/styles/dark";
-
-
 const map =
   new maplibregl.Map({
 
@@ -582,32 +776,65 @@ const map =
     style:
       STYLE_URL,
 
+
+    /*
+      Тимчасовий центр.
+
+      Він буде замінений fitBounds.
+    */
+
     center:
-      INITIAL_CENTER,
+      [30.70, 50.35],
+
 
     zoom:
-      INITIAL_ZOOM,
+      7.5,
 
-    minZoom:
-      MIN_ZOOM,
+
+    /*
+      Максимум збільшення.
+    */
 
     maxZoom:
       MAX_ZOOM,
 
+
+    /*
+      Мінімальний буде встановлений
+      після fitBounds.
+    */
+
+    minZoom:
+      calculatedMinZoom,
+
+
     pitch:
       0,
+
 
     bearing:
       0,
 
+
     dragRotate:
       false,
+
+
+    pitchWithRotate:
+      false,
+
 
     touchPitch:
       false,
 
+
+    cooperativeGestures:
+      false,
+
+
     renderWorldCopies:
       false,
+
 
     attributionControl:
       true
@@ -616,7 +843,7 @@ const map =
 
 
 /* ============================================================
-   CONTROLS
+   NAVIGATION
 ============================================================ */
 
 map.addControl(
@@ -627,7 +854,10 @@ map.addControl(
       false,
 
     showZoom:
-      true
+      true,
+
+    visualizePitch:
+      false
 
   }),
 
@@ -637,26 +867,109 @@ map.addControl(
 
 
 /* ============================================================
-   MOST IMPORTANT TEST
+   MAP LOAD
 ============================================================ */
 
 map.once(
   "load",
-  () => {
+  async () => {
 
 
     /*
-      Після повного завантаження
-      примусово ставимо 9.5.
+      ========================================================
+      ГОЛОВНЕ
+      ========================================================
+
+      Підганяємо карту під Київську область.
+
+      padding:
+
+      зверху — запас під ONLINE RADAR
+      знизу — запас під інформаційну панель
+      з боків — невеликий запас
+    */
+
+    map.fitBounds(
+
+      KYIV_OBLAST_BOUNDS,
+
+      {
+
+        padding: {
+
+          top:
+            125,
+
+          bottom:
+            150,
+
+          left:
+            35,
+
+          right:
+            35
+
+        },
+
+
+        /*
+          Не дозволяємо fitBounds
+          піти занадто близько.
+        */
+
+        maxZoom:
+          9,
+
+
+        duration:
+          0
+
+      }
+
+    );
+
+
+    /*
+      Отримуємо zoom,
+      який реально підібрав MapLibre.
+    */
+
+    const fittedZoom =
+      map.getZoom();
+
+
+    /*
+      Фіксуємо цей zoom
+      як нижню межу.
+
+      Тобто кнопка "−"
+      нижче вже не піде.
+    */
+
+    calculatedMinZoom =
+      Math.max(
+        5,
+        fittedZoom
+      );
+
+
+    map.setMinZoom(
+      calculatedMinZoom
+    );
+
+
+    /*
+      Повторно ставимо саме
+      потрібний стан без анімації.
     */
 
     map.jumpTo({
 
       center:
-        INITIAL_CENTER,
+        map.getCenter(),
 
       zoom:
-        INITIAL_ZOOM,
+        calculatedMinZoom,
 
       bearing:
         0,
@@ -668,65 +981,766 @@ map.once(
 
 
     /*
-      Ще раз через 500 мс.
-
-      Це спеціально для тесту
-      Telegram WebView/cache.
+      Додаємо українські підписи.
     */
 
-    setTimeout(
-      () => {
+    hideDefaultPlaceLabels();
 
-        map.jumpTo({
+    addCustomPlaceLabels();
 
-          center:
-            INITIAL_CENTER,
+    addWaterLabels();
 
-          zoom:
-            INITIAL_ZOOM,
 
-          bearing:
-            0,
+    /*
+      Райони.
+    */
 
-          pitch:
-            0
+    addDistrictBoundaries();
 
-        });
 
-      },
-      500
+    /*
+      Контур Київської області.
+    */
+
+    await addKyivOblastBoundary();
+
+
+    /*
+      Після завантаження всіх шарів
+      ще раз залишаємо стартовий стан.
+    */
+
+    map.jumpTo({
+
+      center:
+        map.getCenter(),
+
+      zoom:
+        calculatedMinZoom,
+
+      bearing:
+        0,
+
+      pitch:
+        0
+
+    });
+
+  }
+);
+
+
+/* ============================================================
+   HIDE DEFAULT PLACE LABELS
+============================================================ */
+
+function hideDefaultPlaceLabels() {
+
+
+  const layers =
+    map.getStyle().layers || [];
+
+
+  for (
+    const layer of layers
+  ) {
+
+
+    const sourceLayer =
+      String(
+        layer["source-layer"] || ""
+      ).toLowerCase();
+
+
+    const layerId =
+      String(
+        layer.id || ""
+      ).toLowerCase();
+
+
+    const isPlace =
+
+      sourceLayer === "place" ||
+
+      sourceLayer === "settlement" ||
+
+      sourceLayer === "place_label" ||
+
+      sourceLayer === "settlement_label" ||
+
+      layerId.includes("place") ||
+
+      layerId.includes("settlement");
+
+
+    if (
+      isPlace &&
+      layer.type === "symbol"
+    ) {
+
+
+      try {
+
+        map.setLayoutProperty(
+
+          layer.id,
+
+          "visibility",
+
+          "none"
+
+        );
+
+      }
+
+      catch(error) {}
+
+    }
+
+  }
+
+}
+
+
+/* ============================================================
+   UKRAINIAN PLACE LABELS
+============================================================ */
+
+function addCustomPlaceLabels() {
+
+
+  if (
+    !map.getSource(
+      "custom-places"
+    )
+  ) {
+
+
+    map.addSource(
+
+      "custom-places",
+
+      {
+
+        type:
+          "vector",
+
+        url:
+          "https://tiles.openfreemap.org/planet"
+
+      }
+
+    );
+
+  }
+
+
+  if (
+    map.getLayer(
+      "ukrainian-city-labels"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  map.addLayer({
+
+    id:
+      "ukrainian-city-labels",
+
+    type:
+      "symbol",
+
+    source:
+      "custom-places",
+
+    "source-layer":
+      "place",
+
+
+    /*
+      Назви з'являються вже
+      на нормальному масштабі.
+    */
+
+    minzoom:
+      6.5,
+
+
+    filter:
+      [
+        "has",
+        "name:uk"
+      ],
+
+
+    layout: {
+
+      "text-field":
+        [
+          "get",
+          "name:uk"
+        ],
+
+
+      "text-font":
+        [
+          "Noto Sans Regular"
+        ],
+
+
+      "text-size":
+        [
+
+          "interpolate",
+
+          ["linear"],
+
+          ["zoom"],
+
+
+          6.5,
+          8,
+
+
+          7.5,
+          8.5,
+
+
+          9,
+          9,
+
+
+          11,
+          10,
+
+
+          13,
+          11,
+
+
+          16,
+          12,
+
+
+          20,
+          13
+
+        ],
+
+
+      "text-anchor":
+        "center",
+
+
+      "text-offset":
+        [0,0],
+
+
+      "text-allow-overlap":
+        false,
+
+
+      "text-ignore-placement":
+        false
+
+    },
+
+
+    paint: {
+
+      "text-color":
+        "#b9c5c2",
+
+
+      "text-halo-color":
+        "rgba(4,7,7,.96)",
+
+
+      "text-halo-width":
+        1.2,
+
+
+      "text-halo-blur":
+        .25
+
+    }
+
+  });
+
+}
+
+
+/* ============================================================
+   WATER LABELS
+============================================================ */
+
+function addWaterLabels() {
+
+
+  if (
+    map.getLayer(
+      "ukrainian-water-labels"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  map.addLayer({
+
+    id:
+      "ukrainian-water-labels",
+
+    type:
+      "symbol",
+
+    source:
+      "custom-places",
+
+    "source-layer":
+      "water",
+
+    minzoom:
+      7,
+
+
+    filter:
+      [
+        "has",
+        "name:uk"
+      ],
+
+
+    layout: {
+
+      "text-field":
+        [
+          "get",
+          "name:uk"
+        ],
+
+
+      "text-font":
+        [
+          "Noto Sans Regular"
+        ],
+
+
+      "text-size":
+        10,
+
+
+      "text-allow-overlap":
+        false
+
+    },
+
+
+    paint: {
+
+      "text-color":
+        "#657674",
+
+
+      "text-halo-color":
+        "rgba(4,7,7,.8)",
+
+
+      "text-halo-width":
+        1
+
+    }
+
+  });
+
+}
+
+
+/* ============================================================
+   DISTRICT BOUNDARIES
+============================================================ */
+
+function addDistrictBoundaries() {
+
+
+  if (
+    map.getSource(
+      "district-boundaries"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  map.addSource(
+
+    "district-boundaries",
+
+    {
+
+      type:
+        "vector",
+
+      url:
+        "https://tiles.openfreemap.org/planet"
+
+    }
+
+  );
+
+
+  map.addLayer({
+
+    id:
+      "kyiv-district-boundaries",
+
+    type:
+      "line",
+
+    source:
+      "district-boundaries",
+
+    "source-layer":
+      "boundary",
+
+
+    minzoom:
+      6,
+
+
+    filter:
+      [
+
+        "all",
+
+        [
+
+          "==",
+
+          [
+            "get",
+            "admin_level"
+          ],
+
+          6
+
+        ]
+
+      ],
+
+
+    paint: {
+
+      "line-color":
+        "rgba(130,155,149,.38)",
+
+
+      "line-width":
+        [
+
+          "interpolate",
+
+          ["linear"],
+
+          ["zoom"],
+
+
+          6,
+          .45,
+
+
+          9,
+          .7,
+
+
+          12,
+          .9,
+
+
+          16,
+          1
+
+        ],
+
+
+      "line-opacity":
+        .58
+
+    }
+
+  });
+
+}
+
+
+/* ============================================================
+   KYIV OBLAST
+============================================================ */
+
+async function addKyivOblastBoundary() {
+
+
+  try {
+
+
+    const response =
+      await fetch(
+        KYIV_OBLAST_GEOJSON
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        "GeoJSON loading failed"
+      );
+
+    }
+
+
+    const geojson =
+      await response.json();
+
+
+    /*
+      Source.
+    */
+
+    map.addSource(
+
+      "kyiv-oblast",
+
+      {
+
+        type:
+          "geojson",
+
+        data:
+          geojson
+
+      }
+
     );
 
 
     /*
-      І ще раз через 1500 мс.
+      Легке затемнення
+      самої області.
     */
 
-    setTimeout(
-      () => {
+    map.addLayer({
 
-        map.jumpTo({
+      id:
+        "kyiv-oblast-fill",
 
-          center:
-            INITIAL_CENTER,
+      type:
+        "fill",
 
-          zoom:
-            INITIAL_ZOOM,
+      source:
+        "kyiv-oblast",
 
-          bearing:
-            0,
+      paint: {
 
-          pitch:
-            0
+        "fill-color":
+          "#15332b",
 
-        });
+        "fill-opacity":
+          .08
 
-      },
-      1500
+      }
+
+    });
+
+
+    /*
+      Glow.
+    */
+
+    map.addLayer({
+
+      id:
+        "kyiv-oblast-glow",
+
+      type:
+        "line",
+
+      source:
+        "kyiv-oblast",
+
+      paint: {
+
+        "line-color":
+          "#52e8b0",
+
+        "line-width":
+          [
+
+            "interpolate",
+
+            ["linear"],
+
+            ["zoom"],
+
+
+            5,
+            3,
+
+
+            7,
+            4,
+
+
+            10,
+            5,
+
+
+            15,
+            6
+
+          ],
+
+
+        "line-opacity":
+          .12,
+
+
+        "line-blur":
+          4
+
+      }
+
+    });
+
+
+    /*
+      Основний контур.
+    */
+
+    map.addLayer({
+
+      id:
+        "kyiv-oblast-outline",
+
+      type:
+        "line",
+
+      source:
+        "kyiv-oblast",
+
+      paint: {
+
+        "line-color":
+          "#52e8b0",
+
+
+        "line-width":
+          [
+
+          "interpolate",
+
+          ["linear"],
+
+          ["zoom"],
+
+
+          5,
+          1.1,
+
+
+          7,
+          1.5,
+
+
+          10,
+          1.9,
+
+
+          15,
+          2.4,
+
+
+          20,
+          3
+
+        ],
+
+
+        "line-opacity":
+          .95
+
+      }
+
+    });
+
+  }
+
+
+  catch(error) {
+
+    console.warn(
+      "Kyiv Oblast boundary error:",
+      error
     );
 
   }
-);
+
+}
+
+
+/* ============================================================
+   INFO BUTTON
+============================================================ */
+
+document
+  .getElementById(
+    "infoButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+
+      alert(
+
+        "ONLINE RADAR\n\n" +
+
+        "Карта Київської області\n\n" +
+
+        "Мінімальний масштаб — " +
+
+        "Київська область у кадрі.\n\n" +
+
+        "Збільшення доступне до " +
+
+        MAX_ZOOM + "."
+
+      );
+
+    }
+  );
+
+
+/* ============================================================
+   TOUCH
+============================================================ */
+
+map.touchZoomRotate.enable();
+
+map.dragPan.enable();
+
+map.scrollZoom.enable();
+
+map.doubleClickZoom.enable();
 
 
 /* ============================================================
@@ -737,34 +1751,18 @@ window.addEventListener(
   "resize",
   () => {
 
+    if (!map) {
+      return;
+    }
+
+
     map.resize();
 
   }
 );
 
-
-/* ============================================================
-   INFO
-============================================================ */
-
-document
-  .getElementById("infoButton")
-  .addEventListener(
-    "click",
-    () => {
-
-      alert(
-        "ONLINE RADAR\n\n" +
-        "TEST VERSION 9.5\n\n" +
-        "Якщо ти бачиш цей текст — " +
-        "новий index.html завантажився."
-      );
-
-    }
-  );
-
-
 </script>
 
 </body>
+
 </html>
