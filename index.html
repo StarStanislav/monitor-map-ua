@@ -186,8 +186,14 @@
     }
 
     /* =========================================================
-       TEST EVENTS
-    ========================================================= */
+       TEST / DEMO EVENTS
+       ========================================================= */
+
+    /*
+     * ЧЕРВОНА ТОЧКА.
+     *
+     * Ніякого зеленого кольору.
+     */
 
     .test-marker {
       width: 18px;
@@ -195,18 +201,28 @@
 
       border-radius: 50%;
 
-      background: rgba(0, 255, 102, 0.18);
+      background:
+        rgba(255, 48, 79, 0.18);
 
       border:
         2px solid
-        #00ff66;
+        #ff304f;
 
       box-shadow:
-        0 0 5px rgba(0, 255, 102, 0.95),
-        0 0 16px rgba(0, 255, 102, 0.65);
+        0 0 5px
+        rgba(255, 48, 79, 0.95),
+
+        0 0 16px
+        rgba(255, 48, 79, 0.65);
 
       position: relative;
+
+      animation:
+        testMarkerPulse 1.5s
+        infinite
+        ease-in-out;
     }
+
 
     .test-marker::after {
       content: "";
@@ -225,51 +241,40 @@
       border-radius: 50%;
 
       background:
-        #00ff66;
+        #ff304f;
+
+      box-shadow:
+        0 0 5px
+        rgba(255, 48, 79, 0.95);
     }
 
+
+    @keyframes testMarkerPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(0.82);
+        opacity: 0.72;
+      }
+
+    }
+
+
+    /*
+     * ВАЖЛИВО:
+     *
+     * .test-label більше НЕ використовується.
+     *
+     * Ніякого напису TEST біля точки.
+     */
+
     .test-label {
-      position: absolute;
-
-      left: 50%;
-      top: 25px;
-
-      transform:
-        translateX(-50%);
-
-      padding:
-        3px 6px;
-
-      border:
-        1px solid
-        rgba(0, 255, 102, 0.35);
-
-      border-radius:
-        4px;
-
-      background:
-        rgba(3, 10, 8, 0.82);
-
-      color:
-        #00ff66;
-
-      font-size:
-        9px;
-
-      font-weight:
-        700;
-
-      letter-spacing:
-        0.5px;
-
-      white-space:
-        nowrap;
-
-      pointer-events:
-        none;
-
-      user-select:
-        none;
+      display: none !important;
     }
 
   </style>
@@ -569,12 +574,16 @@
 
 
     /* =========================================================
-       TEST EVENTS STATE
+       EVENTS STATE
     ========================================================= */
 
     const eventMarkers =
       new Map();
 
+
+    /*
+     * Видаляє всі поточні маркери.
+     */
 
     function removeAllEventMarkers() {
 
@@ -593,13 +602,21 @@
     }
 
 
+    /*
+     * Видаляє конкретний маркер.
+     */
+
     function removeEventMarker(
       id
     ) {
 
+      const key =
+        String(id);
+
+
       const marker =
         eventMarkers.get(
-          String(id)
+          key
         );
 
 
@@ -612,21 +629,46 @@
 
 
       eventMarkers.delete(
-        String(id)
+        key
       );
 
     }
 
+
+    /*
+     * Створення ОДНІЄЇ червоної точки.
+     *
+     * Ніякого TEST label.
+     */
 
     function createEventMarker(
       event
     ) {
 
       if (
-        !event ||
-        typeof event.lat !== "number" ||
-        typeof event.lon !== "number"
+        !event
       ) {
+        return;
+      }
+
+
+      const lat =
+        Number(event.lat);
+
+
+      const lon =
+        Number(event.lon);
+
+
+      if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+      ) {
+
+        console.warn(
+          "Invalid event coordinates:",
+          event
+        );
 
         return;
 
@@ -634,60 +676,51 @@
 
 
       const id =
-        String(event.id);
+        String(
+          event.id
+        );
 
+
+      /*
+       * Якщо така точка вже існує —
+       * прибираємо старий маркер.
+       *
+       * Це дозволяє переміщати
+       * точку №1 з одного місця
+       * на інше.
+       */
 
       removeEventMarker(
         id
       );
 
 
-      const wrapper =
+      /*
+       * Сам елемент маркера.
+       */
+
+      const markerElement =
         document.createElement(
           "div"
         );
 
 
-      const marker =
-        document.createElement(
-          "div"
-        );
-
-
-      marker.className =
+      markerElement.className =
         "test-marker";
 
 
-      wrapper.appendChild(
-        marker
-      );
-
-
-      const label =
-        document.createElement(
-          "div"
-        );
-
-
-      label.className =
-        "test-label";
-
-
-      label.textContent =
-        event.name ||
-        "TEST";
-
-
-      wrapper.appendChild(
-        label
-      );
+      /*
+       * Ніякого label.
+       *
+       * Тільки червона точка.
+       */
 
 
       const mapMarker =
         new maplibregl.Marker({
 
           element:
-            wrapper,
+            markerElement,
 
           anchor:
             "center"
@@ -696,14 +729,19 @@
 
         .setLngLat([
 
-          event.lon,
+          lon,
 
-          event.lat
+          lat
 
         ])
 
         .addTo(map);
 
+
+      /*
+       * Зберігаємо маркер
+       * за його ID.
+       */
 
       eventMarkers.set(
         id,
@@ -713,16 +751,40 @@
     }
 
 
+    /*
+     * Рендер усіх поточних подій.
+     *
+     * Може бути:
+     *
+     * 1 точка
+     * 5 точок
+     * 10 точок
+     * 50 точок
+     */
+
     function renderEvents(
       events
     ) {
 
-      removeAllEventMarkers();
+      if (
+        !Array.isArray(
+          events
+        )
+      ) {
 
-
-      if (!Array.isArray(events)) {
         return;
+
       }
+
+
+      /*
+       * Створюємо набір ID,
+       * які зараз прийшли
+       * з backend.
+       */
+
+      const currentIds =
+        new Set();
 
 
       for (
@@ -730,9 +792,61 @@
         of events
       ) {
 
+        if (
+          !event ||
+          event.id === undefined ||
+          event.id === null
+        ) {
+
+          continue;
+
+        }
+
+
+        const id =
+          String(
+            event.id
+          );
+
+
+        currentIds.add(
+          id
+        );
+
+
         createEventMarker(
           event
         );
+
+      }
+
+
+      /*
+       * Видаляємо з карти маркери,
+       * яких backend вже не повертає.
+       */
+
+      for (
+        const [
+          id,
+          marker
+        ]
+        of eventMarkers.entries()
+      ) {
+
+        if (
+          !currentIds.has(
+            id
+          )
+        ) {
+
+          marker.remove();
+
+          eventMarkers.delete(
+            id
+          );
+
+        }
 
       }
 
@@ -799,7 +913,8 @@
        WEBSOCKET
     ========================================================= */
 
-    let socket = null;
+    let socket =
+      null;
 
 
     let reconnectTimer =
@@ -910,8 +1025,12 @@
 
     function scheduleReconnect() {
 
-      if (reconnectTimer) {
+      if (
+        reconnectTimer
+      ) {
+
         return;
+
       }
 
 
@@ -991,15 +1110,14 @@
 
 
         /*
-         * Завантажуємо поточні
-         * тестові події.
+         * Поточні події.
          */
 
         await loadEvents();
 
 
         /*
-         * Підключаємо WebSocket.
+         * Живі оновлення.
          */
 
         connectWebSocket();
