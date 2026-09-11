@@ -391,10 +391,6 @@
     map.on("load", async () => {
 
 
-      /*
-       * Початкове кадрування.
-       */
-
       map.fitBounds(
 
         KYIV_VIEW_BOUNDS,
@@ -422,12 +418,6 @@
       );
 
 
-      /*
-       * Не дозволяємо
-       * віддаляти карту далі
-       * початкового масштабу.
-       */
-
       const initialZoom =
         map.getZoom();
 
@@ -437,31 +427,22 @@
       );
 
 
-      /*
-       * Вимикаємо обертання.
-       */
-
       map.dragRotate.disable();
 
       map.touchZoomRotate
         .disableRotation();
 
 
-      /*
-       * Основні кастомні шари.
-       */
-
       await buildCustomMapLayers();
 
 
       /*
-       * Червоний кордон Білорусі.
+       * ЄГОЗА БІЛОРУСЬКОГО КОРДОНУ
        *
-       * ВАЖЛИВО:
-       * тут більше НІЯКОГО Overpass.
-       *
-       * Кордон береться безпосередньо
-       * з vector tiles OpenMapTiles.
+       * Без Overpass.
+       * Без додаткового fetch.
+       * Малюється безпосередньо
+       * з vector tiles.
        */
 
       addBelarusBorderInstant();
@@ -490,8 +471,7 @@
 
 
       /*
-       * Знаходимо текстові шари
-       * населених пунктів.
+       * Населені пункти.
        */
 
       for (
@@ -515,6 +495,7 @@
 
             firstSymbolLayerId =
               layer.id;
+
           }
 
 
@@ -581,10 +562,8 @@
 
           console.warn(
 
-            "Не вдалося змінити place layer:",
-
+            "Place layer:",
             layerId,
-
             e
 
           );
@@ -1074,8 +1053,7 @@
 
         console.warn(
 
-          "Не вдалося отримати точну межу Київської області:",
-
+          "Kyiv oblast:",
           error
 
         );
@@ -1085,8 +1063,7 @@
 
 
       /*
-       * Повертаємо назви міст
-       * поверх усіх ліній.
+       * Назви міст поверх меж.
        */
 
       for (
@@ -1110,33 +1087,24 @@
 
 
     /* =========================================================
-       BELARUS BORDER — INSTANT VECTOR VERSION
-       =========================================================
+       BELARUS BORDER / RAZOR WIRE
+    =========================================================
 
-       Більше НЕМАЄ:
+       Тут спеціально НЕМАЄ fetch.
 
-       fetch()
-       Overpass
-       timeout
-       очікування API
-       GeoJSON-запиту
+       Використовується existing vector source:
 
-       Використовується вже існуючий:
-
-       source:
          openmaptiles
 
        source-layer:
+
          boundary
 
-       admin_level:
-         2
+       admin_level 2
 
-       adm0_l / adm0_r:
-         BLR / UKR
+       Фільтр:
 
-       Тобто беремо тільки межу
-       між Білоруссю та Україною.
+         BLR <-> UKR
 
     ========================================================= */
 
@@ -1144,22 +1112,34 @@
 
 
       /*
-       * Створюємо pattern ДО додавання layer.
+       * =======================================================
+       * RAZOR WIRE IMAGE
+       * =======================================================
+       *
+       * Робимо більший патерн, ніж був раніше.
+       *
+       * Вигляд приблизно:
+       *
+       *       /\        /\
+       * ------\/-------\/------
+       *
+       * Дві лінії + великі леза.
        */
+
 
       if (
         !map.hasImage(
-          "red-barbed-wire"
+          "red-razor-wire"
         )
       ) {
 
 
         const width =
-          32;
+          64;
 
 
         const height =
-          16;
+          24;
 
 
         const canvas =
@@ -1183,26 +1163,23 @@
 
 
         ctx.clearRect(
-
           0,
           0,
           width,
           height
-
         );
 
 
-
-        /* =====================================================
-           MAIN WIRE
-        ===================================================== */
+        /*
+         * Основні два дроти.
+         */
 
         ctx.strokeStyle =
           "#ff304f";
 
 
         ctx.lineWidth =
-          1.35;
+          1.6;
 
 
         ctx.beginPath();
@@ -1210,13 +1187,31 @@
 
         ctx.moveTo(
           0,
-          8
+          9
         );
 
 
         ctx.lineTo(
-          32,
-          8
+          width,
+          9
+        );
+
+
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+          0,
+          15
+        );
+
+
+        ctx.lineTo(
+          width,
+          15
         );
 
 
@@ -1224,68 +1219,141 @@
 
 
 
-        /* =====================================================
-           BARBS
-        ===================================================== */
+        /*
+         * Великі леза.
+         *
+         * Вони спеціально зроблені
+         * значно більшими,
+         * щоб були помітні навіть
+         * на віддаленому zoom.
+         */
 
-        ctx.strokeStyle =
-          "#ff5369";
+        const bladePositions = [
 
+          8,
+          24,
+          40,
+          56
 
-        ctx.lineWidth =
-          1.15;
-
-
-        const barbPositions =
-          [
-            6,
-            16,
-            26
-          ];
+        ];
 
 
         for (
           const x
-          of barbPositions
+          of bladePositions
         ) {
 
+
+          ctx.strokeStyle =
+            "#ff5369";
+
+
+          ctx.lineWidth =
+            1.45;
+
+
+          /*
+           * Верхнє лезо.
+           */
 
           ctx.beginPath();
 
 
           ctx.moveTo(
-
-            x - 3,
+            x - 6,
             4
-
           );
 
 
           ctx.lineTo(
-
-            x + 3,
-            12
-
-          );
-
-
-          ctx.moveTo(
-
-            x - 3,
-            12
-
-          );
-
-
-          ctx.lineTo(
-
-            x + 3,
-            4
-
+            x + 6,
+            20
           );
 
 
           ctx.stroke();
+
+
+          /*
+           * Нижнє лезо.
+           */
+
+          ctx.beginPath();
+
+
+          ctx.moveTo(
+            x - 6,
+            20
+          );
+
+
+          ctx.lineTo(
+            x + 6,
+            4
+          );
+
+
+          ctx.stroke();
+
+
+          /*
+           * Маленькі наконечники.
+           */
+
+          ctx.fillStyle =
+            "#ff304f";
+
+
+          ctx.beginPath();
+
+          ctx.arc(
+            x - 6,
+            4,
+            1.25,
+            0,
+            Math.PI * 2
+          );
+
+          ctx.fill();
+
+
+          ctx.beginPath();
+
+          ctx.arc(
+            x + 6,
+            4,
+            1.25,
+            0,
+            Math.PI * 2
+          );
+
+          ctx.fill();
+
+
+          ctx.beginPath();
+
+          ctx.arc(
+            x - 6,
+            20,
+            1.25,
+            0,
+            Math.PI * 2
+          );
+
+          ctx.fill();
+
+
+          ctx.beginPath();
+
+          ctx.arc(
+            x + 6,
+            20,
+            1.25,
+            0,
+            Math.PI * 2
+          );
+
+          ctx.fill();
 
         }
 
@@ -1293,7 +1361,7 @@
 
         map.addImage(
 
-          "red-barbed-wire",
+          "red-razor-wire",
 
           {
 
@@ -1321,9 +1389,9 @@
 
 
 
-      /*
-       * Знаходимо перший symbol layer.
-       */
+      /* =======================================================
+         FIND LABEL LAYER
+      ======================================================= */
 
       const styleLayers =
         map.getStyle().layers || [];
@@ -1357,7 +1425,195 @@
 
 
       /* =======================================================
-         DARK RED BASE
+         COMMON BORDER FILTER
+      ======================================================= */
+
+      const belarusUkraineFilter = [
+
+        "all",
+
+        [
+
+          "==",
+
+          [
+            "get",
+            "admin_level"
+          ],
+
+          2
+
+        ],
+
+        [
+
+          "==",
+
+          [
+            "get",
+            "maritime"
+          ],
+
+          0
+
+        ],
+
+        [
+
+          "any",
+
+
+          /*
+           * BLR -> UKR
+           */
+
+          [
+
+            "all",
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_l"
+              ],
+
+              "BLR"
+
+            ],
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_r"
+              ],
+
+              "UKR"
+
+            ]
+
+          ],
+
+
+          /*
+           * UKR -> BLR
+           */
+
+          [
+
+            "all",
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_l"
+              ],
+
+              "UKR"
+
+            ],
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_r"
+              ],
+
+              "BLR"
+
+            ]
+
+          ],
+
+
+          /*
+           * Альтернативні country codes.
+           */
+
+          [
+
+            "all",
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_l"
+              ],
+
+              "BY"
+
+            ],
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_r"
+              ],
+
+              "UA"
+
+            ]
+
+          ],
+
+
+          [
+
+            "all",
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_l"
+              ],
+
+              "UA"
+
+            ],
+
+            [
+
+              "==",
+
+              [
+                "get",
+                "adm0_r"
+              ],
+
+              "BY"
+
+            ]
+
+          ]
+
+        ]
+
+      ];
+
+
+
+      /* =======================================================
+         DARK RED UNDERLINE
       ======================================================= */
 
       if (
@@ -1387,181 +1643,7 @@
               5,
 
             filter:
-              [
-
-                "all",
-
-                [
-
-                  "==",
-
-                  [
-                    "get",
-                    "admin_level"
-                  ],
-
-                  2
-
-                ],
-
-                [
-
-                  "==",
-
-                  [
-                    "get",
-                    "maritime"
-                  ],
-
-                  0
-
-                ],
-
-                [
-
-                  "any",
-
-                  /*
-                   * Основний варіант:
-                   * OpenMapTiles A3 country codes.
-                   */
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "BLR"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "UKR"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "UKR"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "BLR"
-
-                    ]
-
-                  ],
-
-                  /*
-                   * Додаткові варіанти
-                   * для сумісності.
-                   */
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "BY"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "UA"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "UA"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "BY"
-
-                    ]
-
-                  ]
-
-                ]
-
-              ],
+              belarusUkraineFilter,
 
             layout:
               {
@@ -1581,7 +1663,7 @@
                   "#8f1830",
 
                 "line-opacity":
-                  0.85,
+                  0.95,
 
                 "line-width":
                   [
@@ -1593,20 +1675,17 @@
                     ["zoom"],
 
                     5,
-                    1.3,
+                    1.5,
 
-                    10,
+                    8,
                     2,
 
-                    15,
-                    3
+                    12,
+                    2.8,
 
-                  ],
+                    16,
+                    3.5
 
-                "line-dasharray":
-                  [
-                    1.2,
-                    1.8
                   ]
 
               }
@@ -1653,171 +1732,7 @@
               5,
 
             filter:
-              [
-
-                "all",
-
-                [
-
-                  "==",
-
-                  [
-                    "get",
-                    "admin_level"
-                  ],
-
-                  2
-
-                ],
-
-                [
-
-                  "==",
-
-                  [
-                    "get",
-                    "maritime"
-                  ],
-
-                  0
-
-                ],
-
-                [
-
-                  "any",
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "BLR"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "UKR"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "UKR"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "BLR"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "BY"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "UA"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "UA"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "BY"
-
-                    ]
-
-                  ]
-
-                ]
-
-              ],
+              belarusUkraineFilter,
 
             layout:
               {
@@ -1837,7 +1752,7 @@
                   "#ff304f",
 
                 "line-opacity":
-                  0.28,
+                  0.32,
 
                 "line-width":
                   [
@@ -1849,13 +1764,16 @@
                     ["zoom"],
 
                     5,
-                    4,
+                    5,
 
-                    10,
+                    8,
                     6,
 
-                    15,
-                    8
+                    12,
+                    8,
+
+                    16,
+                    11
 
                   ],
 
@@ -1876,12 +1794,12 @@
 
 
       /* =======================================================
-         BARBED WIRE
+         MAIN RAZOR WIRE
       ======================================================= */
 
       if (
         !map.getLayer(
-          "belarus-barbed-wire"
+          "belarus-razor-wire"
         )
       ) {
 
@@ -1891,7 +1809,7 @@
           {
 
             id:
-              "belarus-barbed-wire",
+              "belarus-razor-wire",
 
             type:
               "line",
@@ -1906,171 +1824,7 @@
               5,
 
             filter:
-              [
-
-                "all",
-
-                [
-
-                  "==",
-
-                  [
-                    "get",
-                    "admin_level"
-                  ],
-
-                  2
-
-                ],
-
-                [
-
-                  "==",
-
-                  [
-                    "get",
-                    "maritime"
-                  ],
-
-                  0
-
-                ],
-
-                [
-
-                  "any",
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "BLR"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "UKR"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "UKR"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "BLR"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "BY"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "UA"
-
-                    ]
-
-                  ],
-
-                  [
-
-                    "all",
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_l"
-                      ],
-
-                      "UA"
-
-                    ],
-
-                    [
-
-                      "==",
-
-                      [
-                        "get",
-                        "adm0_r"
-                      ],
-
-                      "BY"
-
-                    ]
-
-                  ]
-
-                ]
-
-              ],
+              belarusUkraineFilter,
 
             layout:
               {
@@ -2087,10 +1841,96 @@
               {
 
                 "line-pattern":
-                  "red-barbed-wire",
+                  "red-razor-wire",
 
                 "line-opacity":
-                  0.96
+                  1
+
+              }
+
+          },
+
+          firstSymbolLayerId ||
+          undefined
+
+        );
+
+      }
+
+
+
+      /* =======================================================
+         ADD EXTRA BRIGHT CORE
+      ======================================================= */
+
+      if (
+        !map.getLayer(
+          "belarus-border-core"
+        )
+      ) {
+
+
+        map.addLayer(
+
+          {
+
+            id:
+              "belarus-border-core",
+
+            type:
+              "line",
+
+            source:
+              "openmaptiles",
+
+            "source-layer":
+              "boundary",
+
+            minzoom:
+              5.8,
+
+            filter:
+              belarusUkraineFilter,
+
+            layout:
+              {
+
+                "line-cap":
+                  "round",
+
+                "line-join":
+                  "round"
+
+              },
+
+            paint:
+              {
+
+                "line-color":
+                  "#ff304f",
+
+                "line-opacity":
+                  0.58,
+
+                "line-width":
+                  [
+
+                    "interpolate",
+
+                    ["linear"],
+
+                    ["zoom"],
+
+                    5.8,
+                    0.7,
+
+                    10,
+                    1.1,
+
+                    16,
+                    1.6
+
+                  ]
 
               }
 
@@ -2142,7 +1982,7 @@
 
 
       console.log(
-        "🇧🇾 Belarus border: instant vector layer"
+        "🇧🇾 Razor wire border loaded instantly"
       );
 
     }
