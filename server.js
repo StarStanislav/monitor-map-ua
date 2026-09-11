@@ -11,35 +11,26 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
 
-// ============================================================
-// CONFIG
-// ============================================================
+const TELEGRAM_BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN || "";
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const TEST_CHANNEL_USERNAME =
+  "radaronlinetest";
 
-const TEST_CHANNEL_USERNAME = "radaronlinetest";
+const TEST_EVENT_ID =
+  "telegram-test";
 
-const KATOTTG_URL =
-  "https://raw.githubusercontent.com/0G3RA/ua-geo-set/main/data/kattog.json";
+const TEST_EVENT_TTL =
+  10 * 60 * 1000;
 
-const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
-
-// ============================================================
-// STATE
-// ============================================================
+const NOMINATIM_URL =
+  "https://nominatim.openstreetmap.org/search";
 
 const events = new Map();
-
 const clients = new Set();
-
-let geoDatabase = null;
-let geoReady = false;
 
 const geocodeCache = new Map();
 
-const TEST_EVENT_ID = "telegram-test";
-
-const TEST_EVENT_TTL = 10 * 60 * 1000;
 
 // ============================================================
 // BASIC
@@ -49,20 +40,27 @@ app.get("/", (req, res) => {
   res.json({
     name: "ONLINE RADAR backend",
     status: "online",
-    version: "2.0.0",
-    testChannel: `@${TEST_CHANNEL_USERNAME}`,
-    geoDatabase: geoReady ? "ready" : "loading"
+    version: "3.0.0",
+    testChannel:
+      `@${TEST_CHANNEL_USERNAME}`,
+    geocoder:
+      "Nominatim / OpenStreetMap"
   });
 });
 
+
 app.get("/health", (req, res) => {
+  cleanupExpiredEvents();
+
   res.json({
     ok: true,
-    timestamp: new Date().toISOString(),
-    geoDatabase: geoReady,
-    events: events.size
+    timestamp:
+      new Date().toISOString(),
+    events:
+      events.size
   });
 });
+
 
 // ============================================================
 // EVENTS
@@ -72,12 +70,15 @@ app.get("/events", (req, res) => {
   cleanupExpiredEvents();
 
   res.json({
-    events: Array.from(events.values())
+    events:
+      Array.from(events.values())
   });
 });
 
+
 app.post("/events", (req, res) => {
-  const body = req.body || {};
+  const body =
+    req.body || {};
 
   if (
     typeof body.lat !== "number" ||
@@ -85,25 +86,53 @@ app.post("/events", (req, res) => {
   ) {
     return res.status(400).json({
       ok: false,
-      error: "lat and lon are required numbers"
+      error:
+        "lat and lon must be numbers"
     });
   }
 
+  const now =
+    Date.now();
+
   const event = {
-    id: body.id || `event-${Date.now()}`,
-    type: body.type || "test",
-    color: body.color || "red",
-    label: body.label || "TEST",
-    lat: body.lat,
-    lon: body.lon,
-    createdAt: Date.now(),
+    id:
+      body.id ||
+      `event-${now}`,
+
+    type:
+      body.type ||
+      "test",
+
+    color:
+      body.color ||
+      "red",
+
+    label:
+      body.label ||
+      "TEST",
+
+    place:
+      body.place ||
+      null,
+
+    lat:
+      body.lat,
+
+    lon:
+      body.lon,
+
+    createdAt:
+      now,
+
     expiresAt:
-      typeof body.expiresAt === "number"
-        ? body.expiresAt
-        : Date.now() + TEST_EVENT_TTL
+      body.expiresAt ||
+      now + TEST_EVENT_TTL
   };
 
-  events.set(event.id, event);
+  events.set(
+    event.id,
+    event
+  );
 
   broadcastState();
 
@@ -113,19 +142,21 @@ app.post("/events", (req, res) => {
   });
 });
 
-app.delete("/events/:id", (req, res) => {
-  const id = req.params.id;
 
-  const existed = events.delete(id);
+app.delete("/events/:id", (req, res) => {
+  const deleted =
+    events.delete(
+      req.params.id
+    );
 
   broadcastState();
 
   res.json({
     ok: true,
-    deleted: existed,
-    id
+    deleted
   });
 });
+
 
 app.post("/events/reset", (req, res) => {
   events.clear();
@@ -138,23 +169,48 @@ app.post("/events/reset", (req, res) => {
   });
 });
 
+
 // ============================================================
-// SIMPLE TEST EVENT
+// MANUAL TEST
 // ============================================================
 
 app.get("/test-event", (req, res) => {
+  const now =
+    Date.now();
+
   const event = {
-    id: "manual-test",
-    type: "test",
-    color: "red",
-    label: "TEST",
-    lat: 49.7968,
-    lon: 30.1153,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + TEST_EVENT_TTL
+    id:
+      "manual-test",
+
+    type:
+      "test",
+
+    color:
+      "red",
+
+    label:
+      "TEST",
+
+    place:
+      "Біла Церква",
+
+    lat:
+      49.7968,
+
+    lon:
+      30.1153,
+
+    createdAt:
+      now,
+
+    expiresAt:
+      now + TEST_EVENT_TTL
   };
 
-  events.set(event.id, event);
+  events.set(
+    event.id,
+    event
+  );
 
   broadcastState();
 
@@ -164,603 +220,651 @@ app.get("/test-event", (req, res) => {
   });
 });
 
+
 // ============================================================
-// GEO DATABASE
+// TEXT NORMALIZATION
 // ============================================================
 
-function normalizeText(value) {
-  return String(value || "")
+function normalizeText(text) {
+  return String(text || "")
     .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/’/g, "'")
-    .replace(/`/g, "'")
+    .normalize("NFC")
+    .replace(/[’`]/g, "'")
     .replace(/[.,!?;:()[\]{}"“”„]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
-function categoryToType(category) {
-  switch (category) {
-    case "M":
-      return "city";
 
-    case "X":
-      return "settlement";
+// ============================================================
+// REMOVE SERVICE WORDS
+// ============================================================
 
-    case "C":
-      return "village";
+function cleanMessage(text) {
+  let value =
+    normalizeText(text);
 
-    case "T":
-      return "urban";
+  // Beginning constructions:
+  //
+  // Від Славутича
+  // З Славутича
+  // Із Славутича
+  // На Заворичі
+  // До Білої Церкви
+  // Біля Фастова
+  // Заходить на Заворичі
+  //
 
-    default:
-      return "other";
-  }
+  value =
+    value.replace(
+      /^(заходить|заходить на|йде|летить|рухається|рухається на|напрямок|напрямку)\s+/i,
+      ""
+    );
+
+  value =
+    value.replace(
+      /^(від|з|із|зі|на|до|біля|коло|через|у|в)\s+/i,
+      ""
+    );
+
+  value =
+    value.replace(
+      /^(заходить|йде|летить|рухається)\s+/i,
+      ""
+    );
+
+  return value.trim();
 }
 
-function buildGeoDatabase(raw) {
-  if (
-    !raw ||
-    !Array.isArray(raw.items) ||
-    !Array.isArray(raw.indexToCode)
+
+// ============================================================
+// EXTRACT POSSIBLE PLACE
+// ============================================================
+
+function buildSearchVariants(text) {
+  const original =
+    normalizeText(text);
+
+  const cleaned =
+    cleanMessage(original);
+
+  const variants = [];
+
+  function add(value) {
+    value =
+      normalizeText(value);
+
+    if (
+      value &&
+      !variants.includes(value)
+    ) {
+      variants.push(value);
+    }
+  }
+
+  add(cleaned);
+
+  // Whole message
+  add(original);
+
+  // Remove more common words
+  let reduced =
+    cleaned
+      .replace(
+        /\b(днс|центр|район|р-н|область|обл)\b/g,
+        " "
+      )
+      .replace(/\s+/g, " ")
+      .trim();
+
+  add(reduced);
+
+  // Last 1–4 words
+  const words =
+    cleaned.split(" ");
+
+  for (
+    let count = 1;
+    count <= Math.min(4, words.length);
+    count++
   ) {
-    throw new Error("Invalid KATOTTG database format");
-  }
-
-  const items = raw.items;
-  const indexToCode = raw.indexToCode;
-
-  const indexMap = new Map();
-
-  for (let i = 0; i < items.length; i++) {
-    indexMap.set(i, items[i]);
-  }
-
-  // ----------------------------------------------------------
-  // Find Kyiv Oblast
-  // ----------------------------------------------------------
-
-  let kyivOblastIndex = -1;
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-
-    if (
-      item &&
-      item.category === "O" &&
-      normalizeText(item.name) === normalizeText("Київська область")
-    ) {
-      kyivOblastIndex = i;
-      break;
-    }
-  }
-
-  if (kyivOblastIndex === -1) {
-    throw new Error("Kyiv Oblast not found in KATOTTG database");
-  }
-
-  const kyivOblastCode = indexToCode[kyivOblastIndex];
-
-  // ----------------------------------------------------------
-  // Determine region for every item
-  // ----------------------------------------------------------
-
-  const regionCache = new Map();
-
-  function findRegionIndex(index) {
-    if (regionCache.has(index)) {
-      return regionCache.get(index);
-    }
-
-    const visited = new Set();
-
-    let currentIndex = index;
-
-    while (
-      currentIndex !== undefined &&
-      currentIndex !== null &&
-      !visited.has(currentIndex)
-    ) {
-      visited.add(currentIndex);
-
-      const item = indexMap.get(currentIndex);
-
-      if (!item) {
-        break;
-      }
-
-      if (item.category === "O") {
-        regionCache.set(index, currentIndex);
-        return currentIndex;
-      }
-
-      if (
-        item.category === "K" &&
-        item.independent === true
-      ) {
-        regionCache.set(index, currentIndex);
-        return currentIndex;
-      }
-
-      currentIndex = item.parent;
-    }
-
-    regionCache.set(index, null);
-
-    return null;
-  }
-
-  // ----------------------------------------------------------
-  // Build settlements list
-  // ----------------------------------------------------------
-
-  const settlements = [];
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-
-    if (!item) {
-      continue;
-    }
-
-    // Only actual settlements.
-    //
-    // M = city
-    // X = settlement
-    // C = village
-    // T = old urban-type settlement
-    //
-    if (!["M", "X", "C", "T"].includes(item.category)) {
-      continue;
-    }
-
-    const regionIndex = findRegionIndex(i);
-
-    if (regionIndex !== kyivOblastIndex) {
-      continue;
-    }
-
-    const code = indexToCode[i];
-
-    settlements.push({
-      id: code,
-      name: item.name,
-      normalizedName: normalizeText(item.name),
-      type: categoryToType(item.category),
-      category: item.category,
-      index: i,
-      parentIndex:
-        item.parent !== undefined ? item.parent : null
-    });
-  }
-
-  // ----------------------------------------------------------
-  // Build lookup
-  // ----------------------------------------------------------
-
-  const exact = new Map();
-
-  for (const place of settlements) {
-    const key = place.normalizedName;
-
-    if (!exact.has(key)) {
-      exact.set(key, []);
-    }
-
-    exact.get(key).push(place);
-  }
-
-  return {
-    regionCode: kyivOblastCode,
-    settlements,
-    exact,
-    items,
-    indexToCode
-  };
-}
-
-async function loadGeoDatabase() {
-  try {
-    console.log("Loading Kyiv Oblast geographic database...");
-
-    const response = await fetch(KATOTTG_URL, {
-      headers: {
-        "User-Agent": "ONLINE-RADAR-Test/2.0"
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `KATOTTG download failed: HTTP ${response.status}`
-      );
-    }
-
-    const raw = await response.json();
-
-    geoDatabase = buildGeoDatabase(raw);
-
-    geoReady = true;
-
-    console.log(
-      `Kyiv Oblast geographic database ready: ${geoDatabase.settlements.length} settlements`
-    );
-
-    console.log(
-      `Kyiv Oblast KATOTTG: ${geoDatabase.regionCode}`
-    );
-  } catch (error) {
-    geoReady = false;
-
-    console.error(
-      "Failed to load geographic database:",
-      error.message
+    add(
+      words
+        .slice(
+          words.length - count
+        )
+        .join(" ")
     );
   }
+
+  return variants;
 }
 
-// ============================================================
-// PLACE SEARCH
-// ============================================================
-
-function findPlace(message) {
-  if (!geoDatabase || !geoReady) {
-    return null;
-  }
-
-  const original = String(message || "").trim();
-
-  if (!original) {
-    return null;
-  }
-
-  const normalized = normalizeText(original);
-
-  // ----------------------------------------------------------
-  // 1. Exact match
-  // ----------------------------------------------------------
-
-  const exactMatches = geoDatabase.exact.get(normalized);
-
-  if (exactMatches && exactMatches.length > 0) {
-    return exactMatches[0];
-  }
-
-  // ----------------------------------------------------------
-  // 2. Remove common extra words
-  // ----------------------------------------------------------
-
-  const cleaned = normalized
-    .replace(/\b(днс|центр|район|р-н)\b/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (cleaned !== normalized) {
-    const cleanedMatches = geoDatabase.exact.get(cleaned);
-
-    if (cleanedMatches && cleanedMatches.length > 0) {
-      return cleanedMatches[0];
-    }
-  }
-
-  // ----------------------------------------------------------
-  // 3. Message starts with settlement name
-  // ----------------------------------------------------------
-
-  let best = null;
-
-  for (const place of geoDatabase.settlements) {
-    const name = place.normalizedName;
-
-    if (!name || name.length < 3) {
-      continue;
-    }
-
-    if (
-      normalized === name ||
-      normalized.startsWith(name + " ")
-    ) {
-      if (!best || name.length > best.normalizedName.length) {
-        best = place;
-      }
-    }
-  }
-
-  if (best) {
-    return best;
-  }
-
-  // ----------------------------------------------------------
-  // 4. Message contains exact settlement name
-  // ----------------------------------------------------------
-
-  for (const place of geoDatabase.settlements) {
-    const name = place.normalizedName;
-
-    if (!name || name.length < 4) {
-      continue;
-    }
-
-    if (normalized.includes(name)) {
-      if (!best || name.length > best.normalizedName.length) {
-        best = place;
-      }
-    }
-  }
-
-  return best;
-}
 
 // ============================================================
-// GEOCODING
+// NOMINATIM
 // ============================================================
 
-async function geocodePlace(place) {
-  if (!place) {
-    return null;
-  }
-
-  const cacheKey = place.id || place.normalizedName;
-
-  if (geocodeCache.has(cacheKey)) {
-    return geocodeCache.get(cacheKey);
-  }
-
-  const query =
-    `${place.name}, Київська область, Україна`;
-
+async function nominatimSearch(query) {
   const url =
-    `${NOMINATIM_URL}?format=jsonv2&limit=1&countrycodes=ua&q=${encodeURIComponent(query)}`;
+    `${NOMINATIM_URL}` +
+    `?format=jsonv2` +
+    `&limit=5` +
+    `&countrycodes=ua` +
+    `&addressdetails=1` +
+    `&accept-language=uk` +
+    `&q=${encodeURIComponent(query + ", Київська область, Україна")}`;
 
-  try {
-    console.log(`Geocoding: ${query}`);
-
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent":
-          "ONLINE-RADAR-Test/2.0 (Telegram test channel)"
+  const response =
+    await fetch(
+      url,
+      {
+        headers: {
+          "User-Agent":
+            "ONLINE-RADAR-Test/3.0"
+        }
       }
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Nominatim HTTP ${response.status}`
-      );
-    }
-
-    const results = await response.json();
-
-    if (!Array.isArray(results) || results.length === 0) {
-      console.log(`No coordinates found for: ${place.name}`);
-      return null;
-    }
-
-    const result = results[0];
-
-    const lat = Number(result.lat);
-    const lon = Number(result.lon);
-
-    if (
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lon)
-    ) {
-      return null;
-    }
-
-    const coordinates = {
-      lat,
-      lon
-    };
-
-    geocodeCache.set(cacheKey, coordinates);
-
-    return coordinates;
-  } catch (error) {
-    console.error(
-      `Geocoding failed for ${place.name}:`,
-      error.message
     );
 
-    return null;
+  if (!response.ok) {
+    throw new Error(
+      `Nominatim HTTP ${response.status}`
+    );
   }
+
+  return await response.json();
 }
 
+
 // ============================================================
-// CREATE TEST EVENT FROM PLACE
+// IS KYIV OBLAST
 // ============================================================
 
-async function createTestEventFromPlace(place) {
-  const coordinates = await geocodePlace(place);
-
-  if (!coordinates) {
-    return {
-      ok: false,
-      error: `Не вдалося отримати координати для ${place.name}`
-    };
+function isKyivOblast(result) {
+  if (!result) {
+    return false;
   }
 
-  // ----------------------------------------------------------
-  // Remove previous Telegram test point
-  // ----------------------------------------------------------
+  const address =
+    result.address || {};
 
-  events.delete(TEST_EVENT_ID);
+  const state =
+    normalizeText(
+      address.state || ""
+    );
 
-  // ----------------------------------------------------------
-  // Create new point
-  // ----------------------------------------------------------
+  const stateDistrict =
+    normalizeText(
+      address.state_district || ""
+    );
 
-  const now = Date.now();
+  const display =
+    normalizeText(
+      result.display_name || ""
+    );
 
-  const event = {
-    id: TEST_EVENT_ID,
+  if (
+    state.includes(
+      "київська область"
+    )
+  ) {
+    return true;
+  }
 
-    type: "test",
+  if (
+    state ===
+    "київська"
+  ) {
+    return true;
+  }
 
-    color: "red",
+  if (
+    stateDistrict.includes(
+      "київська область"
+    )
+  ) {
+    return true;
+  }
 
-    label: "TEST",
+  return display.includes(
+    "київська область"
+  );
+}
 
-    place: place.name,
 
-    placeType: place.type,
+// ============================================================
+// IS SETTLEMENT
+// ============================================================
 
-    katottg: place.id,
+function isSettlement(result) {
+  if (!result) {
+    return false;
+  }
 
-    lat: coordinates.lat,
+  const type =
+    String(
+      result.type || ""
+    ).toLowerCase();
 
-    lon: coordinates.lon,
+  const category =
+    String(
+      result.category || ""
+    ).toLowerCase();
 
-    createdAt: now,
+  const address =
+    result.address || {};
 
-    expiresAt: now + TEST_EVENT_TTL
-  };
+  const place =
+    String(
+      address.city ||
+      address.town ||
+      address.village ||
+      address.municipality ||
+      address.hamlet ||
+      address.suburb ||
+      ""
+    ).trim();
 
-  events.set(TEST_EVENT_ID, event);
+  if (place) {
+    return true;
+  }
+
+  const allowedTypes = [
+    "city",
+    "town",
+    "village",
+    "hamlet",
+    "municipality"
+  ];
+
+  if (
+    allowedTypes.includes(type)
+  ) {
+    return true;
+  }
+
+  if (
+    category ===
+    "place"
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+
+// ============================================================
+// GET BEST PLACE NAME
+// ============================================================
+
+function getPlaceName(result) {
+  const address =
+    result.address || {};
+
+  return (
+    address.city ||
+    address.town ||
+    address.village ||
+    address.hamlet ||
+    address.municipality ||
+    result.name ||
+    ""
+  );
+}
+
+
+// ============================================================
+// GEOCODE MESSAGE
+// ============================================================
+
+async function findPlace(text) {
+  const variants =
+    buildSearchVariants(text);
 
   console.log(
-    `TEST event: ${place.name} (${coordinates.lat}, ${coordinates.lon})`
+    "Search variants:",
+    variants
+  );
+
+  for (const variant of variants) {
+    if (!variant) {
+      continue;
+    }
+
+    const cacheKey =
+      variant;
+
+    if (
+      geocodeCache.has(cacheKey)
+    ) {
+      const cached =
+        geocodeCache.get(
+          cacheKey
+        );
+
+      if (cached) {
+        return cached;
+      }
+
+      continue;
+    }
+
+    try {
+      console.log(
+        `Geocoding: "${variant}"`
+      );
+
+      const results =
+        await nominatimSearch(
+          variant
+        );
+
+      if (
+        !Array.isArray(results)
+      ) {
+        continue;
+      }
+
+      for (const result of results) {
+        if (
+          !isKyivOblast(result)
+        ) {
+          continue;
+        }
+
+        if (
+          !isSettlement(result)
+        ) {
+          continue;
+        }
+
+        const lat =
+          Number(result.lat);
+
+        const lon =
+          Number(result.lon);
+
+        if (
+          !Number.isFinite(lat) ||
+          !Number.isFinite(lon)
+        ) {
+          continue;
+        }
+
+        const placeName =
+          getPlaceName(result);
+
+        if (!placeName) {
+          continue;
+        }
+
+        const place = {
+          name:
+            placeName,
+
+          lat:
+            lat,
+
+          lon:
+            lon,
+
+          osmType:
+            result.type ||
+            null,
+
+          displayName:
+            result.display_name ||
+            null
+        };
+
+        geocodeCache.set(
+          cacheKey,
+          place
+        );
+
+        console.log(
+          `MATCHED: ${place.name}`
+        );
+
+        console.log(
+          `Coordinates: ${place.lat}, ${place.lon}`
+        );
+
+        return place;
+      }
+
+      geocodeCache.set(
+        cacheKey,
+        null
+      );
+
+    } catch (error) {
+      console.error(
+        `Geocoding error for "${variant}":`,
+        error.message
+      );
+    }
+  }
+
+  return null;
+}
+
+
+// ============================================================
+// CREATE TELEGRAM TEST EVENT
+// ============================================================
+
+async function createTelegramTestEvent(
+  place,
+  originalMessage
+) {
+  const now =
+    Date.now();
+
+  // Remove previous point
+  events.delete(
+    TEST_EVENT_ID
+  );
+
+  const event = {
+    id:
+      TEST_EVENT_ID,
+
+    type:
+      "test",
+
+    color:
+      "red",
+
+    label:
+      "TEST",
+
+    place:
+      place.name,
+
+    sourceMessage:
+      originalMessage,
+
+    lat:
+      place.lat,
+
+    lon:
+      place.lon,
+
+    createdAt:
+      now,
+
+    expiresAt:
+      now + TEST_EVENT_TTL
+  };
+
+  events.set(
+    TEST_EVENT_ID,
+    event
+  );
+
+  console.log(
+    "================================"
+  );
+
+  console.log(
+    "TEST EVENT CREATED"
+  );
+
+  console.log(
+    `Message: ${originalMessage}`
+  );
+
+  console.log(
+    `Matched: ${place.name}`
+  );
+
+  console.log(
+    `Coordinates: ${place.lat}, ${place.lon}`
+  );
+
+  console.log(
+    "================================"
   );
 
   broadcastState();
 
-  return {
-    ok: true,
-    event
-  };
+  return event;
 }
+
 
 // ============================================================
 // TELEGRAM WEBHOOK
 // ============================================================
 
-app.post("/telegram/webhook", async (req, res) => {
-  try {
-    const update = req.body || {};
+app.post(
+  "/telegram/webhook",
+  async (req, res) => {
+    try {
+      const update =
+        req.body || {};
 
-    // --------------------------------------------------------
-    // Only channel posts
-    // --------------------------------------------------------
+      const channelPost =
+        update.channel_post;
 
-    const channelPost = update.channel_post;
+      if (!channelPost) {
+        return res.json({
+          ok: true,
+          ignored: true,
+          reason:
+            "not channel_post"
+        });
+      }
 
-    if (!channelPost) {
-      return res.json({
-        ok: true,
-        ignored: true,
-        reason: "not a channel_post"
-      });
-    }
+      const chat =
+        channelPost.chat || {};
 
-    // --------------------------------------------------------
-    // Only our test channel
-    // --------------------------------------------------------
+      const username =
+        String(
+          chat.username || ""
+        )
+          .replace(/^@/, "")
+          .toLowerCase();
 
-    const chat = channelPost.chat || {};
+      // VERY IMPORTANT:
+      // Only our test channel.
+      if (
+        username !==
+        TEST_CHANNEL_USERNAME
+          .toLowerCase()
+      ) {
+        console.log(
+          `Ignored channel: @${username}`
+        );
 
-    const username = String(
-      chat.username || ""
-    ).replace(/^@/, "").toLowerCase();
+        return res.json({
+          ok: true,
+          ignored: true,
+          reason:
+            "wrong channel"
+        });
+      }
 
-    if (
-      username !==
-      TEST_CHANNEL_USERNAME.toLowerCase()
-    ) {
+      const text =
+        channelPost.text ||
+        channelPost.caption ||
+        "";
+
+      const message =
+        String(text).trim();
+
       console.log(
-        `Ignored Telegram channel: @${username || "unknown"}`
+        "--------------------------------"
       );
 
+      console.log(
+        `Telegram test channel message: ${message}`
+      );
+
+      if (!message) {
+        return res.json({
+          ok: true,
+          ignored: true,
+          reason:
+            "empty message"
+        });
+      }
+
+      const place =
+        await findPlace(
+          message
+        );
+
+      if (!place) {
+        console.log(
+          `NO MATCH: ${message}`
+        );
+
+        return res.json({
+          ok: true,
+          ignored: true,
+          reason:
+            "settlement not found"
+        });
+      }
+
+      const event =
+        await createTelegramTestEvent(
+          place,
+          message
+        );
+
       return res.json({
         ok: true,
-        ignored: true,
-        reason: "wrong test channel"
+        matched: true,
+        event
       });
-    }
 
-    // --------------------------------------------------------
-    // Text
-    // --------------------------------------------------------
+    } catch (error) {
+      console.error(
+        "Telegram webhook error:",
+        error
+      );
 
-    const text =
-      channelPost.text ||
-      channelPost.caption ||
-      "";
-
-    const message = String(text).trim();
-
-    console.log(
-      `Telegram test channel message: ${message}`
-    );
-
-    if (!message) {
-      return res.json({
-        ok: true,
-        ignored: true,
-        reason: "empty message"
-      });
-    }
-
-    // --------------------------------------------------------
-    // Make sure database is ready
-    // --------------------------------------------------------
-
-    if (!geoReady) {
-      return res.status(503).json({
+      return res.status(500).json({
         ok: false,
-        error: "Geographic database is still loading"
+        error:
+          error.message
       });
     }
-
-    // --------------------------------------------------------
-    // Find settlement
-    // --------------------------------------------------------
-
-    const place = findPlace(message);
-
-    if (!place) {
-      console.log(
-        `Settlement not found: ${message}`
-      );
-
-      return res.json({
-        ok: true,
-        ignored: true,
-        reason: "settlement not found",
-        message
-      });
-    }
-
-    console.log(
-      `Matched settlement: ${place.name} (${place.type})`
-    );
-
-    // --------------------------------------------------------
-    // Create / move TEST marker
-    // --------------------------------------------------------
-
-    const result =
-      await createTestEventFromPlace(place);
-
-    return res.json(result);
-
-  } catch (error) {
-    console.error(
-      "Telegram webhook error:",
-      error
-    );
-
-    return res.status(500).json({
-      ok: false,
-      error: error.message
-    });
   }
-});
+);
+
 
 // ============================================================
 // TELEGRAM WEBHOOK SETUP
 // ============================================================
 
 async function setupTelegramWebhook() {
-  if (!TELEGRAM_BOT_TOKEN) {
+  if (
+    !TELEGRAM_BOT_TOKEN
+  ) {
     console.log(
       "TELEGRAM_BOT_TOKEN is not configured"
     );
@@ -769,29 +873,35 @@ async function setupTelegramWebhook() {
   }
 
   const webhookUrl =
-    `https://monitor-map-ua.onrender.com/telegram/webhook`;
+    "https://monitor-map-ua.onrender.com/telegram/webhook";
 
   try {
-    const response = await fetch(
-      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`,
-      {
-        method: "POST",
+    const response =
+      await fetch(
+        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`,
+        {
+          method:
+            "POST",
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-        body: JSON.stringify({
-          url: webhookUrl,
+          body:
+            JSON.stringify({
+              url:
+                webhookUrl,
 
-          allowed_updates: [
-            "channel_post"
-          ]
-        })
-      }
-    );
+              allowed_updates: [
+                "channel_post"
+              ]
+            })
+        }
+      );
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
     console.log(
       "Telegram webhook setup:",
@@ -806,73 +916,125 @@ async function setupTelegramWebhook() {
   }
 }
 
+
 // ============================================================
 // WEBSOCKET
 // ============================================================
 
-const wss = new WebSocket.Server({
-  server,
-  path: "/ws"
-});
+const wss =
+  new WebSocket.Server({
+    server,
+    path: "/ws"
+  });
 
-wss.on("connection", (socket) => {
-  clients.add(socket);
 
-  console.log(
-    `WebSocket client connected. Total: ${clients.size}`
-  );
-
-  socket.send(
-    JSON.stringify({
-      type: "state",
-      events: Array.from(events.values())
-    })
-  );
-
-  socket.on("close", () => {
-    clients.delete(socket);
+wss.on(
+  "connection",
+  (socket) => {
+    clients.add(
+      socket
+    );
 
     console.log(
-      `WebSocket client disconnected. Total: ${clients.size}`
+      `WebSocket client connected. Total: ${clients.size}`
     );
-  });
 
-  socket.on("error", () => {
-    clients.delete(socket);
-  });
-});
+    socket.send(
+      JSON.stringify({
+        type:
+          "state",
+
+        events:
+          Array.from(
+            events.values()
+          )
+      })
+    );
+
+    socket.on(
+      "close",
+      () => {
+        clients.delete(
+          socket
+        );
+
+        console.log(
+          `WebSocket client disconnected. Total: ${clients.size}`
+        );
+      }
+    );
+
+    socket.on(
+      "error",
+      () => {
+        clients.delete(
+          socket
+        );
+      }
+    );
+  }
+);
+
+
+// ============================================================
+// BROADCAST
+// ============================================================
 
 function broadcastState() {
-  const payload = JSON.stringify({
-    type: "state",
-    events: Array.from(events.values())
-  });
+  const payload =
+    JSON.stringify({
+      type:
+        "state",
 
-  for (const socket of clients) {
+      events:
+        Array.from(
+          events.values()
+        )
+    });
+
+  for (
+    const socket of clients
+  ) {
     if (
-      socket.readyState === WebSocket.OPEN
+      socket.readyState ===
+      WebSocket.OPEN
     ) {
-      socket.send(payload);
+      socket.send(
+        payload
+      );
     }
   }
 }
 
+
 // ============================================================
-// EXPIRED EVENTS
+// EXPIRATION
 // ============================================================
 
 function cleanupExpiredEvents() {
-  const now = Date.now();
+  const now =
+    Date.now();
 
-  let changed = false;
+  let changed =
+    false;
 
-  for (const [id, event] of events.entries()) {
+  for (
+    const [
+      id,
+      event
+    ] of events.entries()
+  ) {
     if (
-      typeof event.expiresAt === "number" &&
+      typeof event.expiresAt ===
+        "number" &&
       event.expiresAt <= now
     ) {
-      events.delete(id);
-      changed = true;
+      events.delete(
+        id
+      );
+
+      changed =
+        true;
 
       console.log(
         `Expired event removed: ${id}`
@@ -885,25 +1047,44 @@ function cleanupExpiredEvents() {
   }
 }
 
+
 setInterval(
   cleanupExpiredEvents,
   5000
 );
 
+
 // ============================================================
 // START
 // ============================================================
 
-server.listen(PORT, async () => {
-  console.log(
-    `ONLINE RADAR backend listening on port ${PORT}`
-  );
+server.listen(
+  PORT,
+  async () => {
+    console.log(
+      "================================"
+    );
 
-  console.log(
-    `Test Telegram channel: @${TEST_CHANNEL_USERNAME}`
-  );
+    console.log(
+      "ONLINE RADAR backend"
+    );
 
-  await loadGeoDatabase();
+    console.log(
+      `Port: ${PORT}`
+    );
 
-  await setupTelegramWebhook();
-});
+    console.log(
+      `Test channel: @${TEST_CHANNEL_USERNAME}`
+    );
+
+    console.log(
+      "Geocoder: Nominatim"
+    );
+
+    console.log(
+      "================================"
+    );
+
+    await setupTelegramWebhook();
+  }
+);
