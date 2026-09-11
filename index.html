@@ -82,7 +82,6 @@
     .status-dot {
       width: 6px;
       height: 6px;
-
       border-radius: 50%;
 
       background: #21ff79;
@@ -120,13 +119,11 @@
     .status-separator {
       width: 1px;
       height: 10px;
-
       background: rgba(150, 190, 193, 0.25);
     }
 
     .status-time {
       color: rgba(187, 211, 213, 0.72);
-
       font-variant-numeric: tabular-nums;
     }
 
@@ -305,7 +302,7 @@
 
 
     /* ============================================================
-       CUSTOM MAP
+       CUSTOM MAP LAYERS
     ============================================================ */
 
     function buildCustomMapLayers() {
@@ -341,14 +338,185 @@
 
 
       /* ==========================================================
-         EXACT KYIV OBLAST GEOMETRY
-         
-         OSM relation 71248
-         
          IMPORTANT:
-         These layers are intentionally added FIRST.
-         City labels are added AFTER them, so the neon border
-         can NEVER cover the city names.
+         ADD LABELS FIRST
+         
+         This guarantees they exist independently of the
+         Kyiv Oblast border request.
+      ========================================================== */
+
+      addCityLabels();
+
+
+      /* ==========================================================
+         ADD KYIV DISTRICT BOUNDARIES
+      ========================================================== */
+
+      if (!map.getLayer("kyiv-districts")) {
+
+        map.addLayer({
+
+          id: "kyiv-districts",
+
+          type: "line",
+
+          source: "openmaptiles",
+
+          "source-layer": "boundary",
+
+          minzoom: 5.4,
+
+          filter: [
+
+            "all",
+
+            [
+
+              "==",
+
+              [
+
+                "to-string",
+
+                ["get", "admin_level"]
+
+              ],
+
+              "6"
+
+            ]
+
+          ],
+
+          paint: {
+
+            "line-color": "#52686b",
+
+            "line-opacity": [
+
+              "interpolate",
+
+              ["linear"],
+
+              ["zoom"],
+
+              5.4,
+              0.24,
+
+              8,
+              0.32,
+
+              12,
+              0.42
+
+            ],
+
+            "line-width": [
+
+              "interpolate",
+
+              ["linear"],
+
+              ["zoom"],
+
+              5.4,
+              0.65,
+
+              10,
+              1.05,
+
+              14,
+              1.5
+
+            ],
+
+            "line-dasharray": [
+              2,
+              2
+            ]
+
+          }
+
+        });
+
+      }
+
+
+      /* ==========================================================
+         WATER LABELS
+      ========================================================== */
+
+      if (!map.getLayer("water-labels-ukrainian")) {
+
+        map.addLayer({
+
+          id: "water-labels-ukrainian",
+
+          type: "symbol",
+
+          source: "openmaptiles",
+
+          "source-layer": "water",
+
+          minzoom: 7,
+
+          layout: {
+
+            "text-field": [
+
+              "coalesce",
+
+              ["get", "name:uk"],
+
+              ["get", "name"]
+
+            ],
+
+            "text-font": [
+              "Noto Sans Italic"
+            ],
+
+            "text-size": [
+
+              "interpolate",
+
+              ["linear"],
+
+              ["zoom"],
+
+              7,
+              9,
+
+              12,
+              11,
+
+              16,
+              13
+
+            ]
+
+          },
+
+          paint: {
+
+            "text-color": "#63898f",
+
+            "text-halo-color":
+              "rgba(4,10,12,0.7)",
+
+            "text-halo-width": 1
+
+          }
+
+        });
+
+      }
+
+
+      /* ==========================================================
+         EXACT KYIV OBLAST BORDER
+         
+         OSM RELATION 71248
       ========================================================== */
 
       const KYIV_OBLAST_GEOJSON =
@@ -377,9 +545,9 @@
         .then(data => {
 
 
-          /* ------------------------------------------------------
-             GEOJSON SOURCE
-          ------------------------------------------------------ */
+          /* ======================================================
+             SOURCE
+          ====================================================== */
 
           if (!map.getSource("kyiv-oblast-exact")) {
 
@@ -400,145 +568,164 @@
           }
 
 
-          /* ------------------------------------------------------
+          /* ======================================================
+             FIND THE LABEL LAYER
+             
+             All border layers will be inserted BEFORE the city
+             labels.
+          ====================================================== */
+
+          const beforeLayer =
+            map.getLayer("settlements-ukrainian")
+              ? "settlements-ukrainian"
+              : undefined;
+
+
+          /* ======================================================
              VERY SUBTLE FILL
-          ------------------------------------------------------ */
+          ====================================================== */
 
           if (!map.getLayer("kyiv-oblast-fill")) {
 
-            map.addLayer({
+            map.addLayer(
 
-              id: "kyiv-oblast-fill",
+              {
 
-              type: "fill",
+                id: "kyiv-oblast-fill",
 
-              source: "kyiv-oblast-exact",
+                type: "fill",
 
-              paint: {
+                source: "kyiv-oblast-exact",
 
-                "fill-color": "#00eaff",
+                paint: {
 
-                "fill-opacity": 0.018
+                  "fill-color": "#00eaff",
 
-              }
+                  "fill-opacity": 0.018
 
-            });
+                }
 
-          }
+              },
 
+              beforeLayer
 
-          /* ------------------------------------------------------
-             OUTER NEON GLOW
-          ------------------------------------------------------ */
-
-          if (!map.getLayer("kyiv-oblast-glow")) {
-
-            map.addLayer({
-
-              id: "kyiv-oblast-glow",
-
-              type: "line",
-
-              source: "kyiv-oblast-exact",
-
-              paint: {
-
-                "line-color": "#00eaff",
-
-                "line-opacity": 0.28,
-
-                "line-width": [
-
-                  "interpolate",
-
-                  ["linear"],
-
-                  ["zoom"],
-
-                  5.4,
-                  5,
-
-                  7,
-                  7,
-
-                  10,
-                  10,
-
-                  14,
-                  14
-
-                ],
-
-                "line-blur": 5
-
-              }
-
-            });
-
-          }
-
-
-          /* ------------------------------------------------------
-             MAIN NEON BORDER
-          ------------------------------------------------------ */
-
-          if (!map.getLayer("kyiv-oblast-border")) {
-
-            map.addLayer({
-
-              id: "kyiv-oblast-border",
-
-              type: "line",
-
-              source: "kyiv-oblast-exact",
-
-              paint: {
-
-                "line-color": "#00eaff",
-
-                "line-opacity": 0.92,
-
-                "line-width": [
-
-                  "interpolate",
-
-                  ["linear"],
-
-                  ["zoom"],
-
-                  5.4,
-                  1.5,
-
-                  7,
-                  2,
-
-                  10,
-                  2.6,
-
-                  14,
-                  3.5
-
-                ],
-
-                "line-blur": 0.15
-
-              }
-
-            });
+            );
 
           }
 
 
           /* ======================================================
-             CITY LABELS
-             
-             IMPORTANT:
-             ADDED AFTER THE NEON BORDER.
-             
-             Therefore labels render ABOVE the border.
+             NEON GLOW
           ====================================================== */
 
-          addLabels();
+          if (!map.getLayer("kyiv-oblast-glow")) {
+
+            map.addLayer(
+
+              {
+
+                id: "kyiv-oblast-glow",
+
+                type: "line",
+
+                source: "kyiv-oblast-exact",
+
+                paint: {
+
+                  "line-color": "#00eaff",
+
+                  "line-opacity": 0.28,
+
+                  "line-width": [
+
+                    "interpolate",
+
+                    ["linear"],
+
+                    ["zoom"],
+
+                    5.4,
+                    5,
+
+                    7,
+                    7,
+
+                    10,
+                    10,
+
+                    14,
+                    14
+
+                  ],
+
+                  "line-blur": 5
+
+                }
+
+              },
+
+              beforeLayer
+
+            );
+
+          }
+
+
+          /* ======================================================
+             MAIN BORDER
+          ====================================================== */
+
+          if (!map.getLayer("kyiv-oblast-border")) {
+
+            map.addLayer(
+
+              {
+
+                id: "kyiv-oblast-border",
+
+                type: "line",
+
+                source: "kyiv-oblast-exact",
+
+                paint: {
+
+                  "line-color": "#00eaff",
+
+                  "line-opacity": 0.92,
+
+                  "line-width": [
+
+                    "interpolate",
+
+                    ["linear"],
+
+                    ["zoom"],
+
+                    5.4,
+                    1.5,
+
+                    7,
+                    2,
+
+                    10,
+                    2.6,
+
+                    14,
+                    3.5
+
+                  ],
+
+                  "line-blur": 0.15
+
+                }
+
+              },
+
+              beforeLayer
+
+            );
+
+          }
 
         })
 
@@ -549,27 +736,22 @@
             error
           );
 
-          /*
-             Even if boundary request fails,
-             labels still need to appear.
-          */
-
-          addLabels();
-
         });
 
     }
 
 
     /* ============================================================
-       LABELS
+       CITY LABELS
+       
+       THESE ARE ADDED IMMEDIATELY.
     ============================================================ */
 
-    function addLabels() {
+    function addCityLabels() {
 
 
       /* ==========================================================
-         UKRAINIAN SETTLEMENT LABELS
+         MAIN SETTLEMENT LABELS
       ========================================================== */
 
       if (!map.getLayer("settlements-ukrainian")) {
@@ -621,9 +803,7 @@
             ],
 
             "text-font": [
-
               "Noto Sans Regular"
-
             ],
 
             "text-size": [
@@ -750,9 +930,7 @@
             ],
 
             "text-font": [
-
               "Noto Sans Regular"
-
             ],
 
             "text-size": [
@@ -788,175 +966,6 @@
             "text-halo-width": 1,
 
             "text-halo-blur": 0.2
-
-          }
-
-        });
-
-      }
-
-
-      /* ==========================================================
-         WATER LABELS
-      ========================================================== */
-
-      if (!map.getLayer("water-labels-ukrainian")) {
-
-        map.addLayer({
-
-          id: "water-labels-ukrainian",
-
-          type: "symbol",
-
-          source: "openmaptiles",
-
-          "source-layer": "water",
-
-          minzoom: 7,
-
-          layout: {
-
-            "text-field": [
-
-              "coalesce",
-
-              ["get", "name:uk"],
-
-              ["get", "name"]
-
-            ],
-
-            "text-font": [
-
-              "Noto Sans Italic"
-
-            ],
-
-            "text-size": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              7,
-              9,
-
-              12,
-              11,
-
-              16,
-              13
-
-            ]
-
-          },
-
-          paint: {
-
-            "text-color": "#63898f",
-
-            "text-halo-color":
-              "rgba(4,10,12,0.7)",
-
-            "text-halo-width": 1
-
-          }
-
-        });
-
-      }
-
-
-      /* ==========================================================
-         CURRENT KYIV OBLAST DISTRICT BOUNDARIES
-      ========================================================== */
-
-      if (!map.getLayer("kyiv-districts")) {
-
-        map.addLayer({
-
-          id: "kyiv-districts",
-
-          type: "line",
-
-          source: "openmaptiles",
-
-          "source-layer": "boundary",
-
-          minzoom: 5.4,
-
-          filter: [
-
-            "all",
-
-            [
-
-              "==",
-
-              [
-
-                "to-string",
-
-                ["get", "admin_level"]
-
-              ],
-
-              "6"
-
-            ]
-
-          ],
-
-          paint: {
-
-            "line-color": "#52686b",
-
-            "line-opacity": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              5.4,
-              0.24,
-
-              8,
-              0.32,
-
-              12,
-              0.42
-
-            ],
-
-            "line-width": [
-
-              "interpolate",
-
-              ["linear"],
-
-              ["zoom"],
-
-              5.4,
-              0.65,
-
-              10,
-              1.05,
-
-              14,
-              1.5
-
-            ],
-
-            "line-dasharray": [
-
-              2,
-              2
-
-            ]
 
           }
 
