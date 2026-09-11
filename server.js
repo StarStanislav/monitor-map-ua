@@ -53,6 +53,11 @@ function cleanupExpiredEvents() {
 
 setInterval(cleanupExpiredEvents, 1000);
 
+
+/* =========================================================
+   BASIC
+========================================================= */
+
 app.get("/", (req, res) => {
   res.json({
     name: "ONLINE RADAR backend",
@@ -61,6 +66,7 @@ app.get("/", (req, res) => {
   });
 });
 
+
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
@@ -68,12 +74,18 @@ app.get("/health", (req, res) => {
   });
 });
 
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
 app.get("/events", (req, res) => {
   res.json({
     ok: true,
     events: getEvents()
   });
 });
+
 
 app.post("/events", (req, res) => {
   const {
@@ -85,7 +97,12 @@ app.post("/events", (req, res) => {
     expiresIn = null
   } = req.body;
 
-  if (!id || !name || typeof lat !== "number" || typeof lon !== "number") {
+  if (
+    !id ||
+    !name ||
+    typeof lat !== "number" ||
+    typeof lon !== "number"
+  ) {
     return res.status(400).json({
       ok: false,
       error: "Required fields: id, name, lat, lon"
@@ -118,6 +135,7 @@ app.post("/events", (req, res) => {
   });
 });
 
+
 app.delete("/events/:id", (req, res) => {
   const id = String(req.params.id);
 
@@ -129,6 +147,7 @@ app.delete("/events/:id", (req, res) => {
   }
 
   events.delete(id);
+
   broadcastState();
 
   res.json({
@@ -137,8 +156,10 @@ app.delete("/events/:id", (req, res) => {
   });
 });
 
+
 app.post("/events/reset", (req, res) => {
   events.clear();
+
   broadcastState();
 
   res.json({
@@ -147,12 +168,56 @@ app.post("/events/reset", (req, res) => {
   });
 });
 
+
+/* =========================================================
+   TEST EVENT
+   Нейтральна тестова точка.
+   Автоматично видаляється через 10 хвилин.
+========================================================= */
+
+app.get("/test-event", (req, res) => {
+
+  const now = Date.now();
+
+  const event = {
+    id: "test-point-1",
+    name: "TEST",
+    lat: 50.4501,
+    lon: 30.5234,
+    count: 1,
+    createdAt: new Date(now).toISOString(),
+    updatedAt: new Date(now).toISOString(),
+    expiresAt: now + 10 * 60 * 1000
+  };
+
+  events.set(
+    event.id,
+    event
+  );
+
+  broadcastState();
+
+  res.json({
+    ok: true,
+    message: "Test event created",
+    event
+  });
+
+});
+
+
+/* =========================================================
+   WEBSOCKET
+========================================================= */
+
 const wss = new WebSocket.Server({
   server,
   path: "/ws"
 });
 
+
 wss.on("connection", (ws) => {
+
   clients.add(ws);
 
   ws.send(
@@ -169,8 +234,20 @@ wss.on("connection", (ws) => {
   ws.on("error", () => {
     clients.delete(ws);
   });
+
 });
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`ONLINE RADAR backend running on port ${PORT}`);
-});
+
+/* =========================================================
+   SERVER
+========================================================= */
+
+server.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      `ONLINE RADAR backend running on port ${PORT}`
+    );
+  }
+);
