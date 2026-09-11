@@ -17,9 +17,6 @@ const TELEGRAM_BOT_TOKEN =
 const TEST_CHANNEL_USERNAME =
   "radaronlinetest";
 
-const TEST_EVENT_ID =
-  "telegram-test";
-
 const TEST_EVENT_TTL =
   10 * 60 * 1000;
 
@@ -28,7 +25,6 @@ const NOMINATIM_URL =
 
 const events = new Map();
 const clients = new Set();
-
 const geocodeCache = new Map();
 
 
@@ -40,11 +36,8 @@ app.get("/", (req, res) => {
   res.json({
     name: "ONLINE RADAR backend",
     status: "online",
-    version: "3.0.0",
-    testChannel:
-      `@${TEST_CHANNEL_USERNAME}`,
-    geocoder:
-      "Nominatim / OpenStreetMap"
+    version: "4.0.0",
+    testChannel: `@${TEST_CHANNEL_USERNAME}`
   });
 });
 
@@ -54,10 +47,8 @@ app.get("/health", (req, res) => {
 
   res.json({
     ok: true,
-    timestamp:
-      new Date().toISOString(),
-    events:
-      events.size
+    timestamp: new Date().toISOString(),
+    events: events.size
   });
 });
 
@@ -70,15 +61,13 @@ app.get("/events", (req, res) => {
   cleanupExpiredEvents();
 
   res.json({
-    events:
-      Array.from(events.values())
+    events: Array.from(events.values())
   });
 });
 
 
 app.post("/events", (req, res) => {
-  const body =
-    req.body || {};
+  const body = req.body || {};
 
   if (
     typeof body.lat !== "number" ||
@@ -86,13 +75,11 @@ app.post("/events", (req, res) => {
   ) {
     return res.status(400).json({
       ok: false,
-      error:
-        "lat and lon must be numbers"
+      error: "lat and lon must be numbers"
     });
   }
 
-  const now =
-    Date.now();
+  const now = Date.now();
 
   const event = {
     id:
@@ -104,16 +91,13 @@ app.post("/events", (req, res) => {
       "test",
 
     color:
-      body.color ||
       "red",
 
     label:
-      body.label ||
-      "TEST",
+      "",
 
     place:
-      body.place ||
-      null,
+      body.place || "",
 
     lat:
       body.lat,
@@ -145,9 +129,7 @@ app.post("/events", (req, res) => {
 
 app.delete("/events/:id", (req, res) => {
   const deleted =
-    events.delete(
-      req.params.id
-    );
+    events.delete(req.params.id);
 
   broadcastState();
 
@@ -175,33 +157,24 @@ app.post("/events/reset", (req, res) => {
 // ============================================================
 
 app.get("/test-event", (req, res) => {
-  const now =
-    Date.now();
+  const now = Date.now();
 
   const event = {
-    id:
-      "manual-test",
+    id: "manual-test",
 
-    type:
-      "test",
+    type: "test",
 
-    color:
-      "red",
+    color: "red",
 
-    label:
-      "TEST",
+    label: "",
 
-    place:
-      "Біла Церква",
+    place: "Біла Церква",
 
-    lat:
-      49.7968,
+    lat: 49.7968,
 
-    lon:
-      30.1153,
+    lon: 30.1153,
 
-    createdAt:
-      now,
+    createdAt: now,
 
     expiresAt:
       now + TEST_EVENT_TTL
@@ -222,7 +195,7 @@ app.get("/test-event", (req, res) => {
 
 
 // ============================================================
-// TEXT NORMALIZATION
+// NORMALIZATION
 // ============================================================
 
 function normalizeText(text) {
@@ -237,56 +210,98 @@ function normalizeText(text) {
 
 
 // ============================================================
-// REMOVE SERVICE WORDS
+// EXTRACT TEST ID
+//
+// Supported:
+//
+// 1 Біла Церква
+// 1 Трушки
+// 2 Яготин
+//
+// Also:
+//
+// TEST-1 Біла Церква
+// TEST 1 Біла Церква
+//
 // ============================================================
 
-function cleanMessage(text) {
+function parseMessage(text) {
   let value =
-    normalizeText(text);
+    String(text || "").trim();
 
-  // Beginning constructions:
-  //
-  // Від Славутича
-  // З Славутича
-  // Із Славутича
-  // На Заворичі
-  // До Білої Церкви
-  // Біля Фастова
-  // Заходить на Заворичі
-  //
+  let id = null;
 
-  value =
-    value.replace(
-      /^(заходить|заходить на|йде|летить|рухається|рухається на|напрямок|напрямку)\s+/i,
-      ""
+  let match =
+    value.match(
+      /^(?:test[-\s]*)?(\d+)\s+(.+)$/iu
     );
 
-  value =
-    value.replace(
-      /^(від|з|із|зі|на|до|біля|коло|через|у|в)\s+/i,
-      ""
-    );
+  if (match) {
+    id =
+      Number(match[1]);
 
-  value =
-    value.replace(
-      /^(заходить|йде|летить|рухається)\s+/i,
-      ""
-    );
+    value =
+      match[2].trim();
+  }
 
-  return value.trim();
+  return {
+    id,
+    text: value
+  };
 }
 
 
 // ============================================================
-// EXTRACT POSSIBLE PLACE
+// CLEAN LOCATION TEXT
 // ============================================================
 
-function buildSearchVariants(text) {
+function cleanLocationText(text) {
+  let value =
+    normalizeText(text);
+
+  value =
+    value.replace(
+      /^(заходить|заходить на|йде|летить|рухається|рухається на|рух на|напрямок|напрямку)\s+/iu,
+      ""
+    );
+
+  value =
+    value.replace(
+      /^(від|з|із|зі|на|до|біля|коло|через|у|в|в напрямку)\s+/iu,
+      ""
+    );
+
+  value =
+    value.replace(
+      /^(заходить|йде|летить|рухається)\s+/iu,
+      ""
+    );
+
+  value =
+    value.replace(
+      /\b(один|одна|одне)\b/giu,
+      ""
+    );
+
+  value =
+    value
+      .replace(/\s+/g, " ")
+      .trim();
+
+  return value;
+}
+
+
+// ============================================================
+// SEARCH VARIANTS
+// ============================================================
+
+function buildVariants(text) {
   const original =
     normalizeText(text);
 
   const cleaned =
-    cleanMessage(original);
+    cleanLocationText(original);
 
   const variants = [];
 
@@ -303,26 +318,12 @@ function buildSearchVariants(text) {
   }
 
   add(cleaned);
-
-  // Whole message
   add(original);
 
-  // Remove more common words
-  let reduced =
-    cleaned
-      .replace(
-        /\b(днс|центр|район|р-н|область|обл)\b/g,
-        " "
-      )
-      .replace(/\s+/g, " ")
-      .trim();
-
-  add(reduced);
-
-  // Last 1–4 words
   const words =
     cleaned.split(" ");
 
+  // Try the whole phrase and shorter endings.
   for (
     let count = 1;
     count <= Math.min(4, words.length);
@@ -345,15 +346,18 @@ function buildSearchVariants(text) {
 // NOMINATIM
 // ============================================================
 
-async function nominatimSearch(query) {
+async function searchNominatim(query) {
   const url =
     `${NOMINATIM_URL}` +
     `?format=jsonv2` +
-    `&limit=5` +
+    `&limit=8` +
     `&countrycodes=ua` +
     `&addressdetails=1` +
     `&accept-language=uk` +
-    `&q=${encodeURIComponent(query + ", Київська область, Україна")}`;
+    `&q=${encodeURIComponent(
+      query +
+      ", Київська область, Україна"
+    )}`;
 
   const response =
     await fetch(
@@ -361,7 +365,7 @@ async function nominatimSearch(query) {
       {
         headers: {
           "User-Agent":
-            "ONLINE-RADAR-Test/3.0"
+            "ONLINE-RADAR-Test/4.0"
         }
       }
     );
@@ -377,25 +381,16 @@ async function nominatimSearch(query) {
 
 
 // ============================================================
-// IS KYIV OBLAST
+// KYIV OBLAST CHECK
 // ============================================================
 
 function isKyivOblast(result) {
-  if (!result) {
-    return false;
-  }
-
   const address =
     result.address || {};
 
   const state =
     normalizeText(
       address.state || ""
-    );
-
-  const stateDistrict =
-    normalizeText(
-      address.state_district || ""
     );
 
   const display =
@@ -412,80 +407,15 @@ function isKyivOblast(result) {
   }
 
   if (
-    state ===
-    "київська"
+    state === "київська"
   ) {
     return true;
   }
 
   if (
-    stateDistrict.includes(
+    display.includes(
       "київська область"
     )
-  ) {
-    return true;
-  }
-
-  return display.includes(
-    "київська область"
-  );
-}
-
-
-// ============================================================
-// IS SETTLEMENT
-// ============================================================
-
-function isSettlement(result) {
-  if (!result) {
-    return false;
-  }
-
-  const type =
-    String(
-      result.type || ""
-    ).toLowerCase();
-
-  const category =
-    String(
-      result.category || ""
-    ).toLowerCase();
-
-  const address =
-    result.address || {};
-
-  const place =
-    String(
-      address.city ||
-      address.town ||
-      address.village ||
-      address.municipality ||
-      address.hamlet ||
-      address.suburb ||
-      ""
-    ).trim();
-
-  if (place) {
-    return true;
-  }
-
-  const allowedTypes = [
-    "city",
-    "town",
-    "village",
-    "hamlet",
-    "municipality"
-  ];
-
-  if (
-    allowedTypes.includes(type)
-  ) {
-    return true;
-  }
-
-  if (
-    category ===
-    "place"
   ) {
     return true;
   }
@@ -495,7 +425,42 @@ function isSettlement(result) {
 
 
 // ============================================================
-// GET BEST PLACE NAME
+// SETTLEMENT CHECK
+// ============================================================
+
+function isSettlement(result) {
+  const type =
+    String(
+      result.type || ""
+    ).toLowerCase();
+
+  const address =
+    result.address || {};
+
+  const settlement =
+    address.city ||
+    address.town ||
+    address.village ||
+    address.hamlet ||
+    "";
+
+  if (
+    settlement
+  ) {
+    return true;
+  }
+
+  return [
+    "city",
+    "town",
+    "village",
+    "hamlet"
+  ].includes(type);
+}
+
+
+// ============================================================
+// PLACE NAME
 // ============================================================
 
 function getPlaceName(result) {
@@ -507,7 +472,6 @@ function getPlaceName(result) {
     address.town ||
     address.village ||
     address.hamlet ||
-    address.municipality ||
     result.name ||
     ""
   );
@@ -515,23 +479,21 @@ function getPlaceName(result) {
 
 
 // ============================================================
-// GEOCODE MESSAGE
+// FIND PLACE
 // ============================================================
 
 async function findPlace(text) {
   const variants =
-    buildSearchVariants(text);
+    buildVariants(text);
 
   console.log(
     "Search variants:",
     variants
   );
 
-  for (const variant of variants) {
-    if (!variant) {
-      continue;
-    }
-
+  for (
+    const variant of variants
+  ) {
     const cacheKey =
       variant;
 
@@ -539,11 +501,13 @@ async function findPlace(text) {
       geocodeCache.has(cacheKey)
     ) {
       const cached =
-        geocodeCache.get(
-          cacheKey
-        );
+        geocodeCache.get(cacheKey);
 
       if (cached) {
+        console.log(
+          `CACHE MATCH: ${cached.name}`
+        );
+
         return cached;
       }
 
@@ -556,17 +520,13 @@ async function findPlace(text) {
       );
 
       const results =
-        await nominatimSearch(
+        await searchNominatim(
           variant
         );
 
-      if (
-        !Array.isArray(results)
+      for (
+        const result of results
       ) {
-        continue;
-      }
-
-      for (const result of results) {
         if (
           !isKyivOblast(result)
         ) {
@@ -592,31 +552,23 @@ async function findPlace(text) {
           continue;
         }
 
-        const placeName =
-          getPlaceName(result);
-
-        if (!placeName) {
-          continue;
-        }
-
         const place = {
           name:
-            placeName,
+            getPlaceName(result),
 
-          lat:
-            lat,
+          lat,
 
-          lon:
-            lon,
-
-          osmType:
-            result.type ||
-            null,
+          lon,
 
           displayName:
-            result.display_name ||
-            null
+            result.display_name || ""
         };
+
+        if (
+          !place.name
+        ) {
+          continue;
+        }
 
         geocodeCache.set(
           cacheKey,
@@ -628,7 +580,7 @@ async function findPlace(text) {
         );
 
         console.log(
-          `Coordinates: ${place.lat}, ${place.lon}`
+          `Coordinates: ${lat}, ${lon}`
         );
 
         return place;
@@ -641,8 +593,7 @@ async function findPlace(text) {
 
     } catch (error) {
       console.error(
-        `Geocoding error for "${variant}":`,
-        error.message
+        `Geocoding error: ${error.message}`
       );
     }
   }
@@ -652,24 +603,26 @@ async function findPlace(text) {
 
 
 // ============================================================
-// CREATE TELEGRAM TEST EVENT
+// CREATE / MOVE POINT
 // ============================================================
 
-async function createTelegramTestEvent(
+async function createOrMovePoint(
+  pointId,
   place,
   originalMessage
 ) {
   const now =
     Date.now();
 
-  // Remove previous point
-  events.delete(
-    TEST_EVENT_ID
-  );
+  const eventId =
+    `telegram-test-${pointId}`;
 
   const event = {
     id:
-      TEST_EVENT_ID,
+      eventId,
+
+    pointId:
+      pointId,
 
     type:
       "test",
@@ -677,8 +630,9 @@ async function createTelegramTestEvent(
     color:
       "red",
 
+    // NO TEST TEXT
     label:
-      "TEST",
+      "",
 
     place:
       place.name,
@@ -693,6 +647,11 @@ async function createTelegramTestEvent(
       place.lon,
 
     createdAt:
+      events.has(eventId)
+        ? events.get(eventId).createdAt
+        : now,
+
+    updatedAt:
       now,
 
     expiresAt:
@@ -700,7 +659,7 @@ async function createTelegramTestEvent(
   };
 
   events.set(
-    TEST_EVENT_ID,
+    eventId,
     event
   );
 
@@ -709,7 +668,7 @@ async function createTelegramTestEvent(
   );
 
   console.log(
-    "TEST EVENT CREATED"
+    `POINT ${pointId}`
   );
 
   console.log(
@@ -717,11 +676,15 @@ async function createTelegramTestEvent(
   );
 
   console.log(
-    `Matched: ${place.name}`
+    `Place: ${place.name}`
   );
 
   console.log(
     `Coordinates: ${place.lat}, ${place.lon}`
+  );
+
+  console.log(
+    "Action: CREATED / MOVED"
   );
 
   console.log(
@@ -748,7 +711,9 @@ app.post(
       const channelPost =
         update.channel_post;
 
-      if (!channelPost) {
+      if (
+        !channelPost
+      ) {
         return res.json({
           ok: true,
           ignored: true,
@@ -767,12 +732,10 @@ app.post(
           .replace(/^@/, "")
           .toLowerCase();
 
-      // VERY IMPORTANT:
-      // Only our test channel.
+      // ONLY TEST CHANNEL
       if (
         username !==
         TEST_CHANNEL_USERNAME
-          .toLowerCase()
       ) {
         console.log(
           `Ignored channel: @${username}`
@@ -786,13 +749,12 @@ app.post(
         });
       }
 
-      const text =
-        channelPost.text ||
-        channelPost.caption ||
-        "";
-
       const message =
-        String(text).trim();
+        String(
+          channelPost.text ||
+          channelPost.caption ||
+          ""
+        ).trim();
 
       console.log(
         "--------------------------------"
@@ -802,7 +764,9 @@ app.post(
         `Telegram test channel message: ${message}`
       );
 
-      if (!message) {
+      if (
+        !message
+      ) {
         return res.json({
           ok: true,
           ignored: true,
@@ -811,26 +775,65 @@ app.post(
         });
       }
 
+      const parsed =
+        parseMessage(message);
+
+      console.log(
+        `Point ID: ${
+          parsed.id !== null
+            ? parsed.id
+            : "AUTO"
+        }`
+      );
+
+      console.log(
+        `Location text: ${parsed.text}`
+      );
+
       const place =
         await findPlace(
-          message
+          parsed.text
         );
 
-      if (!place) {
+      if (
+        !place
+      ) {
         console.log(
-          `NO MATCH: ${message}`
+          `NO MATCH: ${parsed.text}`
         );
 
         return res.json({
           ok: true,
-          ignored: true,
+          matched: false,
           reason:
             "settlement not found"
         });
       }
 
+      // ------------------------------------------------------
+      // If a number is supplied, use it as the point ID.
+      //
+      // Example:
+      //
+      // 1 Біла Церква
+      // 1 Трушки
+      //
+      // Otherwise create an automatic unique point.
+      // ------------------------------------------------------
+
+      let pointId =
+        parsed.id;
+
+      if (
+        pointId === null
+      ) {
+        pointId =
+          Date.now();
+      }
+
       const event =
-        await createTelegramTestEvent(
+        await createOrMovePoint(
+          pointId,
           place,
           message
         );
@@ -930,7 +933,7 @@ const wss =
 
 wss.on(
   "connection",
-  (socket) => {
+  socket => {
     clients.add(
       socket
     );
@@ -1037,12 +1040,14 @@ function cleanupExpiredEvents() {
         true;
 
       console.log(
-        `Expired event removed: ${id}`
+        `Expired point removed: ${id}`
       );
     }
   }
 
-  if (changed) {
+  if (
+    changed
+  ) {
     broadcastState();
   }
 }
@@ -1066,7 +1071,7 @@ server.listen(
     );
 
     console.log(
-      "ONLINE RADAR backend"
+      "ONLINE RADAR backend v4.0.0"
     );
 
     console.log(
@@ -1078,7 +1083,15 @@ server.listen(
     );
 
     console.log(
-      "Geocoder: Nominatim"
+      "Multiple points: ENABLED"
+    );
+
+    console.log(
+      "Red markers: ENABLED"
+    );
+
+    console.log(
+      "TEST label on marker: DISABLED"
     );
 
     console.log(
