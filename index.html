@@ -199,26 +199,23 @@
 
 
     /* =========================================================
-       TEST / DEMO EVENT MARKER
+       TEST / DEMO MARKER
     ========================================================= */
 
     /*
-     * ВАЖЛИВО:
+     * Wrapper відповідає ТІЛЬКИ за географічну позицію.
      *
-     * Wrapper має фіксований центр на географічній координаті.
+     * Він не масштабується і не анімується.
      *
-     * Внутрішній .test-marker-content масштабується
-     * залежно від zoom карти.
-     *
-     * Тому при віддаленні карти маркер НЕ займає
-     * величезну площу і не створює враження,
-     * що він "поїхав" в інше місто.
+     * Це важливо для MapLibre:
+     * центр wrapper завжди залишається
+     * точно на координаті event.
      */
 
     .test-marker-wrapper {
 
-      width: 64px;
-      height: 64px;
+      width: 32px;
+      height: 32px;
 
       display: flex;
 
@@ -230,17 +227,17 @@
       pointer-events: none;
 
       flex:
-        0 0 64px;
+        0 0 32px;
 
       overflow: visible;
     }
 
 
     /*
-     * Вся графіка маркера знаходиться
-     * всередині цього контейнера.
+     * Внутрішній контейнер.
      *
-     * Сам він масштабується через CSS variable.
+     * Саме він масштабується
+     * залежно від zoom карти.
      */
 
     .test-marker-content {
@@ -250,91 +247,25 @@
       left: 50%;
       top: 50%;
 
-      width: 52px;
-      height: 52px;
+      width: 32px;
+      height: 32px;
 
       transform:
         translate(-50%, -50%)
-        scale(var(--marker-scale, 0.62));
+        scale(var(--marker-scale, 0.55));
 
       transform-origin:
         center center;
 
+      pointer-events: none;
+
       will-change:
         transform;
-
-      pointer-events: none;
     }
 
 
     /* =========================================================
-       RADAR RING
-    ========================================================= */
-
-    .test-marker-radar {
-
-      position: absolute;
-
-      left: 50%;
-      top: 50%;
-
-      width: 16px;
-      height: 16px;
-
-      transform:
-        translate(-50%, -50%);
-
-      border:
-        1px solid
-        rgba(255, 48, 79, 0.95);
-
-      border-radius: 50%;
-
-      box-shadow:
-        0 0 6px
-        rgba(255, 48, 79, 0.75);
-
-      opacity: 0;
-
-      animation:
-        testMarkerRadar
-        1.8s
-        infinite
-        ease-out;
-    }
-
-
-    .test-marker-radar::after {
-
-      content: "";
-
-      position: absolute;
-
-      left: 50%;
-      top: 50%;
-
-      width: 100%;
-      height: 100%;
-
-      transform:
-        translate(-50%, -50%);
-
-      border:
-        1px solid
-        rgba(255, 48, 79, 0.8);
-
-      border-radius: 50%;
-
-      animation:
-        testMarkerRadarInner
-        1.8s
-        infinite
-        ease-out;
-    }
-
-
-    /* =========================================================
-       OUTER GLOW
+       SOFT GLOW
     ========================================================= */
 
     .test-marker-glow {
@@ -344,8 +275,8 @@
       left: 50%;
       top: 50%;
 
-      width: 46px;
-      height: 46px;
+      width: 28px;
+      height: 28px;
 
       transform:
         translate(-50%, -50%);
@@ -356,10 +287,9 @@
         radial-gradient(
           circle,
           rgba(255, 48, 79, 0.30) 0%,
-          rgba(255, 48, 79, 0.17) 22%,
-          rgba(255, 48, 79, 0.07) 45%,
-          rgba(255, 48, 79, 0.025) 60%,
-          transparent 76%
+          rgba(255, 48, 79, 0.16) 25%,
+          rgba(255, 48, 79, 0.07) 48%,
+          transparent 72%
         );
 
       filter:
@@ -367,95 +297,94 @@
 
       animation:
         testMarkerGlow
-        1.25s
+        1.6s
         infinite
         ease-in-out;
     }
 
 
     /* =========================================================
-       MAIN ABSTRACT AIRCRAFT / DRONE SYMBOL
+       OUTER PULSE RING
     ========================================================= */
 
-    .test-marker {
+    .test-marker-ring {
 
       position: absolute;
 
       left: 50%;
       top: 50%;
 
-      width: 42px;
-      height: 42px;
+      width: 7px;
+      height: 7px;
 
       transform:
         translate(-50%, -50%);
+
+      border:
+        1px solid
+        rgba(255, 48, 79, 0.75);
+
+      border-radius: 50%;
+
+      opacity: 0;
 
       animation:
-        testMarkerPulse
-        1.25s
+        testMarkerRing
+        1.8s
         infinite
-        ease-in-out;
-
-      filter:
-        drop-shadow(
-          0 0 3px
-          rgba(255, 48, 79, 1)
-        )
-        drop-shadow(
-          0 0 8px
-          rgba(255, 48, 79, 0.85)
-        );
-
-      transform-origin:
-        center center;
+        ease-out;
     }
 
 
     /* =========================================================
-       CENTRAL BODY
+       MAIN RED DOT
     ========================================================= */
 
-    .test-marker-body {
+    .test-marker-dot {
 
       position: absolute;
 
       left: 50%;
       top: 50%;
 
-      width: 12px;
-      height: 30px;
+      width: 7px;
+      height: 7px;
 
       transform:
         translate(-50%, -50%);
 
-      background:
-        linear-gradient(
-          to bottom,
-          #ffd4d9 0%,
-          #ff7182 15%,
-          #ff304f 42%,
-          #df1739 72%,
-          #990c24 100%
-        );
+      border-radius: 50%;
 
-      clip-path:
-        polygon(
-          50% 0%,
-          100% 30%,
-          82% 100%,
-          50% 84%,
-          18% 100%,
-          0% 30%
-        );
+      background:
+        #ff304f;
+
+      border:
+        1px solid
+        rgba(255, 170, 180, 0.9);
 
       box-shadow:
-        0 0 6px
-        rgba(255, 48, 79, 1);
+
+        0 0 3px
+        rgba(255, 48, 79, 1),
+
+        0 0 7px
+        rgba(255, 48, 79, 0.95),
+
+        0 0 14px
+        rgba(255, 48, 79, 0.60);
+
+      animation:
+        testMarkerDot
+        1.35s
+        infinite
+        ease-in-out;
+
+      z-index: 3;
     }
 
 
     /* =========================================================
-       CENTRAL CORE
+       SMALL INNER CORE
     ========================================================= */
 
     .test-marker-core {
@@ -465,266 +394,25 @@
       left: 50%;
       top: 50%;
 
-      width: 5px;
-      height: 11px;
+      width: 2px;
+      height: 2px;
 
       transform:
         translate(-50%, -50%);
 
-      border-radius:
-        50%;
-
-      background:
-        #fff1f3;
-
-      box-shadow:
-
-        0 0 3px
-        #ffffff,
-
-        0 0 7px
-        #ff304f,
-
-        0 0 13px
-        rgba(255, 48, 79, 1);
-
-      z-index: 5;
-
-      animation:
-        testMarkerCore
-        0.8s
-        infinite
-        ease-in-out;
-    }
-
-
-    /* =========================================================
-       LEFT WING
-    ========================================================= */
-
-    .test-marker-wing-left {
-
-      position: absolute;
-
-      left: 0;
-      top: 15px;
-
-      width: 23px;
-      height: 13px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #ff9aa6 0%,
-          #ff5369 22%,
-          #ff304f 58%,
-          #b50d27 100%
-        );
-
-      clip-path:
-        polygon(
-          100% 0%,
-          82% 100%,
-          0% 72%,
-          35% 40%
-        );
-
-      filter:
-        drop-shadow(
-          0 0 3px
-          rgba(255, 48, 79, 0.95)
-        );
-    }
-
-
-    /* =========================================================
-       RIGHT WING
-    ========================================================= */
-
-    .test-marker-wing-right {
-
-      position: absolute;
-
-      right: 0;
-      top: 15px;
-
-      width: 23px;
-      height: 13px;
-
-      background:
-        linear-gradient(
-          225deg,
-          #ff9aa6 0%,
-          #ff5369 22%,
-          #ff304f 58%,
-          #b50d27 100%
-        );
-
-      clip-path:
-        polygon(
-          0% 0%,
-          18% 100%,
-          100% 72%,
-          65% 40%
-        );
-
-      filter:
-        drop-shadow(
-          0 0 3px
-          rgba(255, 48, 79, 0.95)
-        );
-    }
-
-
-    /* =========================================================
-       TOP FIN
-    ========================================================= */
-
-    .test-marker-fin-top {
-
-      position: absolute;
-
-      left: 50%;
-      top: 1px;
-
-      width: 11px;
-      height: 14px;
-
-      transform:
-        translateX(-50%);
-
-      background:
-        linear-gradient(
-          to bottom,
-          #ffd5da 0%,
-          #ff5369 42%,
-          #e61b3d 100%
-        );
-
-      clip-path:
-        polygon(
-          50% 0%,
-          100% 100%,
-          50% 72%,
-          0% 100%
-        );
-
-      filter:
-        drop-shadow(
-          0 0 4px
-          rgba(255, 48, 79, 1)
-        );
-    }
-
-
-    /* =========================================================
-       BOTTOM FIN
-    ========================================================= */
-
-    .test-marker-fin-bottom {
-
-      position: absolute;
-
-      left: 50%;
-      bottom: 1px;
-
-      width: 9px;
-      height: 10px;
-
-      transform:
-        translateX(-50%);
-
-      background:
-        linear-gradient(
-          to bottom,
-          #e51b3d,
-          #9c0c25
-        );
-
-      clip-path:
-        polygon(
-          0% 0%,
-          100% 0%,
-          50% 100%
-        );
-    }
-
-
-    /* =========================================================
-       LIGHT TRAIL
-    ========================================================= */
-
-    .test-marker-trail {
-
-      position: absolute;
-
-      left: 50%;
-      top: 31px;
-
-      width: 3px;
-      height: 17px;
-
-      transform:
-        translateX(-50%);
-
-      border-radius:
-        999px;
-
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(255, 203, 209, 0.95) 0%,
-          rgba(255, 48, 79, 0.72) 25%,
-          rgba(255, 48, 79, 0.18) 70%,
-          transparent 100%
-        );
-
-      filter:
-        blur(0.4px);
-
-      animation:
-        testMarkerTrail
-        0.65s
-        infinite
-        ease-out;
-
-      z-index:
-        -1;
-    }
-
-
-    /* =========================================================
-       SMALL LIGHTS
-    ========================================================= */
-
-    .test-marker-light-left,
-    .test-marker-light-right {
-
-      position: absolute;
-
-      top: 19px;
-
-      width: 3px;
-      height: 3px;
-
       border-radius: 50%;
 
       background:
-        #ffdfe3;
+        #fff4f5;
 
       box-shadow:
-        0 0 5px
-        rgba(255, 48, 79, 1);
-    }
+        0 0 3px
+        #ffffff,
 
+        0 0 6px
+        #ff304f;
 
-    .test-marker-light-left {
-      left: 6px;
-    }
-
-
-    .test-marker-light-right {
-      right: 6px;
+      z-index: 4;
     }
 
 
@@ -732,92 +420,37 @@
        ANIMATIONS
     ========================================================= */
 
-    @keyframes testMarkerPulse {
-
-      0% {
-
-        opacity:
-          1;
-
-        transform:
-          translate(-50%, -50%)
-          scale(0.92);
-      }
-
-      18% {
-
-        opacity:
-          1;
-
-        transform:
-          translate(-50%, -50%)
-          scale(1);
-      }
-
-      42% {
-
-        opacity:
-          0.58;
-
-        transform:
-          translate(-50%, -50%)
-          scale(0.88);
-      }
-
-      58% {
-
-        opacity:
-          0.96;
-
-        transform:
-          translate(-50%, -50%)
-          scale(1.03);
-      }
-
-      73% {
-
-        opacity:
-          0.7;
-
-        transform:
-          translate(-50%, -50%)
-          scale(0.94);
-      }
-
-      100% {
-
-        opacity:
-          1;
-
-        transform:
-          translate(-50%, -50%)
-          scale(0.92);
-      }
-
-    }
-
-
-    @keyframes testMarkerCore {
+    @keyframes testMarkerDot {
 
       0%,
       100% {
 
         opacity:
-          0.85;
+          1;
 
         transform:
           translate(-50%, -50%)
-          scale(0.85);
+          scale(0.90);
       }
 
-      50% {
+      45% {
+
+        opacity:
+          0.72;
+
+        transform:
+          translate(-50%, -50%)
+          scale(0.72);
+      }
+
+      65% {
 
         opacity:
           1;
 
         transform:
           translate(-50%, -50%)
-          scale(1.18);
+          scale(1.08);
       }
 
     }
@@ -829,66 +462,27 @@
       100% {
 
         opacity:
-          0.42;
+          0.35;
 
         transform:
           translate(-50%, -50%)
-          scale(0.68);
+          scale(0.72);
       }
 
-      45% {
+      50% {
 
         opacity:
-          0.95;
+          0.85;
 
         transform:
           translate(-50%, -50%)
           scale(1);
       }
 
-      65% {
-
-        opacity:
-          0.65;
-
-        transform:
-          translate(-50%, -50%)
-          scale(1.14);
-      }
-
     }
 
 
-    @keyframes testMarkerRadar {
-
-      0% {
-
-        opacity:
-          0.9;
-
-        width:
-          10px;
-
-        height:
-          10px;
-      }
-
-      100% {
-
-        opacity:
-          0;
-
-        width:
-          50px;
-
-        height:
-          50px;
-      }
-
-    }
-
-
-    @keyframes testMarkerRadarInner {
+    @keyframes testMarkerRing {
 
       0% {
 
@@ -896,10 +490,10 @@
           0.8;
 
         width:
-          10px;
+          7px;
 
         height:
-          10px;
+          7px;
       }
 
       100% {
@@ -908,61 +502,17 @@
           0;
 
         width:
-          42px;
+          30px;
 
         height:
-          42px;
-      }
-
-    }
-
-
-    @keyframes testMarkerTrail {
-
-      0% {
-
-        opacity:
-          0.95;
-
-        height:
-          4px;
-
-        transform:
-          translateX(-50%)
-          scaleX(0.9);
-      }
-
-      50% {
-
-        opacity:
-          0.65;
-
-        height:
-          11px;
-
-        transform:
-          translateX(-50%)
-          scaleX(1);
-      }
-
-      100% {
-
-        opacity:
-          0;
-
-        height:
-          18px;
-
-        transform:
-          translateX(-50%)
-          scaleX(0.45);
+          30px;
       }
 
     }
 
 
     /* =========================================================
-       NO TEST LABEL
+       NO LABEL
     ========================================================= */
 
     .test-label {
@@ -975,6 +525,7 @@
 <body>
 
   <div id="map"></div>
+
 
   <div id="status">
 
@@ -1041,21 +592,20 @@
 
 
     /* =========================================================
-       MARKER ZOOM SETTINGS
+       MARKER ZOOM
     ========================================================= */
 
     /*
-     * Мінімальний масштаб на загальній карті.
-     *
-     * 0.45 = дуже компактний.
+     * На загальній карті Київщини
+     * точка маленька.
      */
 
     const MARKER_MIN_SCALE =
-      0.45;
+      0.48;
 
 
     /*
-     * Максимальний масштаб
+     * Максимальний розмір
      * при сильному наближенні.
      */
 
@@ -1064,21 +614,22 @@
 
 
     /*
-     * Zoom, на якому маркер
-     * досягає максимального розміру.
-     */
-
-    const MARKER_MAX_ZOOM =
-      13;
-
-
-    /*
-     * При стартовому zoom ~6
-     * маркер буде маленьким.
+     * Від якого zoom
+     * починається масштабування.
      */
 
     const MARKER_MIN_ZOOM =
       5.7;
+
+
+    /*
+     * На цьому zoom
+     * маркер досягає максимального
+     * розміру.
+     */
+
+    const MARKER_MAX_ZOOM =
+      13;
 
 
     /* =========================================================
@@ -1256,49 +807,44 @@
       zoom
     ) {
 
-      const minZoom =
-        MARKER_MIN_ZOOM;
-
-
-      const maxZoom =
-        MARKER_MAX_ZOOM;
-
-
       const clampedZoom =
         Math.max(
-          minZoom,
+
+          MARKER_MIN_ZOOM,
+
           Math.min(
-            maxZoom,
+            MARKER_MAX_ZOOM,
             zoom
           )
+
         );
 
 
       const progress =
         (
           clampedZoom -
-          minZoom
+          MARKER_MIN_ZOOM
         ) /
         (
-          maxZoom -
-          minZoom
+          MARKER_MAX_ZOOM -
+          MARKER_MIN_ZOOM
         );
 
 
       /*
-       * Нелінійна крива:
+       * Плавна крива.
        *
-       * на далекому zoom
-       * маркер маленький;
+       * На zoom 5.7:
+       * ~0.48
        *
-       * при наближенні
-       * збільшується плавніше.
+       * На zoom 13:
+       * 1.00
        */
 
       const eased =
         Math.pow(
           progress,
-          0.72
+          0.75
         );
 
 
@@ -1568,10 +1114,8 @@
 
 
       /*
-       * Якщо ID вже існує —
-       * старий marker прибирається.
-       *
-       * Інші ID не чіпаємо.
+       * Оновлення точки
+       * з тим самим ID.
        */
 
       removeEventMarker(
@@ -1607,34 +1151,14 @@
         "test-marker-content";
 
 
-      const currentScale =
+      content.style.setProperty(
+
+        "--marker-scale",
+
         calculateMarkerScale(
           map.getZoom()
-        );
+        ).toFixed(3)
 
-
-      content.style.setProperty(
-        "--marker-scale",
-        currentScale.toFixed(3)
-      );
-
-
-      /* =======================================================
-         RADAR
-      ======================================================= */
-
-      const radar =
-        document.createElement(
-          "div"
-        );
-
-
-      radar.className =
-        "test-marker-radar";
-
-
-      content.appendChild(
-        radar
       );
 
 
@@ -1658,116 +1182,45 @@
 
 
       /* =======================================================
-         MAIN OBJECT
+         PULSE RING
       ======================================================= */
 
-      const markerElement =
+      const ring =
         document.createElement(
           "div"
         );
 
 
-      markerElement.className =
-        "test-marker";
+      ring.className =
+        "test-marker-ring";
 
 
-      /* =======================================================
-         BODY
-      ======================================================= */
-
-      const body =
-        document.createElement(
-          "div"
-        );
-
-
-      body.className =
-        "test-marker-body";
-
-
-      markerElement.appendChild(
-        body
+      content.appendChild(
+        ring
       );
 
 
       /* =======================================================
-         TOP FIN
+         RED DOT
       ======================================================= */
 
-      const finTop =
+      const dot =
         document.createElement(
           "div"
         );
 
 
-      finTop.className =
-        "test-marker-fin-top";
+      dot.className =
+        "test-marker-dot";
 
 
-      markerElement.appendChild(
-        finTop
+      content.appendChild(
+        dot
       );
 
 
       /* =======================================================
-         BOTTOM FIN
-      ======================================================= */
-
-      const finBottom =
-        document.createElement(
-          "div"
-        );
-
-
-      finBottom.className =
-        "test-marker-fin-bottom";
-
-
-      markerElement.appendChild(
-        finBottom
-      );
-
-
-      /* =======================================================
-         LEFT WING
-      ======================================================= */
-
-      const wingLeft =
-        document.createElement(
-          "div"
-        );
-
-
-      wingLeft.className =
-        "test-marker-wing-left";
-
-
-      markerElement.appendChild(
-        wingLeft
-      );
-
-
-      /* =======================================================
-         RIGHT WING
-      ======================================================= */
-
-      const wingRight =
-        document.createElement(
-          "div"
-        );
-
-
-      wingRight.className =
-        "test-marker-wing-right";
-
-
-      markerElement.appendChild(
-        wingRight
-      );
-
-
-      /* =======================================================
-         CORE
+         WHITE CORE
       ======================================================= */
 
       const core =
@@ -1780,65 +1233,8 @@
         "test-marker-core";
 
 
-      markerElement.appendChild(
+      content.appendChild(
         core
-      );
-
-
-      /* =======================================================
-         LEFT LIGHT
-      ======================================================= */
-
-      const lightLeft =
-        document.createElement(
-          "div"
-        );
-
-
-      lightLeft.className =
-        "test-marker-light-left";
-
-
-      markerElement.appendChild(
-        lightLeft
-      );
-
-
-      /* =======================================================
-         RIGHT LIGHT
-      ======================================================= */
-
-      const lightRight =
-        document.createElement(
-          "div"
-        );
-
-
-      lightRight.className =
-        "test-marker-light-right";
-
-
-      markerElement.appendChild(
-        lightRight
-      );
-
-
-      /* =======================================================
-         TRAIL
-      ======================================================= */
-
-      const trail =
-        document.createElement(
-          "div"
-        );
-
-
-      trail.className =
-        "test-marker-trail";
-
-
-      markerElement.appendChild(
-        trail
       );
 
 
@@ -1846,18 +1242,13 @@
          APPEND
       ======================================================= */
 
-      content.appendChild(
-        markerElement
-      );
-
-
       wrapper.appendChild(
         content
       );
 
 
       /* =======================================================
-         MAPLIBRE MARKER
+         MAPLIBRE
       ======================================================= */
 
       const mapMarker =
@@ -1883,7 +1274,7 @@
 
 
       /*
-       * Зберігаємо marker за ID.
+       * Зберігаємо за ID.
        */
 
       eventMarkers.set(
@@ -1956,8 +1347,8 @@
 
 
       /*
-       * Прибираємо маркери,
-       * яких більше немає на backend.
+       * Прибираємо точки,
+       * яких вже немає на backend.
        */
 
       for (
@@ -1985,11 +1376,6 @@
 
       }
 
-
-      /*
-       * На всяк випадок
-       * синхронізуємо масштаб.
-       */
 
       updateMarkerScales();
 
@@ -2278,12 +1664,6 @@
 
         connectWebSocket();
 
-
-        /*
-         * Після першого fitBounds
-         * встановлюємо правильний
-         * розмір маркерів.
-         */
 
         updateMarkerScales();
 
