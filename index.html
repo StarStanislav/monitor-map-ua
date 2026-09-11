@@ -32,6 +32,7 @@
       height: 100%;
       overflow: hidden;
       background: #071012;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -42,14 +43,17 @@
     #map {
       position: fixed;
       inset: 0;
+
       width: 100%;
       height: 100%;
+
       background: #071012;
     }
 
-    /* =========================================
+
+    /* ============================================================
        BOTTOM STATUS
-    ========================================= */
+    ============================================================ */
 
     .bottom-status {
 
@@ -64,13 +68,15 @@
 
       display: flex;
       align-items: center;
+
       gap: 7px;
 
       padding: 7px 11px;
 
       border-radius: 999px;
 
-      background: rgba(5, 14, 16, 0.78);
+      background:
+        rgba(5, 14, 16, 0.78);
 
       border:
         1px solid
@@ -93,6 +99,7 @@
       pointer-events: none;
     }
 
+
     .status-dot {
 
       width: 6px;
@@ -106,10 +113,12 @@
         0 0 5px rgba(33, 255, 121, 0.9),
         0 0 11px rgba(33, 255, 121, 0.55);
 
-      animation: pulse 1.8s infinite;
+      animation:
+        pulse 1.8s infinite;
 
       flex-shrink: 0;
     }
+
 
     @keyframes pulse {
 
@@ -130,9 +139,11 @@
 
     }
 
+
     .status-title {
       color: #d9eeee;
     }
+
 
     .status-separator {
 
@@ -143,17 +154,20 @@
         rgba(150, 190, 193, 0.25);
     }
 
+
     .status-time {
 
       color:
         rgba(187, 211, 213, 0.72);
 
-      font-variant-numeric: tabular-nums;
+      font-variant-numeric:
+        tabular-nums;
     }
 
-    /* =========================================
-       MAPLIBRE UI HIDDEN
-    ========================================= */
+
+    /* ============================================================
+       MAPLIBRE UI
+    ============================================================ */
 
     .maplibregl-ctrl-top-right {
       display: none !important;
@@ -272,6 +286,7 @@
 
       const now = new Date();
 
+
       const day =
         String(
           now.getDate()
@@ -372,24 +387,27 @@
 
       buildCustomMapLayers();
 
+
+      /* ==========================================================
+         BELARUS BORDER
+      ========================================================== */
+
+      addBelarusBorder();
+
     });
 
 
     /* ============================================================
-       CUSTOM LAYERS
+       CUSTOM MAP LAYERS
     ============================================================ */
 
     function buildCustomMapLayers() {
 
 
       /* ==========================================================
-         1. FIND ALL EXISTING PLACE LABEL LAYERS
+         EXISTING CITY LABELS
          
-         WE DO NOT DELETE THEM.
-         
-         WE DO NOT CREATE NEW CITY LABELS.
-         
-         WE ONLY FORCE UKRAINIAN NAME FIELD.
+         DO NOT REBUILD THEM.
       ========================================================== */
 
       const styleLayers =
@@ -411,6 +429,7 @@
           symbolLayers.push(
             layer.id
           );
+
 
           try {
 
@@ -461,7 +480,7 @@
 
 
       /* ==========================================================
-         2. CURRENT KYIV OBLAST DISTRICTS
+         KYIV OBLAST DISTRICTS
       ========================================================== */
 
       if (
@@ -566,7 +585,7 @@
 
 
       /* ==========================================================
-         3. WATER LABELS
+         WATER LABELS
       ========================================================== */
 
       if (
@@ -655,9 +674,7 @@
 
 
       /* ==========================================================
-         4. EXACT KYIV OBLAST BORDER
-         
-         OSM RELATION 71248
+         EXACT KYIV OBLAST BORDER
       ========================================================== */
 
       const KYIV_OBLAST_GEOJSON =
@@ -697,10 +714,6 @@
         data => {
 
 
-          /* ======================================================
-             SOURCE
-          ====================================================== */
-
           if (
             !map.getSource(
               "kyiv-oblast-exact"
@@ -726,11 +739,9 @@
           }
 
 
-          /* ======================================================
-             FIND FIRST SYMBOL LAYER
-             
-             BORDER GOES UNDER LABELS.
-          ====================================================== */
+          /* ------------------------------------------------------
+             FIRST SYMBOL LAYER
+          ------------------------------------------------------ */
 
           let firstSymbolId =
             undefined;
@@ -758,9 +769,9 @@
           }
 
 
-          /* ======================================================
-             SUBTLE FILL
-          ====================================================== */
+          /* ------------------------------------------------------
+             FILL
+          ------------------------------------------------------ */
 
           if (
             !map.getLayer(
@@ -800,9 +811,9 @@
           }
 
 
-          /* ======================================================
-             NEON GLOW
-          ====================================================== */
+          /* ------------------------------------------------------
+             GLOW
+          ------------------------------------------------------ */
 
           if (
             !map.getLayer(
@@ -867,9 +878,9 @@
           }
 
 
-          /* ======================================================
-             MAIN NEON BORDER
-          ====================================================== */
+          /* ------------------------------------------------------
+             MAIN BORDER
+          ------------------------------------------------------ */
 
           if (
             !map.getLayer(
@@ -934,12 +945,9 @@
           }
 
 
-          /* ======================================================
-             FORCE PLACE LABELS TO TOP
-             
-             MapLibre supports moving a layer before another layer
-             or to the top when no beforeId is supplied.
-          ====================================================== */
+          /* ------------------------------------------------------
+             KEEP CITY LABELS ABOVE EVERYTHING
+          ------------------------------------------------------ */
 
           for (
             const id of symbolLayers
@@ -973,6 +981,489 @@
 
         }
       );
+
+    }
+
+
+    /* ============================================================
+       BELARUS BORDER
+       
+       We query ONLY the shared ways between the Ukraine and
+       Belarus country boundary relations.
+       
+       Bounding box is limited to northern Ukraine so that
+       unrelated international borders are not drawn.
+    ============================================================ */
+
+    async function addBelarusBorder() {
+
+
+      const OVERPASS_QUERY = `
+
+        [out:json][timeout:30];
+
+        rel
+          ["boundary"="administrative"]
+          ["admin_level"="2"]
+          ["ISO3166-1"="UA"]
+          ->.ukraine;
+
+        rel
+          ["boundary"="administrative"]
+          ["admin_level"="2"]
+          ["ISO3166-1"="BY"]
+          ->.belarus;
+
+        way
+          (r.ukraine)
+          (r.belarus)
+          (50.5,27.5,52.5,32.8);
+
+        out geom;
+
+      `;
+
+
+      try {
+
+
+        const response =
+          await fetch(
+
+            "https://overpass-api.de/api/interpreter",
+
+            {
+
+              method:
+                "POST",
+
+              headers: {
+
+                "Content-Type":
+                  "application/x-www-form-urlencoded"
+
+              },
+
+              body:
+                "data=" +
+                encodeURIComponent(
+                  OVERPASS_QUERY
+                )
+
+            }
+
+          );
+
+
+        if (
+          !response.ok
+        ) {
+
+          throw new Error(
+            "Belarus border request failed"
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        const features = [];
+
+
+        for (
+          const element of
+          data.elements || []
+        ) {
+
+
+          if (
+            !element.geometry ||
+            element.geometry.length < 2
+          ) {
+
+            continue;
+
+          }
+
+
+          const coordinates =
+            element.geometry.map(
+              point => [
+                point.lon,
+                point.lat
+              ]
+            );
+
+
+          features.push({
+
+            type:
+              "Feature",
+
+            properties:
+              {},
+
+            geometry: {
+
+              type:
+                "LineString",
+
+              coordinates:
+                coordinates
+
+            }
+
+          });
+
+        }
+
+
+        if (
+          features.length === 0
+        ) {
+
+          throw new Error(
+            "No Belarus-Ukraine border geometry found"
+          );
+
+        }
+
+
+        const geojson = {
+
+          type:
+            "FeatureCollection",
+
+          features:
+            features
+
+        };
+
+
+        /* ========================================================
+           SOURCE
+        ======================================================== */
+
+        map.addSource(
+
+          "belarus-border",
+
+          {
+
+            type:
+              "geojson",
+
+            data:
+              geojson
+
+          }
+
+        );
+
+
+        /* ========================================================
+           SIMPLE DARK UNDERLINE
+        ======================================================== */
+
+        map.addLayer({
+
+          id:
+            "belarus-border-base",
+
+          type:
+            "line",
+
+          source:
+            "belarus-border",
+
+          paint: {
+
+            "line-color":
+              "#142d30",
+
+            "line-opacity":
+              0.95,
+
+            "line-width": [
+
+              "interpolate",
+
+              ["linear"],
+
+              ["zoom"],
+
+              5.4,
+              2,
+
+              7,
+              2.5,
+
+              10,
+              3
+
+            ]
+
+          }
+
+        });
+
+
+        /* ========================================================
+           SMALL BARBED-WIRE PATTERN
+           
+           Generated locally — no external image needed.
+        ======================================================== */
+
+        if (
+          !map.hasImage(
+            "barbed-wire-pattern"
+          )
+        ) {
+
+
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
+
+
+          canvas.width = 32;
+          canvas.height = 16;
+
+
+          const ctx =
+            canvas.getContext(
+              "2d"
+            );
+
+
+          ctx.clearRect(
+            0,
+            0,
+            32,
+            16
+          );
+
+
+          /* Main wire */
+
+          ctx.strokeStyle =
+            "#55aeb2";
+
+          ctx.lineWidth =
+            1.35;
+
+          ctx.beginPath();
+
+          ctx.moveTo(
+            0,
+            8
+          );
+
+          ctx.lineTo(
+            32,
+            8
+          );
+
+          ctx.stroke();
+
+
+          /* Barbs */
+
+          ctx.strokeStyle =
+            "#72c7ca";
+
+          ctx.lineWidth =
+            1;
+
+
+          for (
+            let x = 5;
+            x < 32;
+            x += 10
+          ) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+              x - 3,
+              4
+            );
+
+            ctx.lineTo(
+              x + 3,
+              12
+            );
+
+            ctx.stroke();
+
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+              x - 3,
+              12
+            );
+
+            ctx.lineTo(
+              x + 3,
+              4
+            );
+
+            ctx.stroke();
+
+          }
+
+
+          const imageData =
+            ctx.getImageData(
+              0,
+              0,
+              32,
+              16
+            );
+
+
+          map.addImage(
+
+            "barbed-wire-pattern",
+
+            {
+
+              width:
+                32,
+
+              height:
+                16,
+
+              data:
+                imageData.data
+
+            }
+
+          );
+
+        }
+
+
+        /* ========================================================
+           BARBED WIRE
+        ======================================================== */
+
+        map.addLayer({
+
+          id:
+            "belarus-border-wire",
+
+          type:
+            "line",
+
+          source:
+            "belarus-border",
+
+          paint: {
+
+            "line-pattern":
+              "barbed-wire-pattern",
+
+            "line-opacity":
+              0.72
+
+          }
+
+        });
+
+
+        /* ========================================================
+           SUBTLE GLOW
+        ======================================================== */
+
+        map.addLayer({
+
+          id:
+            "belarus-border-glow",
+
+          type:
+            "line",
+
+          source:
+            "belarus-border",
+
+          paint: {
+
+            "line-color":
+              "#36aeb3",
+
+            "line-opacity":
+              0.14,
+
+            "line-width": [
+
+              "interpolate",
+
+              ["linear"],
+
+              ["zoom"],
+
+              5.4,
+              4,
+
+              7,
+              5,
+
+              10,
+              7
+
+            ],
+
+            "line-blur":
+              3
+
+          }
+
+        });
+
+
+        /* ========================================================
+           KEEP CITY LABELS ABOVE BORDER
+        ======================================================== */
+
+        const layers =
+          map.getStyle().layers || [];
+
+
+        for (
+          const layer of layers
+        ) {
+
+          if (
+            layer.type === "symbol"
+          ) {
+
+            try {
+
+              map.moveLayer(
+                layer.id
+              );
+
+            } catch (e) {}
+
+          }
+
+        }
+
+
+      } catch (error) {
+
+        console.warn(
+          "Belarus border:",
+          error
+        );
+
+      }
 
     }
 
