@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const WebSocket = require("ws");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +26,12 @@ const TEST_EVENT_TTL =
 const NOMINATIM_URL =
   "https://nominatim.openstreetmap.org/search";
 
+const SETTLEMENTS_FILE =
+  path.join(
+    __dirname,
+    "kyiv-oblast-places.json"
+  );
+
 const events =
   new Map();
 
@@ -35,22 +43,13 @@ const geocodeCache =
 
 
 // ============================================================
-// STATIC TEST GAZETTEER
+// KYIV INTERNAL LOCATIONS
 //
-// IMPORTANT:
-// Known test locations are resolved locally first.
-// Nominatim is used only as fallback.
-//
-// Coordinates are WGS84:
-// lat = latitude
-// lon = longitude
+// These are not settlements from the oblast gazetteer.
+// They are kept separately because they are locations inside Kyiv.
 // ============================================================
 
-const STATIC_PLACES = {
-
-  // ----------------------------------------------------------
-  // KYIV
-  // ----------------------------------------------------------
+const KYIV_INTERNAL_PLACES = {
 
   "київ": {
     name: "Київ",
@@ -122,332 +121,365 @@ const STATIC_PLACES = {
     name: "Лівий берег",
     lat: 50.4450,
     lon: 30.6200
-  },
-
-
-  // ----------------------------------------------------------
-  // BILA TSERKVA AREA
-  // ----------------------------------------------------------
-
-  "біла церква": {
-    name: "Біла Церква",
-    lat: 49.7968,
-    lon: 30.1153
-  },
-
-  "трушки": {
-    name: "Трушки",
-    lat: 49.7450,
-    lon: 30.1950
-  },
-
-  "узин": {
-    name: "Узин",
-    lat: 49.8269,
-    lon: 30.4147
-  },
-
-  "гребінки": {
-    name: "Гребінки",
-    lat: 50.1078,
-    lon: 30.1820
-  },
-
-  "сквира": {
-    name: "Сквира",
-    lat: 49.7322,
-    lon: 29.6657
-  },
-
-  "володарка": {
-    name: "Володарка",
-    lat: 49.5248,
-    lon: 29.9187
-  },
-
-  "ставище": {
-    name: "Ставище",
-    lat: 49.3928,
-    lon: 30.1904
-  },
-
-  "тетіїв": {
-    name: "Тетіїв",
-    lat: 49.3755,
-    lon: 29.6644
-  },
-
-  "ржищів": {
-    name: "Ржищів",
-    lat: 49.9670,
-    lon: 31.0465
-  },
-
-  "кагарлик": {
-    name: "Кагарлик",
-    lat: 49.8623,
-    lon: 30.8235
-  },
-
-
-  // ----------------------------------------------------------
-  // FASTIV / SOUTH-WEST
-  // ----------------------------------------------------------
-
-  "васильків": {
-    name: "Васильків",
-    lat: 50.1780,
-    lon: 30.3160
-  },
-
-  "фастів": {
-    name: "Фастів",
-    lat: 50.0769,
-    lon: 29.9177
-  },
-
-  "обухів": {
-    name: "Обухів",
-    lat: 50.1068,
-    lon: 30.6254
-  },
-
-  "українка": {
-    name: "Українка",
-    lat: 50.1437,
-    lon: 30.7464
-  },
-
-  "трипілля": {
-    name: "Трипілля",
-    lat: 50.1188,
-    lon: 30.7790
-  },
-
-  "козин": {
-    name: "Козин",
-    lat: 50.2066,
-    lon: 30.6416
-  },
-
-
-  // ----------------------------------------------------------
-  // KYIV EAST
-  // ----------------------------------------------------------
-
-  "бориспіль": {
-    name: "Бориспіль",
-    lat: 50.3527,
-    lon: 30.9550
-  },
-
-  "бровари": {
-    name: "Бровари",
-    lat: 50.5111,
-    lon: 30.7903
-  },
-
-  "березань": {
-    name: "Березань",
-    lat: 50.3157,
-    lon: 31.4700
-  },
-
-  "яготин": {
-    name: "Яготин",
-    lat: 50.2567,
-    lon: 31.7776
-  },
-
-  "переяслав": {
-    name: "Переяслав",
-    lat: 50.0764,
-    lon: 31.4494
-  },
-
-
-  // ----------------------------------------------------------
-  // NORTH
-  // ----------------------------------------------------------
-
-  "вишгород": {
-    name: "Вишгород",
-    lat: 50.5848,
-    lon: 30.4898
-  },
-
-  "димер": {
-    name: "Димер",
-    lat: 50.7870,
-    lon: 30.3010
-  },
-
-  "іванків": {
-    name: "Іванків",
-    lat: 50.9387,
-    lon: 29.8940
-  },
-
-  "славутич": {
-    name: "Славутич",
-    lat: 51.5220,
-    lon: 30.7500
   }
 
 };
 
 
 // ============================================================
+// LOAD KYIV OBLAST GAZETTEER
+//
+// File:
+// kyiv-oblast-places.json
+//
+// Format:
+//
+// [
+//   {
+//     "name": "...",
+//     "type": "село",
+//     "lat": 49.123,
+//     "lon": 30.123,
+//     ...
+//   }
+// ]
+// ============================================================
+
+let SETTLEMENTS = [];
+let SETTLEMENTS_BY_NAME = new Map();
+
+function loadSettlements() {
+
+  try {
+
+    if (
+      !fs.existsSync(
+        SETTLEMENTS_FILE
+      )
+    ) {
+
+      console.error(
+        "================================"
+      );
+
+      console.error(
+        "ERROR: kyiv-oblast-places.json NOT FOUND"
+      );
+
+      console.error(
+        `Expected file: ${SETTLEMENTS_FILE}`
+      );
+
+      console.error(
+        "================================"
+      );
+
+      return;
+
+    }
+
+
+    const raw =
+      fs.readFileSync(
+        SETTLEMENTS_FILE,
+        "utf8"
+      );
+
+
+    const data =
+      JSON.parse(
+        raw
+      );
+
+
+    if (
+      !Array.isArray(data)
+    ) {
+
+      throw new Error(
+        "kyiv-oblast-places.json must contain an array"
+      );
+
+    }
+
+
+    SETTLEMENTS =
+      data.filter(
+        place =>
+          place &&
+          typeof place.name === "string" &&
+          Number.isFinite(
+            Number(place.lat)
+          ) &&
+          Number.isFinite(
+            Number(place.lon)
+          )
+      );
+
+
+    SETTLEMENTS_BY_NAME =
+      new Map();
+
+
+    for (
+      const place
+      of SETTLEMENTS
+    ) {
+
+      const key =
+        normalizeText(
+          place.name
+        );
+
+
+      if (
+        !key
+      ) {
+
+        continue;
+
+      }
+
+
+      if (
+        !SETTLEMENTS_BY_NAME.has(
+          key
+        )
+      ) {
+
+        SETTLEMENTS_BY_NAME.set(
+          key,
+          []
+        );
+
+      }
+
+
+      SETTLEMENTS_BY_NAME
+        .get(key)
+        .push(place);
+
+    }
+
+
+    console.log(
+      "================================"
+    );
+
+    console.log(
+      "KYIV OBLAST GAZETTEER LOADED"
+    );
+
+    console.log(
+      `Records: ${SETTLEMENTS.length}`
+    );
+
+    console.log(
+      `Unique names: ${SETTLEMENTS_BY_NAME.size}`
+    );
+
+    console.log(
+      `File: ${SETTLEMENTS_FILE}`
+    );
+
+    console.log(
+      "================================"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "================================"
+    );
+
+    console.error(
+      "GAZETTEER LOAD ERROR:"
+    );
+
+    console.error(
+      error.message
+    );
+
+    console.error(
+      "================================"
+    );
+
+  }
+
+}
+
+
+// ============================================================
 // BASIC
 // ============================================================
 
-app.get("/", (req, res) => {
+app.get(
+  "/",
+  (req, res) => {
 
-  res.json({
-    name:
-      "ONLINE RADAR backend",
+    res.json({
 
-    status:
-      "online",
+      name:
+        "ONLINE RADAR backend",
 
-    version:
-      "6.1.0",
+      status:
+        "online",
 
-    testChannel:
-      `@${TEST_CHANNEL_USERNAME}`
+      version:
+        "7.0.0",
 
-  });
+      testChannel:
+        `@${TEST_CHANNEL_USERNAME}`,
 
-});
+      settlements:
+        SETTLEMENTS.length
+
+    });
+
+  }
+);
 
 
-app.get("/health", (req, res) => {
+app.get(
+  "/health",
+  (req, res) => {
 
-  cleanupExpiredEvents();
+    cleanupExpiredEvents();
 
-  res.json({
+    res.json({
 
-    ok:
-      true,
+      ok:
+        true,
 
-    timestamp:
-      new Date().toISOString(),
+      timestamp:
+        new Date().toISOString(),
 
-    events:
-      events.size
+      events:
+        events.size,
 
-  });
+      settlements:
+        SETTLEMENTS.length
 
-});
+    });
+
+  }
+);
 
 
 // ============================================================
 // EVENTS
 // ============================================================
 
-app.get("/events", (req, res) => {
+app.get(
+  "/events",
+  (req, res) => {
 
-  cleanupExpiredEvents();
+    cleanupExpiredEvents();
 
-  res.json({
+    res.json({
 
-    events:
-      Array.from(
-        events.values()
-      )
-
-  });
-
-});
-
-
-app.post("/events", (req, res) => {
-
-  const body =
-    req.body || {};
-
-
-  if (
-    typeof body.lat !== "number" ||
-    typeof body.lon !== "number"
-  ) {
-
-    return res.status(400).json({
-
-      ok:
-        false,
-
-      error:
-        "lat and lon must be numbers"
+      events:
+        Array.from(
+          events.values()
+        )
 
     });
 
   }
+);
 
 
-  const now =
-    Date.now();
+app.post(
+  "/events",
+  (req, res) => {
+
+    const body =
+      req.body || {};
 
 
-  const event = {
+    if (
+      typeof body.lat !== "number" ||
+      typeof body.lon !== "number"
+    ) {
 
-    id:
-      body.id ||
-      `event-${now}`,
+      return res.status(400).json({
 
-    type:
-      body.type ||
-      "test",
+        ok:
+          false,
 
-    color:
-      "red",
+        error:
+          "lat and lon must be numbers"
 
-    label:
-      "",
+      });
 
-    place:
-      body.place ||
-      "",
-
-    lat:
-      body.lat,
-
-    lon:
-      body.lon,
-
-    createdAt:
-      now,
-
-    updatedAt:
-      now,
-
-    expiresAt:
-      body.expiresAt ||
-      now +
-      TEST_EVENT_TTL
-
-  };
+    }
 
 
-  events.set(
-    event.id,
-    event
-  );
+    const now =
+      Date.now();
 
 
-  broadcastState();
+    const event = {
+
+      id:
+        body.id ||
+        `event-${now}`,
+
+      type:
+        body.type ||
+        "test",
+
+      color:
+        "red",
+
+      label:
+        "",
+
+      place:
+        body.place ||
+        "",
+
+      lat:
+        body.lat,
+
+      lon:
+        body.lon,
+
+      createdAt:
+        now,
+
+      updatedAt:
+        now,
+
+      expiresAt:
+        body.expiresAt ||
+        now +
+        TEST_EVENT_TTL
+
+    };
 
 
-  res.json({
+    events.set(
+      event.id,
+      event
+    );
 
-    ok:
-      true,
 
-    event
+    broadcastState();
 
-  });
 
-});
+    res.json({
+
+      ok:
+        true,
+
+      event
+
+    });
+
+  }
+);
 
 
 // ============================================================
@@ -519,9 +551,26 @@ app.get(
 
 
     const place =
-      STATIC_PLACES[
+      findGazetteerPlace(
         "біла церква"
-      ];
+      );
+
+
+    if (
+      !place
+    ) {
+
+      return res.status(500).json({
+
+        ok:
+          false,
+
+        error:
+          "Біла Церква not found in gazetteer"
+
+      });
+
+    }
 
 
     const event = {
@@ -591,10 +640,15 @@ app.get(
 
 function normalizeText(text) {
 
-  return String(text || "")
+  return String(
+    text || ""
+  )
     .toLowerCase()
     .normalize("NFC")
-    .replace(/[’`]/g, "'")
+    .replace(
+      /[’`]/g,
+      "'"
+    )
     .replace(
       /[.,!?;:()[\]{}"“”„]/g,
       " "
@@ -609,166 +663,15 @@ function normalizeText(text) {
 
 
 // ============================================================
-// PARSE MESSAGE
-//
-// 1 Біла Церква
-// 2 Яготин
-// 3 Київ Арсенальна
-//
-// DELETE:
-//
-// 1 -
-// ============================================================
-
-function parseMessage(text) {
-
-  let value =
-    String(text || "")
-      .trim();
-
-
-  let id =
-    null;
-
-
-  let deletePoint =
-    false;
-
-
-  const deleteMatch =
-    value.match(
-      /^(?:test[-\s]*)?(\d+)\s*[-–—]\s*$/iu
-    );
-
-
-  if (
-    deleteMatch
-  ) {
-
-    id =
-      Number(
-        deleteMatch[1]
-      );
-
-
-    deletePoint =
-      true;
-
-
-    return {
-
-      id,
-
-      text:
-        "",
-
-      deletePoint
-
-    };
-
-  }
-
-
-  const match =
-    value.match(
-      /^(?:test[-\s]*)?(\d+)\s+(.+)$/iu
-    );
-
-
-  if (
-    match
-  ) {
-
-    id =
-      Number(
-        match[1]
-      );
-
-
-    value =
-      match[2]
-        .trim();
-
-  }
-
-
-  return {
-
-    id,
-
-    text:
-      value,
-
-    deletePoint
-
-  };
-
-}
-
-
-// ============================================================
-// DELETE POINT
-// ============================================================
-
-function deletePoint(pointId) {
-
-  const eventId =
-    `telegram-test-${pointId}`;
-
-
-  const existed =
-    events.delete(
-      eventId
-    );
-
-
-  console.log(
-    "================================"
-  );
-
-
-  console.log(
-    `DELETE POINT ${pointId}`
-  );
-
-
-  console.log(
-    `Event: ${eventId}`
-  );
-
-
-  console.log(
-    `Deleted: ${existed}`
-  );
-
-
-  console.log(
-    "================================"
-  );
-
-
-  if (
-    existed
-  ) {
-
-    broadcastState();
-
-  }
-
-
-  return existed;
-
-}
-
-
-// ============================================================
 // CLEAN LOCATION TEXT
 // ============================================================
 
 function cleanLocationText(text) {
 
   let value =
-    normalizeText(text);
+    normalizeText(
+      text
+    );
 
 
   value =
@@ -816,7 +719,9 @@ function cleanLocationText(text) {
 function getAliasVariants(text) {
 
   const normalized =
-    normalizeText(text);
+    normalizeText(
+      text
+    );
 
 
   const aliases =
@@ -826,7 +731,9 @@ function getAliasVariants(text) {
   function add(value) {
 
     value =
-      normalizeText(value);
+      normalizeText(
+        value
+      );
 
 
     if (
@@ -916,7 +823,8 @@ function getAliasVariants(text) {
   if (
     normalized === "трушок" ||
     normalized === "трушкам" ||
-    normalized === "трушками"
+    normalized === "трушками" ||
+    normalized === "трушках"
   ) {
 
     add("трушки");
@@ -1054,6 +962,36 @@ function getAliasVariants(text) {
   }
 
 
+  // ДИМЕР
+
+  if (
+    normalized === "димера" ||
+    normalized === "димері" ||
+    normalized === "димером"
+  ) {
+
+    add("димер");
+
+  }
+
+
+  // ІВАНКІВ
+
+  if (
+    normalized === "іванкова" ||
+    normalized === "іванкові" ||
+    normalized === "іванковом"
+  ) {
+
+    add("іванків");
+
+  }
+
+
+  // БОРИСПІЛЬ / ВИШГОРОД ETC.
+  // Generic aliases below are handled
+  // by partial-name matching.
+
   return aliases;
 
 }
@@ -1066,7 +1004,9 @@ function getAliasVariants(text) {
 function getKyivLocationAliases(text) {
 
   const value =
-    normalizeText(text);
+    normalizeText(
+      text
+    );
 
 
   const aliases =
@@ -1076,7 +1016,9 @@ function getKyivLocationAliases(text) {
   function add(value) {
 
     value =
-      normalizeText(value);
+      normalizeText(
+        value
+      );
 
 
     if (
@@ -1196,10 +1138,72 @@ function getKyivLocationAliases(text) {
 
 
 // ============================================================
-// STATIC PLACE LOOKUP
+// CONVERT GAZETTEER RECORD
 // ============================================================
 
-function findStaticPlace(text) {
+function convertGazetteerPlace(
+  place
+) {
+
+  return {
+
+    name:
+      place.name,
+
+    lat:
+      Number(place.lat),
+
+    lon:
+      Number(place.lon),
+
+    displayName:
+      `${place.name}, Київська область, Україна`,
+
+    osmType:
+      "gazetteer",
+
+    osmId:
+      place.osm_id ||
+      null,
+
+    katottg:
+      place.katottg ||
+      null,
+
+    type:
+      place.type ||
+      "",
+
+    district:
+      place.district ||
+      place.district_name ||
+      "",
+
+    hromada:
+      place.hromada ||
+      place.hromada_name ||
+      "",
+
+    postalCode:
+      place.postal_code ||
+      "",
+
+    population:
+      place.population ||
+      null
+
+  };
+
+}
+
+
+// ============================================================
+// FIND EXACT GAZETTEER PLACE
+// ============================================================
+
+function findGazetteerPlace(
+  text
+) {
 
   const normalized =
     normalizeText(
@@ -1219,14 +1223,361 @@ function findStaticPlace(text) {
     );
 
 
-  const kyivAliases =
+  const candidates = [
+    ...aliases,
+    cleaned,
+    normalized
+  ];
+
+
+  for (
+    const candidate
+    of candidates
+  ) {
+
+    const records =
+      SETTLEMENTS_BY_NAME.get(
+        candidate
+      );
+
+
+    if (
+      !records ||
+      records.length === 0
+    ) {
+
+      continue;
+
+    }
+
+
+    /*
+     * Usually there is only one settlement
+     * with this exact name.
+     *
+     * If a name exists more than once
+     * (for example Калинівка), use the first
+     * gazetteer record and leave Nominatim
+     * as fallback for more specific queries.
+     */
+
+    const place =
+      records[0];
+
+
+    return convertGazetteerPlace(
+      place
+    );
+
+  }
+
+
+  return null;
+
+}
+
+
+// ============================================================
+// FUZZY GAZETTEER SEARCH
+//
+// Helps with:
+//
+// Біла церква
+// Біла церква ДНС
+// Славутич
+// В напрямку Білогородки
+//
+// This is only the neutral TEST channel.
+// ============================================================
+
+function findGazetteerPartialPlace(
+  text
+) {
+
+  const normalized =
+    cleanLocationText(
+      text
+    );
+
+
+  if (
+    !normalized
+  ) {
+
+    return null;
+
+  }
+
+
+  const aliases =
+    getAliasVariants(
+      normalized
+    );
+
+
+  const candidates = [
+    ...aliases,
+    normalized
+  ];
+
+
+  // Exact token / phrase contained in message.
+
+  for (
+    const candidate
+    of candidates
+  ) {
+
+    if (
+      candidate.length < 3
+    ) {
+
+      continue;
+
+    }
+
+
+    let best =
+      null;
+
+
+    for (
+      const place
+      of SETTLEMENTS
+    ) {
+
+      const placeName =
+        normalizeText(
+          place.name
+        );
+
+
+      if (
+        !placeName
+      ) {
+
+        continue;
+
+      }
+
+
+      if (
+        candidate ===
+        placeName
+      ) {
+
+        return convertGazetteerPlace(
+          place
+        );
+
+      }
+
+
+      if (
+        candidate.includes(
+          placeName
+        )
+      ) {
+
+        if (
+          !best ||
+          placeName.length >
+            normalizeText(
+              best.name
+            ).length
+        ) {
+
+          best =
+            place;
+
+        }
+
+      }
+
+    }
+
+
+    if (
+      best
+    ) {
+
+      return convertGazetteerPlace(
+        best
+      );
+
+    }
+
+  }
+
+
+  // Reverse check:
+  // message contains words that identify settlement.
+
+  const words =
+    normalized
+      .split(" ")
+      .filter(
+        word =>
+          word.length >= 4
+      );
+
+
+  if (
+    words.length === 0
+  ) {
+
+    return null;
+
+  }
+
+
+  let best =
+    null;
+
+  let bestScore =
+    0;
+
+
+  for (
+    const place
+    of SETTLEMENTS
+  ) {
+
+    const placeName =
+      normalizeText(
+        place.name
+      );
+
+
+    if (
+      !placeName
+    ) {
+
+      continue;
+
+    }
+
+
+    const placeWords =
+      placeName
+        .split(" ")
+        .filter(Boolean);
+
+
+    let score =
+      0;
+
+
+    for (
+      const placeWord
+      of placeWords
+    ) {
+
+      for (
+        const word
+        of words
+      ) {
+
+        if (
+          word ===
+          placeWord
+        ) {
+
+          score += 3;
+
+        } else if (
+          word.length >= 5 &&
+          placeWord.length >= 5 &&
+          (
+            word.startsWith(
+              placeWord.slice(
+                0,
+                Math.max(
+                  4,
+                  placeWord.length - 2
+                )
+              )
+            ) ||
+            placeWord.startsWith(
+              word.slice(
+                0,
+                Math.max(
+                  4,
+                  word.length - 2
+                )
+              )
+            )
+          )
+        ) {
+
+          score += 1;
+
+        }
+
+      }
+
+    }
+
+
+    if (
+      score > bestScore
+    ) {
+
+      bestScore =
+        score;
+
+      best =
+        place;
+
+    }
+
+  }
+
+
+  if (
+    best &&
+    bestScore >= 3
+  ) {
+
+    return convertGazetteerPlace(
+      best
+    );
+
+  }
+
+
+  return null;
+
+}
+
+
+// ============================================================
+// FIND KYIV INTERNAL PLACE
+// ============================================================
+
+function findKyivInternalPlace(
+  text
+) {
+
+  const normalized =
+    normalizeText(
+      text
+    );
+
+
+  const cleaned =
+    cleanLocationText(
+      normalized
+    );
+
+
+  const aliases =
     getKyivLocationAliases(
       cleaned
     );
 
 
   const candidates = [
-    ...kyivAliases,
     ...aliases,
     cleaned,
     normalized
@@ -1239,11 +1590,13 @@ function findStaticPlace(text) {
   ) {
 
     if (
-      STATIC_PLACES[candidate]
+      KYIV_INTERNAL_PLACES[
+        candidate
+      ]
     ) {
 
       const place =
-        STATIC_PLACES[
+        KYIV_INTERNAL_PLACES[
           candidate
         ];
 
@@ -1260,10 +1613,10 @@ function findStaticPlace(text) {
           place.lon,
 
         displayName:
-          `${place.name}, Україна`,
+          `${place.name}, Київ, Україна`,
 
         osmType:
-          "static",
+          "kyiv-internal",
 
         osmId:
           null
@@ -1275,17 +1628,15 @@ function findStaticPlace(text) {
   }
 
 
-  /*
-   * Special handling for
-   * "Київ Арсенальна",
-   * "Київ Печерськ", etc.
-   */
+  // Special matching.
 
   if (
-    normalized.includes("арсеналь")
+    normalized.includes(
+      "арсеналь"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "арсенальна"
     ];
 
@@ -1293,10 +1644,12 @@ function findStaticPlace(text) {
 
 
   if (
-    normalized.includes("печерськ")
+    normalized.includes(
+      "печерськ"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "печерськ"
     ];
 
@@ -1304,10 +1657,12 @@ function findStaticPlace(text) {
 
 
   if (
-    normalized.includes("теремк")
+    normalized.includes(
+      "теремк"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "теремки"
     ];
 
@@ -1315,10 +1670,12 @@ function findStaticPlace(text) {
 
 
   if (
-    normalized.includes("позняк")
+    normalized.includes(
+      "позняк"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "позняки"
     ];
 
@@ -1326,10 +1683,12 @@ function findStaticPlace(text) {
 
 
   if (
-    normalized.includes("осокорк")
+    normalized.includes(
+      "осокорк"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "осокорки"
     ];
 
@@ -1337,10 +1696,12 @@ function findStaticPlace(text) {
 
 
   if (
-    normalized.includes("оболон")
+    normalized.includes(
+      "оболон"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "оболонь"
     ];
 
@@ -1348,11 +1709,77 @@ function findStaticPlace(text) {
 
 
   if (
-    normalized.includes("троєщин")
+    normalized.includes(
+      "троєщин"
+    )
   ) {
 
-    return STATIC_PLACES[
+    return KYIV_INTERNAL_PLACES[
       "троєщина"
+    ];
+
+  }
+
+
+  if (
+    normalized.includes(
+      "виноградар"
+    )
+  ) {
+
+    return KYIV_INTERNAL_PLACES[
+      "виноградар"
+    ];
+
+  }
+
+
+  if (
+    normalized.includes(
+      "солом"
+    )
+  ) {
+
+    return KYIV_INTERNAL_PLACES[
+      "солом'янка"
+    ];
+
+  }
+
+
+  if (
+    normalized.includes(
+      "голосіїв"
+    )
+  ) {
+
+    return KYIV_INTERNAL_PLACES[
+      "голосіїв"
+    ];
+
+  }
+
+
+  if (
+    normalized.includes(
+      "лівий берег"
+    )
+  ) {
+
+    return KYIV_INTERNAL_PLACES[
+      "лівий берег"
+    ];
+
+  }
+
+
+  if (
+    normalized ===
+    "київ"
+  ) {
+
+    return KYIV_INTERNAL_PLACES[
+      "київ"
     ];
 
   }
@@ -1367,10 +1794,14 @@ function findStaticPlace(text) {
 // SEARCH VARIANTS
 // ============================================================
 
-function buildVariants(text) {
+function buildVariants(
+  text
+) {
 
   const original =
-    normalizeText(text);
+    normalizeText(
+      text
+    );
 
 
   const cleaned =
@@ -1386,7 +1817,9 @@ function buildVariants(text) {
   function add(value) {
 
     value =
-      normalizeText(value);
+      normalizeText(
+        value
+      );
 
 
     if (
@@ -1439,7 +1872,9 @@ function buildVariants(text) {
 
 
   const words =
-    cleaned.split(" ");
+    cleaned
+      .split(" ")
+      .filter(Boolean);
 
 
   for (
@@ -1473,7 +1908,9 @@ function buildVariants(text) {
 // IS KYIV LOCATION QUERY
 // ============================================================
 
-function isKyivLocationQuery(query) {
+function isKyivLocationQuery(
+  query
+) {
 
   const value =
     normalizeText(
@@ -1483,11 +1920,8 @@ function isKyivLocationQuery(query) {
 
   return (
     value === "київ" ||
-
     value.startsWith("київ ") ||
-
     value.includes(" київ ") ||
-
     value.endsWith(" київ")
   );
 
@@ -1498,7 +1932,9 @@ function isKyivLocationQuery(query) {
 // NOMINATIM SEARCH
 // ============================================================
 
-async function searchNominatim(query) {
+async function searchNominatim(
+  query
+) {
 
   const kyivQuery =
     isKyivLocationQuery(
@@ -1543,7 +1979,7 @@ async function searchNominatim(query) {
         headers: {
 
           "User-Agent":
-            "ONLINE-RADAR-Test/6.1"
+            "ONLINE-RADAR-Test/7.0"
 
         }
 
@@ -1571,7 +2007,9 @@ async function searchNominatim(query) {
 // IS KYIV
 // ============================================================
 
-function isKyiv(result) {
+function isKyiv(
+  result
+) {
 
   const address =
     result.address ||
@@ -1599,20 +2037,6 @@ function isKyiv(result) {
     );
 
 
-  const cityDistrict =
-    normalizeText(
-      address.city_district ||
-      ""
-    );
-
-
-  const suburb =
-    normalizeText(
-      address.suburb ||
-      ""
-    );
-
-
   if (
     city === "київ"
   ) {
@@ -1632,38 +2056,12 @@ function isKyiv(result) {
 
 
   if (
-    display.includes("київ")
-  ) {
-
-    if (
-      display.includes(
-        "київська область"
-      )
-    ) {
-
-      return false;
-
-    }
-
-
-    return true;
-
-  }
-
-
-  if (
-    cityDistrict &&
-    display.includes("київ")
-  ) {
-
-    return true;
-
-  }
-
-
-  if (
-    suburb &&
-    display.includes("київ")
+    display.includes(
+      "київ"
+    ) &&
+    !display.includes(
+      "київська область"
+    )
   ) {
 
     return true;
@@ -1677,10 +2075,12 @@ function isKyiv(result) {
 
 
 // ============================================================
-// KYIV OBLAST
+// IS KYIV OBLAST
 // ============================================================
 
-function isKyivOblast(result) {
+function isKyivOblast(
+  result
+) {
 
   const address =
     result.address ||
@@ -1713,7 +2113,8 @@ function isKyivOblast(result) {
 
 
   if (
-    state === "київська"
+    state ===
+    "київська"
   ) {
 
     return true;
@@ -1741,7 +2142,9 @@ function isKyivOblast(result) {
 // SETTLEMENT
 // ============================================================
 
-function isSettlement(result) {
+function isSettlement(
+  result
+) {
 
   const type =
     String(
@@ -1818,25 +2221,25 @@ function hasRequestedKyivLocation(
     {};
 
 
-  const suburb =
-    normalizeText(
-      address.suburb ||
-      ""
-    );
-
-
-  const neighbourhood =
-    normalizeText(
-      address.neighbourhood ||
-      ""
-    );
-
-
-  const cityDistrict =
-    normalizeText(
-      address.city_district ||
-      ""
-    );
+  const searchable =
+    [
+      name,
+      normalizeText(
+        address.suburb ||
+        ""
+      ),
+      normalizeText(
+        address.neighbourhood ||
+        ""
+      ),
+      normalizeText(
+        address.city_district ||
+        ""
+      ),
+      display
+    ]
+      .filter(Boolean)
+      .join(" ");
 
 
   const requested =
@@ -1861,70 +2264,18 @@ function hasRequestedKyivLocation(
   }
 
 
-  const searchable =
-    [
-      name,
-      suburb,
-      neighbourhood,
-      cityDistrict,
-      display
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-
   const requestedWords =
     requested
       .split(" ")
       .filter(Boolean);
 
 
-  const allWordsPresent =
-    requestedWords.every(
-      word =>
-        searchable.includes(
-          word
-        )
-    );
-
-
-  if (
-    allWordsPresent
-  ) {
-
-    return true;
-
-  }
-
-
-  for (
-    const word
-    of requestedWords
-  ) {
-
-    const stem =
-      word.length >= 5
-        ? word.slice(
-            0,
-            word.length - 2
-          )
-        : word;
-
-
-    if (
-      !searchable.includes(
-        stem
+  return requestedWords.every(
+    word =>
+      searchable.includes(
+        word
       )
-    ) {
-
-      return false;
-
-    }
-
-  }
-
-
-  return true;
+  );
 
 }
 
@@ -2025,10 +2376,12 @@ function isAcceptedResult(
 
 
 // ============================================================
-// PLACE NAME
+// PLACE NAME FROM NOMINATIM
 // ============================================================
 
-function getPlaceName(result) {
+function getPlaceName(
+  result
+) {
 
   const address =
     result.address ||
@@ -2041,15 +2394,10 @@ function getPlaceName(result) {
 
     return (
       result.name ||
-
       address.suburb ||
-
       address.neighbourhood ||
-
       address.city_district ||
-
       address.city ||
-
       "Київ"
     );
 
@@ -2058,15 +2406,10 @@ function getPlaceName(result) {
 
   return (
     address.city ||
-
     address.town ||
-
     address.village ||
-
     address.hamlet ||
-
     result.name ||
-
     ""
   );
 
@@ -2075,62 +2418,168 @@ function getPlaceName(result) {
 
 // ============================================================
 // FIND PLACE
+//
+// Priority:
+//
+// 1. Kyiv internal locations
+// 2. Full Kyiv Oblast gazetteer
+// 3. Gazetteer partial match
+// 4. Nominatim fallback
 // ============================================================
 
-async function findPlace(text) {
+async function findPlace(
+  text
+) {
 
   // ----------------------------------------------------------
-  // FIRST: STATIC GAZETTEER
+  // 1. KYIV INTERNAL
   // ----------------------------------------------------------
 
-  const staticPlace =
-    findStaticPlace(
+  const kyivPlace =
+    findKyivInternalPlace(
       text
     );
 
 
   if (
-    staticPlace
+    kyivPlace
   ) {
 
     console.log(
       "================================"
     );
 
-
     console.log(
-      "STATIC MATCH:",
+      "KYIV INTERNAL MATCH:",
       text
     );
 
-
     console.log(
-      `Place: ${staticPlace.name}`
+      `Place: ${kyivPlace.name}`
     );
 
-
     console.log(
-      `Coordinates: ${staticPlace.lat}, ${staticPlace.lon}`
+      `Coordinates: ${kyivPlace.lat}, ${kyivPlace.lon}`
     );
 
-
     console.log(
-      "Source: STATIC GAZETTEER"
+      "Source: KYIV INTERNAL"
     );
-
 
     console.log(
       "================================"
     );
 
 
-    return staticPlace;
+    return kyivPlace;
 
   }
 
 
   // ----------------------------------------------------------
-  // FALLBACK: NOMINATIM
+  // 2. EXACT GAZETTEER
+  // ----------------------------------------------------------
+
+  const exactPlace =
+    findGazetteerPlace(
+      text
+    );
+
+
+  if (
+    exactPlace
+  ) {
+
+    console.log(
+      "================================"
+    );
+
+    console.log(
+      "GAZETTEER MATCH:",
+      text
+    );
+
+    console.log(
+      `Place: ${exactPlace.name}`
+    );
+
+    console.log(
+      `Coordinates: ${exactPlace.lat}, ${exactPlace.lon}`
+    );
+
+    console.log(
+      `Type: ${exactPlace.type || ""}`
+    );
+
+    console.log(
+      `District: ${exactPlace.district || ""}`
+    );
+
+    console.log(
+      `Hromada: ${exactPlace.hromada || ""}`
+    );
+
+    console.log(
+      "Source: KYIV OBLAST GAZETTEER"
+    );
+
+    console.log(
+      "================================"
+    );
+
+
+    return exactPlace;
+
+  }
+
+
+  // ----------------------------------------------------------
+  // 3. PARTIAL GAZETTEER
+  // ----------------------------------------------------------
+
+  const partialPlace =
+    findGazetteerPartialPlace(
+      text
+    );
+
+
+  if (
+    partialPlace
+  ) {
+
+    console.log(
+      "================================"
+    );
+
+    console.log(
+      "GAZETTEER PARTIAL MATCH:",
+      text
+    );
+
+    console.log(
+      `Place: ${partialPlace.name}`
+    );
+
+    console.log(
+      `Coordinates: ${partialPlace.lat}, ${partialPlace.lon}`
+    );
+
+    console.log(
+      "Source: KYIV OBLAST GAZETTEER"
+    );
+
+    console.log(
+      "================================"
+    );
+
+
+    return partialPlace;
+
+  }
+
+
+  // ----------------------------------------------------------
+  // 4. NOMINATIM FALLBACK
   // ----------------------------------------------------------
 
   const variants =
@@ -2143,12 +2592,10 @@ async function findPlace(text) {
     "================================"
   );
 
-
   console.log(
-    "SEARCH:",
+    "NOMINATIM FALLBACK SEARCH:",
     text
   );
-
 
   console.log(
     "Search variants:",
@@ -2308,26 +2755,17 @@ async function findPlace(text) {
           "--------------------------------"
         );
 
-
         console.log(
           `MATCHED: ${place.name}`
         );
-
 
         console.log(
           `Coordinates: ${place.lat}, ${place.lon}`
         );
 
-
-        console.log(
-          `Display: ${place.displayName}`
-        );
-
-
         console.log(
           "Source: NOMINATIM"
         );
-
 
         console.log(
           "--------------------------------"
@@ -2368,6 +2806,165 @@ async function findPlace(text) {
 
 
   return null;
+
+}
+
+
+// ============================================================
+// PARSE MESSAGE
+//
+// 1 Біла Церква
+// 2 Яготин
+// 3 Київ Арсенальна
+//
+// DELETE:
+//
+// 1 -
+//
+// Also accepts:
+//
+// TEST 1 Біла Церква
+// ============================================================
+
+function parseMessage(
+  text
+) {
+
+  let value =
+    String(
+      text || ""
+    )
+      .trim();
+
+
+  let id =
+    null;
+
+
+  let deletePoint =
+    false;
+
+
+  const deleteMatch =
+    value.match(
+      /^(?:test[-\s]*)?(\d+)\s*[-–—]\s*$/iu
+    );
+
+
+  if (
+    deleteMatch
+  ) {
+
+    id =
+      Number(
+        deleteMatch[1]
+      );
+
+
+    deletePoint =
+      true;
+
+
+    return {
+
+      id,
+
+      text:
+        "",
+
+      deletePoint
+
+    };
+
+  }
+
+
+  const match =
+    value.match(
+      /^(?:test[-\s]*)?(\d+)\s+(.+)$/iu
+    );
+
+
+  if (
+    match
+  ) {
+
+    id =
+      Number(
+        match[1]
+      );
+
+
+    value =
+      match[2]
+        .trim();
+
+  }
+
+
+  return {
+
+    id,
+
+    text:
+      value,
+
+    deletePoint
+
+  };
+
+}
+
+
+// ============================================================
+// DELETE POINT
+// ============================================================
+
+function deletePoint(
+  pointId
+) {
+
+  const eventId =
+    `telegram-test-${pointId}`;
+
+
+  const existed =
+    events.delete(
+      eventId
+    );
+
+
+  console.log(
+    "================================"
+  );
+
+  console.log(
+    `DELETE POINT ${pointId}`
+  );
+
+  console.log(
+    `Event: ${eventId}`
+  );
+
+  console.log(
+    `Deleted: ${existed}`
+  );
+
+  console.log(
+    "================================"
+  );
+
+
+  if (
+    existed
+  ) {
+
+    broadcastState();
+
+  }
+
+
+  return existed;
 
 }
 
@@ -2450,26 +3047,21 @@ async function createOrMovePoint(
     "================================"
   );
 
-
   console.log(
     `POINT ${pointId}`
   );
-
 
   console.log(
     `Message: ${originalMessage}`
   );
 
-
   console.log(
     `Place: ${place.name}`
   );
 
-
   console.log(
     `Coordinates: ${place.lat}, ${place.lon}`
   );
-
 
   console.log(
     oldEvent
@@ -2477,14 +3069,16 @@ async function createOrMovePoint(
       : "Action: CREATED"
   );
 
-
   console.log(
     "Source:",
-    place.osmType === "static"
-      ? "STATIC GAZETTEER"
-      : "NOMINATIM"
+    place.osmType ===
+      "gazetteer"
+      ? "KYIV OBLAST GAZETTEER"
+      : place.osmType ===
+        "kyiv-internal"
+        ? "KYIV INTERNAL"
+        : "NOMINATIM"
   );
-
 
   console.log(
     "================================"
@@ -2555,6 +3149,9 @@ app.post(
           .toLowerCase();
 
 
+      // IMPORTANT:
+      // ONLY TEST CHANNEL
+
       if (
         username !==
         TEST_CHANNEL_USERNAME
@@ -2586,13 +3183,13 @@ app.post(
           channelPost.text ||
           channelPost.caption ||
           ""
-        ).trim();
+        )
+          .trim();
 
 
       console.log(
         "--------------------------------"
       );
-
 
       console.log(
         `Telegram test channel message: ${message}`
@@ -2635,9 +3232,7 @@ app.post(
 
 
       console.log(
-        `Location text: ${
-          parsed.text
-        }`
+        `Location text: ${parsed.text}`
       );
 
 
@@ -2693,6 +3288,10 @@ app.post(
       }
 
 
+      // --------------------------------------------------------
+      // FIND PLACE
+      // --------------------------------------------------------
+
       const place =
         await findPlace(
           parsed.text
@@ -2712,12 +3311,19 @@ app.post(
             false,
 
           reason:
-            "location not found"
+            "location not found",
+
+          text:
+            parsed.text
 
         });
 
       }
 
+
+      // --------------------------------------------------------
+      // POINT ID
+      // --------------------------------------------------------
 
       let pointId =
         parsed.id;
@@ -2732,6 +3338,10 @@ app.post(
 
       }
 
+
+      // --------------------------------------------------------
+      // CREATE / MOVE
+      // --------------------------------------------------------
 
       const event =
         await createOrMovePoint(
@@ -3041,6 +3651,9 @@ setInterval(
 // START
 // ============================================================
 
+loadSettlements();
+
+
 server.listen(
   PORT,
   async () => {
@@ -3049,81 +3662,73 @@ server.listen(
       "================================"
     );
 
-
     console.log(
-      "ONLINE RADAR backend v6.1.0"
+      "ONLINE RADAR backend v7.0.0"
     );
-
 
     console.log(
       `Port: ${PORT}`
     );
 
-
     console.log(
       `Test channel: @${TEST_CHANNEL_USERNAME}`
     );
 
-
     console.log(
-      "Static gazetteer: ENABLED"
+      `Gazetteer records: ${SETTLEMENTS.length}`
     );
 
-
     console.log(
-      "Static coordinates priority: ENABLED"
+      "Full Kyiv Oblast gazetteer: ENABLED"
     );
 
+    console.log(
+      "Gazetteer coordinates priority: ENABLED"
+    );
 
     console.log(
       "Nominatim fallback: ENABLED"
     );
 
-
     console.log(
       "Multiple points: ENABLED"
     );
-
 
     console.log(
       "Point movement: ENABLED"
     );
 
-
     console.log(
       "Point deletion: ENABLED"
     );
-
 
     console.log(
       "Kyiv locations: ENABLED"
     );
 
-
     console.log(
       "Kyiv internal locations: ENABLED"
     );
-
-
-    console.log(
-      "Exact Kyiv location matching: ENABLED"
-    );
-
 
     console.log(
       "Case normalization: ENABLED"
     );
 
+    console.log(
+      "Inflection aliases: ENABLED"
+    );
 
     console.log(
       "Red test events: ENABLED"
     );
 
-
     console.log(
       "TEST label on marker: DISABLED"
     );
 
+    console.log(
+      "Operational channels: DISABLED"
+    );
 
     console.log(
       "================================"
